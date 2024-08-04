@@ -1,0 +1,30 @@
+{
+    "nav": {
+        "connect": "Подключить",
+        "import": "Импортировать",
+        "language": "Языки",
+        "account": "Аккаунт"
+    },
+    "auth": {
+        "name": "CloudFlare Helper",
+        "description": "Веб-помощник для управления доменами из разных учетных записей.",
+        "bot": "Telegram бот",
+        "support": "Поддержка",
+        "password": "Парол",
+        "continue": "Продолжить",
+        "back": "Назад",
+        "loginTypeOne": "Войдите через телеграм или по почте",
+        "loginTypeTwo": "Войдите с помощью одноразового ключа",
+        "loginLabelOne": "Telegram ID или адрес электронной почты",
+        "loginLabelTwo": "Одноразовый ключ"
+    },
+    "sitebar": {
+        "plan": "Текущий план",
+        "enterprise": "Предприятие",
+        "websites": "Домены",
+        "accounts": "Аккаунты",
+        "domain": "Регистрация домена",
+        "settings": "Настройки",
+        "support": "Тех. Поддержка"
+    }
+}

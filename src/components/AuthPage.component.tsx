@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Loading } from "./Loading.components";
+import { useLanguageContext } from "./LanguageProvider";
+import axios from 'axios';
+
 
 import { Button } from "@/components/ui/button"
 import {
@@ -27,7 +31,7 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { AtSign, Loader2, Send, SquareAsterisk } from "lucide-react";
+import { Mail, Loader2, Send, SquareAsterisk, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const loginSchema = z.object({
   value: z.string().min(1, {
@@ -40,6 +44,11 @@ const AuthPage = () => {
   const TELEGRAM_ID = /^([,\s]*\b[0-9]{6,100}\b[,\s]*)*$/
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
   const [typeData, setTypeData] = useState('none');
+  const [inpitPassword, setInpitPassword] = useState(true);
+  const [loading, setLoading] = useState(true)
+  const {language, setLanguage} = useLanguageContext()
+  const [lang, setLang] = useState<any>();
+
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -52,11 +61,20 @@ const AuthPage = () => {
   function onSubmit(values: z.infer<typeof loginSchema>) {
     const data: any = values
     data.type = typeData
-    console.log(data)
+    // console.log(data)
   }
 
   const { watch } = form
   const watchPrompt = watch("value")
+
+  useEffect(() => {
+    if(language){
+      axios.get(`/lang/${language}.json`).then((res:any) => {
+        setLang(res.data.auth)
+        setLoading(false)
+      });
+    }
+  }, [language])
 
   useEffect(() => {
     testValue()
@@ -87,19 +105,24 @@ const AuthPage = () => {
     }, 500)
   }
 
+  if(loading){
+    return <Loading />
+  }
+
     return (
       <div className="w-full h-dvh flex justify-center items-center">
         <Card className="w-[400px]">
         <CardHeader className="items-start">
           <img src="/logo.svg" className="w-32 mb-3" alt="logo CloudFlare Helper" />
-          <CardTitle className="mb-2">CloudFlare Helper</CardTitle>
-          <CardDescription>This is a web assistant for managing domains from different accounts.</CardDescription>
+          <CardTitle className="mb-2">{lang?.name}</CardTitle>
+          <CardDescription>{lang?.description}</CardDescription>
           <div>
-            <Link className="mr-2" href="https://t.me/cloudflareapi_bot">
-              <Badge variant="secondary">Telegram Bot</Badge>
+            <Link className="font-medium text-primary underline-offset-4" href="https://t.me/cloudflareapi_bot">
+              {lang?.bot}
             </Link>
-            <Link href="https://t.me/cfhelp_support">
-              <Badge variant="secondary">Support</Badge>
+            <span className="leading-7 [&:not(:first-child)]:mt-6"> & </span>
+            <Link className="font-medium text-primary underline-offset-4" href="https://t.me/cfhelp_support">
+              {lang?.support}
             </Link>
           </div>
         </CardHeader>
@@ -113,9 +136,9 @@ const AuthPage = () => {
                 name="value"
                 render={({ field }) => (
                   <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{lang?.password}</FormLabel>
                     <FormControl>
-                      <Input placeholder="password" type="password" {...field} />
+                      <Input icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />} placeholder={lang?.password} type={inpitPassword ? "password" : "text"} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -127,10 +150,10 @@ const AuthPage = () => {
                 name="value"
                 render={({ field }) => (
                   <FormItem>
-                      <FormLabel>{typeData == 'onetimekey' ? "One-time key" : "Telegram ID or Email"}</FormLabel>
+                      <FormLabel>{typeData == 'onetimekey' ? lang?.loginLabelTwo : lang?.loginLabelOne}</FormLabel>
                     <FormControl>
                     {/* onetimekey */}
-                      <Input icon={typeData == "none" ? "" : typeData == "telegram" ? <Send /> : typeData == "email" ? <AtSign /> : <SquareAsterisk />} placeholder={typeData == 'onetimekey'? "**********" : "mail@mail.ru"} {...field} />
+                      <Input icon={typeData == "none" ? "" : typeData == "telegram" ? <Send className="absolute right-2 text-muted-foreground" /> : typeData == "email" ? <Mail className="absolute right-2 text-muted-foreground" /> : <SquareAsterisk className="absolute right-2 text-muted-foreground" />} placeholder={typeData == 'onetimekey'? "**********" : "mail@mail.ru"} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -138,10 +161,13 @@ const AuthPage = () => {
               />
               }
               
-              <Button type="submit" className="w-full">Continue</Button>
+              <Button type="submit" className="w-full">{lang?.continue}</Button>
             </form>
           </Form>
-          <Button variant="outline" type="button" className="w-full mt-2" onClick={() => changeAuthMode()}>{typeData == 'onetimekey' ? "Login via TG or Email" : "Login via one-time key"}</Button>
+          <div className="flex gap-2">
+            {typeData == 'password' ? <Button variant="outline" type="button" className="w-full mt-2" onClick={() => setTypeData("none")}><ArrowLeft className="w-4 mr-1"/>{lang?.back}</Button> : null}
+            <Button variant="outline" type="button" className="w-full mt-2" onClick={() => changeAuthMode()}>{typeData == 'onetimekey' ? lang?.loginTypeOne : lang?.loginTypeTwo}</Button>
+          </div>
         </CardContent>
       </Card>
     </div>

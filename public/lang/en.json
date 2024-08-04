@@ -1,0 +1,30 @@
+{
+    "nav": {
+        "connect": "Connect",
+        "import": "Import",
+        "language": "Language",
+        "account": "Account"
+    },
+    "auth": {
+        "name": "CloudFlare Helper",
+        "description": "This is a web assistant for managing domains from different accounts.",
+        "bot": "Telegram Bot",
+        "support": "Support",
+        "password": "Password",
+        "continue": "Continue",
+        "back": "Back",
+        "loginTypeOne": "Login via TG or Email",
+        "loginTypeTwo": "Login via one-time key",
+        "loginLabelOne": "Telegram ID or Email",
+        "loginLabelTwo": "One-time key"
+    },
+    "sitebar": {
+        "plan": "Current plan",
+        "enterprise": "Enterprise",
+        "websites": "Websites",
+        "accounts": "Accounts",
+        "domain": "Domain Registration",
+        "settings": "Settings",
+        "support": "Support"
+    }
+}
