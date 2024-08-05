@@ -27,6 +27,7 @@ import {
 import { Loading } from "@/components/Loading.components";
 
 export default function Home() {
+<<<<<<< Updated upstream
   const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
@@ -61,6 +62,9 @@ export default function Home() {
   if(loading){
     return <Loading />
   }
+=======
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+>>>>>>> Stashed changes
 
   return (
     <main>
@@ -100,7 +104,6 @@ export default function Home() {
                 </Link>
               )}
             </div>
-            {/* //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!! */}
             <Pagination className="mt-6">
               
               <PaginationContent>
