@@ -26,5 +26,11 @@
         "domain": "Domain Registration",
         "settings": "Settings",
         "support": "Support"
+    },
+    "home": {
+        "title": "Websites",
+        "description": "Select a domain to configure and monitor how Cloudflare processes its web traffic.",
+        "button_add": "Add website",
+        "active": "Active"
     }
 }

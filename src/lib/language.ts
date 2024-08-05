@@ -14,14 +14,26 @@ export async function getLanguage() {
 }
 
 export async function setCookieLanguage(lang: any) {
-    const cookieStore = cookies()
+    if(!lang){
+        const cookieStore = cookies()
 
-    cookies().set({
-        name: 'lang',
-        value: lang,
-        httpOnly: true,
-        path: '/',
-    })
+        cookies().set({
+            name: 'lang',
+            value: 'en',
+            httpOnly: true,
+            path: '/',
+        })
+    }else{
+        const cookieStore = cookies()
+
+        cookies().set({
+            name: 'lang',
+            value: lang,
+            httpOnly: true,
+            path: '/',
+        })
+    }
+    
 
     return lang
 }

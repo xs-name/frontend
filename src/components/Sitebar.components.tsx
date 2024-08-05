@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Loading } from "./Loading.components";
 import { usePathname } from "next/navigation";
 
-export const Sitebar = () => {
+export const Sitebar = ({active, setActive}: any) => {
     const {language, setLanguage} = useLanguageContext()
     const [lang, setLang] = useState<any>();
     const [loading, setLoading] = useState(true)
@@ -17,6 +17,7 @@ export const Sitebar = () => {
     const [sitebar, setSitebar] = useState<any>([])
     const [sitebarcontact, setSitebarcontact] = useState<any>([])
     const pathname = usePathname()
+
 
     useEffect(() => {
         if(language){
@@ -42,7 +43,7 @@ export const Sitebar = () => {
     }
 
     return(
-        <div className="fixed top-0 h-dvh bg-background w-[260px] pt-16 border-r">
+        <div className={active? "fixed top-0 h-dvh bg-background w-[260px] max-md:translate-x-[0] transition-all pt-16 border-r z-20" : "fixed top-0 h-dvh bg-background w-[260px] max-md:translate-x-[-100%] transition-all pt-16 border-r z-20"}>
             <div className="border-b flex h-14 items-center pl-4 pr-4 justify-between">
                 <p className="leading-7 [&:not(:first-child)]:mt-6 font-medium">{lang?.plan}</p>
                 <Badge>{lang?.enterprise}</Badge>
