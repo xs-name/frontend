@@ -31,6 +31,18 @@
         "title": "Websites",
         "description": "Select a domain to configure and monitor how Cloudflare processes its web traffic.",
         "button_add": "Add website",
-        "active": "Active"
+        "active": "Active",
+        "not": "Nothing was found!",
+        "loading": "Downloading a list of websites..."
+    },
+    "add": {
+        "title": "Connect your domains",
+        "description": "Optimize the security, performance, and reliability of your web traffic.",
+        "label": "Enter an existing domain name (example.com )",
+        "button": "Continue",
+        "create_domain": "Register a new domain."
+    },
+    "not_found": {
+        "title": "The page was not found"
     }
 }
