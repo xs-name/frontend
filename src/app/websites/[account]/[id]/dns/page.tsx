@@ -93,6 +93,48 @@ export default function Home({params}:any) {
     value: ""
   })
 
+  //? Type = LOC
+  const [LOC, setLOC] = useState({
+    latitude_degrees: "",
+    latitude_minutes: "",
+    latitude_seconds: "",
+    latitude_direction: "N",
+    longitude_degrees: "",
+    longitude_minutes: "",
+    longitude_seconds: "",
+    longitude_direction: "E",
+    horizontal: "",
+    vertical: "",
+    altitude: "",
+    size: ""
+  })
+
+  //? Type = MX
+  const [MX, setMX] = useState({
+    mail: "",
+    priority: ""
+  })
+
+  //? Type = NAPTR
+  const [NAPTR, setNAPTR] = useState({
+    order: "",
+    preference: "",
+    flags: "",
+    service: "",
+    regEx: "",
+    replacement: ""
+  })
+
+  //? Type = NAPTR
+  const [NS, setNS] = useState({
+    nameserver: ""
+  })
+
+  //? Type = PTR
+  const [PTR, setPTR] = useState({
+    domain: ""
+  })
+
   useEffect(() => {
     setType("A")
   }, [isEditing])
@@ -157,29 +199,43 @@ export default function Home({params}:any) {
                   type == "HTTPS" ?
                   <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} refers to {HTTPS.target == "" ? <span className="text-muted-foreground font-medium">[target]</span> : <span className="font-bold">{HTTPS.target}</span>} with priority {HTTPS.priority == "" ? <span className="text-muted-foreground font-medium">[priority]</span> : <span className="font-bold">{HTTPS.priority}</span>}.</div>
                   :
+                  type == "LOC" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} has location information <span className="font-bold">{LOC.latitude_degrees == "" ? "0" : LOC.latitude_degrees} {LOC.latitude_minutes == "" ? "0" : LOC.latitude_minutes} {LOC.latitude_seconds == "" ? "0" : LOC.latitude_seconds} {LOC.latitude_direction} {LOC.longitude_degrees == "" ? "0" : LOC.longitude_degrees} {LOC.longitude_minutes == "" ? "0" : LOC.longitude_minutes} {LOC.longitude_seconds == "" ? "0" : LOC.longitude_seconds} {LOC.longitude_direction} {LOC.altitude == "" ? "0m" : LOC.altitude + "m"} {LOC.size == "" ? "0m" : LOC.size + "m"} {LOC.horizontal == "" ? "0m" : LOC.horizontal + "m"} {LOC.vertical == "" ? "0m" : LOC.vertical + "m"}.</span></div>
+                  :
+                  type == "MX" ?
+                  <div className="mb-2 text-sm">{MX.mail == "" ? <span className="text-muted-foreground font-medium">[mail server]</span> : <span className="font-bold">{MX.mail}</span>} handles mail for {name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>}.</div>
+                  :
+                  type == "NAPTR" ?
+                  <div className="mb-2 text-sm">
+                    {NAPTR.flags == "S" ? <span>{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} returns a URI record against which a successive NAPTR lookup should be conducted.</span> : NAPTR.flags == "U" ? <span>{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} returns a record that specifies how to resolve a given SRV record.</span> : <span>{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>}  returns content {NAPTR.order == "" && NAPTR.flags == "" && NAPTR.preference == "" && NAPTR.regEx == "" && NAPTR.replacement == "" && NAPTR.service == "" ? <span className="text-muted-foreground font-medium">[content]</span> : <span className="font-bold">{NAPTR.order} {NAPTR.preference} {NAPTR.flags} {NAPTR.service} {NAPTR.regEx} {NAPTR.replacement}</span>}.</span>}
+                  </div>
+                  :
+                  type == "NS" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} is managed by {NS.nameserver == "" ? <span className="text-muted-foreground font-medium">[nameserver]</span> : <span className="font-bold">{NS.nameserver}</span>}.</div>
+                  :
                   <div className="mb-2 text-sm"></div>
                 }
                 <div className="flex gap-4">
                   <div>
                     <Label className="text-xs text-muted-foreground">Type</Label>
                     <Select value={type} onValueChange={(value) => setType(value)}>
-                      <SelectTrigger className="w-[100px]">
+                      <SelectTrigger className="w-[100px] mt-1">
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="A">A</SelectItem>
+                          {/* <SelectItem value="A">A</SelectItem>
                           <SelectItem value="AAAA">AAAA</SelectItem>
                           <SelectItem value="CAA">CAA</SelectItem>
                           <SelectItem value="CERT">CERT</SelectItem>
                           <SelectItem value="CNAME">CNAME</SelectItem>
                           <SelectItem value="DNSKEY">DNSKEY</SelectItem>
                           <SelectItem value="DS">DS</SelectItem>
-                          <SelectItem value="HTTPS">HTTPS</SelectItem>
+                          <SelectItem value="HTTPS">HTTPS</SelectItem> */}
                           {/* <SelectItem value="LOC">LOC</SelectItem>
                           <SelectItem value="MX">MX</SelectItem>
                           <SelectItem value="NAPTR">NAPTR</SelectItem>
-                          <SelectItem value="NS">NS</SelectItem>
+                          <SelectItem value="NS">NS</SelectItem> */}
                           <SelectItem value="PTR">PTR</SelectItem>
                           <SelectItem value="SMIMEA">SMIMEA</SelectItem>
                           <SelectItem value="SRV">SRV</SelectItem>
@@ -187,25 +243,32 @@ export default function Home({params}:any) {
                           <SelectItem value="SVCB">SVCB</SelectItem>
                           <SelectItem value="TLSA">TLSA</SelectItem>
                           <SelectItem value="TXT">TXT</SelectItem>
-                          <SelectItem value="URI">URI</SelectItem> */}
+                          <SelectItem value="URI">URI</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className={type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" ? 'w-1/2' : ''}>
+                  <div className={type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" || type == "LOC" || type == "NAPTR" ? 'w-1/2' : ''}>
                     <Label className="text-xs text-muted-foreground">Name (required)</Label>
-                    <Input value={name} onChange={(e) => setName(e.target.value)} type="text" />
+                    <Input value={name} onChange={(e) => setName(e.target.value)} type="text" className="mb-1 mt-1"/>
                     <p className="text-xs text-muted-foreground">Use @ for root</p>
                   </div>
+                  {type == "MX" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground mt-1">Mail server (required)</Label>
+                      <Input className="mb-1 mt-1" value={MX.mail} onChange={(e) => setMX({...MX, mail: e.target.value})} type="text" />
+                      <p className="text-xs text-muted-foreground">E.g. mx1.example.com</p>
+                    </div> : null
+                  }
                   {type == "CNAME" ?
                     <div>
-                      <Label className="text-xs text-muted-foreground">Target (required)</Label>
+                      <Label className="text-xs text-muted-foreground mt-1">Target (required)</Label>
                       <Input value={CNAME.target} onChange={(e) => setCNAME({...CNAME, target: e.target.value})} type="text" />
                     </div> : null
                   }
                   {type == "A" || type == "AAAA" ?
                     <div>
-                      <Label className="text-xs text-muted-foreground">{type == "A" ? "IPv4 address (required)" : "IPv6 address (required)"}</Label>
+                      <Label className="text-xs text-muted-foreground mt-1">{type == "A" ? "IPv4 address (required)" : "IPv6 address (required)"}</Label>
                       <Input value={A.address} onChange={(e) => setA({...A, address: e.target.value})} type="text" />
                     </div> : null
                   }
@@ -229,11 +292,19 @@ export default function Home({params}:any) {
                       </div>
                     </div> : null
                   }
+                  {type == "NS" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Nameserver (required)</Label>
+                      <Input className="mt-1 mb-1" value={NS.nameserver} onChange={(e) => setNS({...NS, nameserver: e.target.value})} type="text" />
+                      <p className="text-xs text-muted-foreground">E.g. ns1.example.com
+                      </p>
+                    </div> : null
+                  }
                   <div className="pl-3">
                     <Label className="text-xs text-muted-foreground">TTL</Label>
-                    {!proxyStatus || type == "CAA" || type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS"?
+                    {!proxyStatus || type == "CAA" || type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" || type == "LOC" || type == "MX" || type == "NAPTR" || type == "NS"?
                       <Select value={TTL} onValueChange={(value) => setTTL(value)}>
-                        <SelectTrigger className="w-[100px]">
+                        <SelectTrigger className="w-[100px] mt-1">
                           <SelectValue placeholder="" />
                         </SelectTrigger>
                         <SelectContent>
@@ -257,10 +328,16 @@ export default function Home({params}:any) {
                       :
                       <div className="h-9 flex items-center">Auto</div>
                     }
-                    
                   </div>
+                  {type == "MX" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Priority (required)</Label>
+                      <Input className="mt-1 mb-1" value={MX.priority} onChange={(e) => setMX({...MX, priority: e.target.value})} type="number" min={0} max={65535}/>
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
                 </div>
-                <div className="flex gap-4">
+                <div className="flex gap-4 mt-2">
                   { type == "CAA" ?
                     <div>
                       <Label className="text-xs text-muted-foreground">Tag (required)</Label>
@@ -414,7 +491,136 @@ export default function Home({params}:any) {
                       <p className="text-xs text-muted-foreground">E.g. alpn="h3,h2" ipv4hint="127.0.0.1" ipv6hint="::1"</p>
                     </div> : null
                   }
+
+                  {type == "NAPTR" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Order (required)</Label>
+                      <Input className="mt-1 mb-1" value={NAPTR.order} onChange={(e) => setNAPTR({...NAPTR, order: e.target.value})} max={65535} min={0} type="number"/>
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
+
+                  {type == "NAPTR" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Preference (required)</Label>
+                      <Input className="mt-1 mb-1" value={NAPTR.preference} onChange={(e) => setNAPTR({...NAPTR, preference: e.target.value})} max={65535} min={0} type="number"/>
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
+
+                  {type == "NAPTR" ?
+                    <div  className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Flags (required)</Label>
+                      <Input className="mt-1 mb-1" value={NAPTR.flags} onChange={(e) => setNAPTR({...NAPTR, flags: e.target.value})} type="text"/>
+                      <p className="text-xs text-muted-foreground">S, A, U, P</p>
+                    </div> : null
+                  }
+
+                  {type == "NAPTR" ?
+                    <div className="w-1/3">
+                      <Label className="text-xs text-muted-foreground">Service (required)</Label>
+                      <Input className="mt-1 mb-1" value={NAPTR.service} onChange={(e) => setNAPTR({...NAPTR, service: e.target.value})} type="text"/>
+                      <p className="text-xs text-muted-foreground">E.g. protocol=...</p>
+                    </div> : null
+                  }
                 </div>
+                {type == "NAPTR" ?
+                  <div className="flex gap-4 mt-2">
+                      <div className="w-1/3">
+                        <Label className="text-xs text-muted-foreground">RegEx</Label>
+                        <Input className="mt-1 mb-1" value={NAPTR.regEx} onChange={(e) => setNAPTR({...NAPTR, regEx: e.target.value})} type="text"/>
+                        <p className="text-xs text-muted-foreground">E.g. delim-char=...</p>
+                      </div>
+                      <div className="w-2/3">
+                        <Label className="text-xs text-muted-foreground">Replacement</Label>
+                        <Input className="mt-1 mb-1" value={NAPTR.replacement} onChange={(e) => setNAPTR({...NAPTR, replacement: e.target.value})} type="text"/>
+                      </div>
+                  </div> : null
+                }
+                {type == "LOC" ?
+                  <div>
+                    <p className="text-sm font-semibold">Set latitude</p>
+                    <div className="flex gap-4">
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Degrees (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.latitude_degrees} onChange={(e) => setLOC({...LOC, latitude_degrees: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Minutes (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.latitude_minutes} onChange={(e) => setLOC({...LOC, latitude_minutes: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Seconds (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.latitude_seconds} onChange={(e) => setLOC({...LOC, latitude_seconds: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Direction (required)</Label>
+                        <Select value={LOC.latitude_direction} onValueChange={(value) => setLOC({...LOC, latitude_direction: value})}>
+                          <SelectTrigger className="w-full mt-1">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="N">North</SelectItem>
+                              <SelectItem value="S">South</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <p className="text-sm font-semibold mt-3">Set longitude</p>
+                    <div className="flex gap-4">
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Degrees (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.longitude_degrees} onChange={(e) => setLOC({...LOC, longitude_degrees: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Minutes (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.longitude_minutes} onChange={(e) => setLOC({...LOC, longitude_minutes: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Seconds (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.longitude_seconds} onChange={(e) => setLOC({...LOC, longitude_seconds: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Direction (required)</Label>
+                        <Select value={LOC.longitude_direction} onValueChange={(value) => setLOC({...LOC, longitude_direction: value})}>
+                          <SelectTrigger className="w-full mt-1">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="E">East</SelectItem>
+                              <SelectItem value="W">West</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <p className="text-sm font-semibold mt-3">Precision (in meters)</p>
+                    <div className="flex gap-4">
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Horizontal (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.horizontal} onChange={(e) => setLOC({...LOC, horizontal: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Vertical (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.vertical} onChange={(e) => setLOC({...LOC, vertical: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Altitude (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.altitude} onChange={(e) => setLOC({...LOC, altitude: e.target.value})} type="number"/>
+                      </div>
+                      <div className="w-full">
+                        <Label className="text-xs text-muted-foreground">Size (required)</Label>
+                        <Input className="mt-1 w-full" value={LOC.size} onChange={(e) => setLOC({...LOC, size: e.target.value})} type="number"/>
+                      </div>
+                    </div>
+                    
+                    
+                  </div> : null
+                }
+
               </div>
               <div className="flex flex-col border-t p-5">
                 <div className="flex gap-2 justify-end">
