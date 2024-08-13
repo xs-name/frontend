@@ -25,7 +25,9 @@
         "accounts": "Accounts",
         "domain": "Domain Registration",
         "settings": "Settings",
-        "support": "Support"
+        "support": "Support",
+        "dns": "DNS",
+        "ssl": "SSL"
     },
     "home": {
         "title": "Websites",

@@ -57,8 +57,7 @@ const Nav = () => {
             setPosition(language)
             axios.get(`/lang/${language}.json`).then((res:any) => {
                 setLang(res.data.nav)
-                setLoading(false)
-            });
+            }).finally(() => setLoading(false));
         }
     }, [language])
 

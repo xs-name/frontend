@@ -135,17 +135,72 @@ export default function Home({params}:any) {
     domain: ""
   })
 
+  //? Type = PTR
+  const [SMIMEA, setSMIMEA] = useState({
+    usage: "",
+    selector: "",
+    matching_type: "",
+    certificate: ""
+  })
+
+  //? Type = SRV
+  const [SRV, setSRV] = useState({
+    priority: "",
+    weight: "",
+    port: "",
+    target: ""
+  })
+
+  //? Type = SSHFP
+  const [SSHFP, setSSHFP] = useState({
+    algorithm: "",
+    type: "",
+    fingerprint: ""
+  })
+
+  //? Type = SVCB
+  const [SVCB, setSVCB] = useState({
+    priority: "",
+    target: "",
+    value: ""
+  })
+
+  //? Type = TLSA
+  const [TLSA, setTLSA] = useState({
+    usage: "",
+    selector: "",
+    matching_type: "",
+    certificate: ""
+  })
+
+   //? Type = TXT
+   const [TXT, setTXT] = useState({
+    сontent: "",
+  })
+
+  //? Type = TXT
+  const [URI, setURI] = useState({
+    priority: "",
+    weight: "",
+    target: ""
+  })
+
+  
+  
   useEffect(() => {
     setType("A")
   }, [isEditing])
 
   useEffect(() => {
+    setTTL("Auto")
+  }, [type])
+
+  useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
         setLang(res.data.add)
-        setLoading(false)
         // setLoadingWebsites(false)
-      });
+      }).finally(() => setLoading(false));
     }
   }, [language])
 
@@ -213,6 +268,30 @@ export default function Home({params}:any) {
                   type == "NS" ?
                   <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} is managed by {NS.nameserver == "" ? <span className="text-muted-foreground font-medium">[nameserver]</span> : <span className="font-bold">{NS.nameserver}</span>}.</div>
                   :
+                  type == "PTR" ?
+                  <div className="mb-2 text-sm"> {PTR.domain == "" ? <span className="text-muted-foreground font-medium">[domain name]</span> : PTR.domain == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{PTR.domain}</span>} points to {name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} in a reverse lookup.</div>
+                  :
+                  type == "SMIMEA" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} has an association with <span className="text-muted-foreground font-medium">[selector]</span> using <span className="text-muted-foreground font-medium">[matching type]</span> and a <span className="text-muted-foreground font-medium">[usage]</span>.</div>
+                  :
+                  type == "SRV" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} points to {SRV.target == "" ? <span className="text-muted-foreground font-medium">[target]</span> : <span className="text-muted-foreground font-medium">{SRV.target}</span>} and listens on {SRV.port == "" ? <span className="text-muted-foreground font-medium">[port]</span> : <span className="font-bold">{SRV.port}</span>}.</div>
+                  :
+                  type == "SSHFP" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} uses <span className="text-muted-foreground font-medium">[algorithm]</span> with <span className="text-muted-foreground font-medium">[fingerprint type]</span> fingerprint {SSHFP.fingerprint == ""? <span className="text-muted-foreground font-medium">[fingerprint]</span> : <span className="font-bold">{SSHFP.fingerprint}</span>}.</div>
+                  :
+                  type == "SVCB" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} refers to {SVCB.target == "" ? <span className="text-muted-foreground font-medium">[target]</span> : <span className="font-bold">{SVCB.target}</span>} with priority {SVCB.priority == "" ? <span className="text-muted-foreground font-medium">[priority]</span> : <span className="font-bold">{SVCB.priority}</span>}.</div>
+                  :
+                  type == "TLSA" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} has an association with <span className="text-muted-foreground font-medium">[selector]</span> using <span className="text-muted-foreground font-medium">[matching type]</span> and a <span className="text-muted-foreground font-medium">[usage]</span>.</div>
+                  :
+                  type == "TXT" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} has a record with content {TXT.сontent == "" ? <span className="text-muted-foreground font-medium">[content]</span> : <span className="font-bold">{TXT.сontent}</span>}.</div>
+                  :
+                  type == "URI" ?
+                  <div className="mb-2 text-sm">{name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${name}.wanddecisions.com`}</span>} points to {URI.target == "" ? <span className="text-muted-foreground font-medium">[target]</span> : <span className="font-bold">{URI.target}</span>}.</div>
+                  :
                   <div className="mb-2 text-sm"></div>
                 }
                 <div className="flex gap-4">
@@ -224,18 +303,18 @@ export default function Home({params}:any) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {/* <SelectItem value="A">A</SelectItem>
+                          <SelectItem value="A">A</SelectItem>
                           <SelectItem value="AAAA">AAAA</SelectItem>
                           <SelectItem value="CAA">CAA</SelectItem>
                           <SelectItem value="CERT">CERT</SelectItem>
                           <SelectItem value="CNAME">CNAME</SelectItem>
                           <SelectItem value="DNSKEY">DNSKEY</SelectItem>
                           <SelectItem value="DS">DS</SelectItem>
-                          <SelectItem value="HTTPS">HTTPS</SelectItem> */}
-                          {/* <SelectItem value="LOC">LOC</SelectItem>
+                          <SelectItem value="HTTPS">HTTPS</SelectItem>
+                          <SelectItem value="LOC">LOC</SelectItem>
                           <SelectItem value="MX">MX</SelectItem>
                           <SelectItem value="NAPTR">NAPTR</SelectItem>
-                          <SelectItem value="NS">NS</SelectItem> */}
+                          <SelectItem value="NS">NS</SelectItem>
                           <SelectItem value="PTR">PTR</SelectItem>
                           <SelectItem value="SMIMEA">SMIMEA</SelectItem>
                           <SelectItem value="SRV">SRV</SelectItem>
@@ -248,16 +327,38 @@ export default function Home({params}:any) {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className={type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" || type == "LOC" || type == "NAPTR" ? 'w-1/2' : ''}>
+                  <div className={type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" || type == "LOC" || type == "NAPTR" || type == "SMIMEA" || type == "SSHFP" || type == "SVCB" || type == "TLSA" || type == "TXT" || type == "URI" ? 'w-1/2' : ''}>
                     <Label className="text-xs text-muted-foreground">Name (required)</Label>
                     <Input value={name} onChange={(e) => setName(e.target.value)} type="text" className="mb-1 mt-1"/>
                     <p className="text-xs text-muted-foreground">Use @ for root</p>
                   </div>
+                  {type == "SRV" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground mt-1">Priority (required)</Label>
+                      <Input className="mb-1 mt-1" value={SRV.priority} onChange={(e) => setSRV({...SRV, priority: e.target.value})} type="number" />
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
+                  {type == "SRV" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground mt-1">Weight (required)</Label>
+                      <Input className="mb-1 mt-1" value={SRV.weight} onChange={(e) => setSRV({...SRV, weight: e.target.value})} type="number" />
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
+
                   {type == "MX" ?
                     <div>
                       <Label className="text-xs text-muted-foreground mt-1">Mail server (required)</Label>
                       <Input className="mb-1 mt-1" value={MX.mail} onChange={(e) => setMX({...MX, mail: e.target.value})} type="text" />
                       <p className="text-xs text-muted-foreground">E.g. mx1.example.com</p>
+                    </div> : null
+                  }
+                  {type == "PTR" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground mt-1">Domain name (required)</Label>
+                      <Input className="mb-1 mt-1" value={PTR.domain} onChange={(e) => setPTR({...PTR, domain: e.target.value})} type="text" />
+                      <p className="text-xs text-muted-foreground">E.g. www.example.com</p>
                     </div> : null
                   }
                   {type == "CNAME" ?
@@ -302,7 +403,7 @@ export default function Home({params}:any) {
                   }
                   <div className="pl-3">
                     <Label className="text-xs text-muted-foreground">TTL</Label>
-                    {!proxyStatus || type == "CAA" || type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" || type == "LOC" || type == "MX" || type == "NAPTR" || type == "NS"?
+                    {!proxyStatus || type == "CAA" || type == "CERT" || type == "DNSKEY" || type == "DS" || type == "HTTPS" || type == "LOC" || type == "MX" || type == "NAPTR" || type == "NS" || type == "PTR" || type == "SMIMEA" || type == "SRV" || type == "SSHFP" || type == "SVCB" || type == "TLSA" || type == "TXT" || type == "URI" ?
                       <Select value={TTL} onValueChange={(value) => setTTL(value)}>
                         <SelectTrigger className="w-[100px] mt-1">
                           <SelectValue placeholder="" />
@@ -329,6 +430,13 @@ export default function Home({params}:any) {
                       <div className="h-9 flex items-center">Auto</div>
                     }
                   </div>
+                  {type == "SRV" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground mt-1">Port (required)</Label>
+                      <Input className="mb-1 mt-1" value={SRV.port} onChange={(e) => setSRV({...SRV, port: e.target.value})} type="number" />
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
                   {type == "MX" ?
                     <div>
                       <Label className="text-xs text-muted-foreground">Priority (required)</Label>
@@ -423,6 +531,61 @@ export default function Home({params}:any) {
                       <Label className="text-xs text-muted-foreground">Public Key (Base64) (required)</Label>
                       <Textarea className="resize-none" value={DNSKEY.public_key} onChange={(e) => setDNSKEY({...DNSKEY, public_key: e.target.value})} placeholder="" />
                       <p className="text-xs text-muted-foreground">E.g. TEpBNFYyTGtWUVpsTHpaa0htQXVPd0...wxREdCM3BRTTNWbUwyVlRNNERKWg==</p>
+                    </div> : null
+                  }
+
+                  {type == "SSHFP" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Algorithm (required)</Label>
+                      <Input className="mt-1 mb-1" value={SSHFP.algorithm} onChange={(e) => setSSHFP({...SSHFP, algorithm: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "SSHFP" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Type (required)</Label>
+                      <Input className="mt-1 mb-1" value={SSHFP.type} onChange={(e) => setSSHFP({...SSHFP, type: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "SSHFP" ?
+                    <div className="w-1/2">
+                      <Label className="text-xs text-muted-foreground">Fingerprint (hexadecimal) (required)</Label>
+                      <Textarea className="resize-none mt-1 mb-1" value={SSHFP.fingerprint} onChange={(e) => setSSHFP({...SSHFP, fingerprint: e.target.value})} placeholder=""/>
+                      <p className="text-xs text-muted-foreground">E.g. 436c6f7564666c...61726520444e53</p>
+                    </div> : null
+                  }
+
+                  {type == "URI" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Priority (required)</Label>
+                      <Input className="mt-1 mb-1" value={URI.priority} onChange={(e) => setURI({...URI, priority: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "URI" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Weight (required)</Label>
+                      <Input className="mt-1 mb-1" value={URI.weight} onChange={(e) => setURI({...URI, weight: e.target.value})} type="number" min={0} max={65535}/>
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
+
+                  {type == "URI" ?
+                    <div className="w-1/2">
+                      <Label className="text-xs text-muted-foreground">Target (required)</Label>
+                      <Textarea className="resize-none mt-1 mb-1" value={URI.target} onChange={(e) => setURI({...URI, target: e.target.value})} placeholder=""/>
+                    </div> : null
+                  }
+
+                  {type == "SRV" ?
+                    <div className="w-1/2">
+                      <Label className="text-xs text-muted-foreground">Target (required)</Label>
+                      <Textarea className="resize-none" value={SRV.target} onChange={(e) => setSRV({...SRV, target: e.target.value})} placeholder="" />
+                      <p className="text-xs text-muted-foreground">E.g. www.example.com</p>
                     </div> : null
                   }
 
@@ -523,6 +686,102 @@ export default function Home({params}:any) {
                       <p className="text-xs text-muted-foreground">E.g. protocol=...</p>
                     </div> : null
                   }
+
+                  {type == "SMIMEA" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Usage (required)</Label>
+                      <Input className="mt-1 mb-1" value={SMIMEA.usage} onChange={(e) => setSMIMEA({...SMIMEA, usage: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "SMIMEA" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Selector (required)</Label>
+                      <Input className="mt-1 mb-1" value={SMIMEA.selector} onChange={(e) => setSMIMEA({...SMIMEA, selector: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "SMIMEA" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Matching type (required)</Label>
+                      <Input className="mt-1 mb-1" value={SMIMEA.matching_type} onChange={(e) => setSMIMEA({...SMIMEA, matching_type: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "SMIMEA" ?
+                    <div className="w-1/2">
+                      <Label className="text-xs text-muted-foreground">Certificate (hexadecimal) (required)</Label>
+                      <Textarea className="resize-none mt-1 mb-1" value={SMIMEA.certificate} onChange={(e) => setSMIMEA({...SMIMEA, certificate: e.target.value})} placeholder="" />
+                      <p className="text-xs text-muted-foreground">E.g. 436c6f7564666c...61726520444e53</p>
+                    </div> : null
+                  }
+
+                  {type == "SVCB" ?
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Priority (required)</Label>
+                      <Input className="mt-1 mb-1" value={SVCB.priority} onChange={(e) => setSVCB({...SVCB, priority: e.target.value})} type="number" min={0} max={65535}/>
+                      <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    </div> : null
+                  }
+
+                  {type == "SVCB" ?
+                    <div className="w-1/3">
+                      <Label className="text-xs text-muted-foreground">Target (required)</Label>
+                      <Input className="mt-1 mb-1" value={SVCB.target} onChange={(e) => setSVCB({...SVCB, target: e.target.value})} type="text"/>
+                    </div> : null
+                  }
+
+                  {type == "SVCB" ?
+                    <div className="w-1/3">
+                      <Label className="text-xs text-muted-foreground">Value</Label>
+                      <Input className="mt-1 mb-1" value={SVCB.value} onChange={(e) => setSVCB({...SVCB, value: e.target.value})} type="text"/>
+                      <p className="text-xs text-muted-foreground">E.g. alpn="h3,h2" ipv4hint="127.0.0.1" ipv6hint="::1"</p>
+                    </div> : null
+                  }
+
+                  {type == "TLSA" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Usage (required)</Label>
+                      <Input className="mt-1 mb-1" value={TLSA.usage} onChange={(e) => setTLSA({...TLSA, usage: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "TLSA" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Selector (required)</Label>
+                      <Input className="mt-1 mb-1" value={TLSA.selector} onChange={(e) => setTLSA({...TLSA, selector: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "TLSA" ?
+                    <div className="w-1/6">
+                      <Label className="text-xs text-muted-foreground">Matching type (required)</Label>
+                      <Input className="mt-1 mb-1" value={TLSA.matching_type} onChange={(e) => setTLSA({...TLSA, matching_type: e.target.value})} type="number" min={0} max={255}/>
+                      <p className="text-xs text-muted-foreground">0 - 255</p>
+                    </div> : null
+                  }
+
+                  {type == "TLSA" ?
+                    <div className="w-1/2">
+                      <Label className="text-xs text-muted-foreground">Certificate (hexadecimal) (required)</Label>
+                      <Textarea className="resize-none mt-1 mb-1" value={TLSA.certificate} onChange={(e) => setTLSA({...TLSA, certificate: e.target.value})} placeholder="" />
+                      <p className="text-xs text-muted-foreground">E.g. 436c6f7564666c...61726520444e53</p>
+                    </div> : null
+                  }
+
+                  {type == "TXT" ?
+                    <div className="w-full">
+                      <Label className="text-xs text-muted-foreground">Content (required)</Label>
+                      <Textarea className="resize-none mt-1 mb-1" value={TXT.сontent} onChange={(e) => setTXT({...TXT, сontent: e.target.value})} placeholder="" />
+                    </div> : null
+                  }
+
+                  
                 </div>
                 {type == "NAPTR" ?
                   <div className="flex gap-4 mt-2">

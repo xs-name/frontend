@@ -71,8 +71,7 @@ const AuthPage = () => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
         setLang(res.data.auth)
-        setLoading(false)
-      });
+      }).finally(() => setLoading(false));
     }
   }, [language])
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Proportions, Users, Globe, Settings, Phone } from "lucide-react";
+import { Proportions, Users, Globe, Settings, Phone, Lock, SquareChartGantt } from "lucide-react";
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react";
 import { useLanguageContext } from "./LanguageProvider";
@@ -23,11 +23,19 @@ export const Sitebar = ({active, setActive}: any) => {
         if(language){
             axios.get(`/lang/${language}.json`).then((res:any) => {
                 setLang(res.data.sitebar)
-                setSitebar([
-                    {name: res.data.sitebar.websites, link: "/", icon: <Proportions />},
-                    {name: res.data.sitebar.accounts, link: "/accounts", icon: <Users />},
-                    {name: res.data.sitebar.domain, link: "/domain", icon: <Globe />}
-                ])
+                if(pathname.slice(0, 10) == "/websites/"){
+                    setSitebar([
+                        {name: res.data.sitebar.dns, link: pathname.slice(0, -3) + "dns", icon: <SquareChartGantt />},
+                        {name: res.data.sitebar.ssl, link: pathname.slice(0, -3) + "ssl", icon: <Lock />}
+                    ])
+                } else {
+                    setSitebar([
+                        {name: res.data.sitebar.websites, link: "/", icon: <Proportions />},
+                        {name: res.data.sitebar.accounts, link: "/accounts", icon: <Users />},
+                        {name: res.data.sitebar.domain, link: "/domain", icon: <Globe />}
+                    ])
+                }
+                
                 setSitebarcontact([
                     {name: res.data.sitebar.settings, link: "/settings", icon: <Settings />},
                     {name: res.data.sitebar.support, link: "https://t.me/cfhelp_support", icon: <Phone />}

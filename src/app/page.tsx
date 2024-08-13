@@ -46,9 +46,8 @@ export default function Home() {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
         setLang(res.data.home)
-        setLoading(false)
         // setLoadingWebsites(false)
-      });
+      }).finally(() => setLoading(false));
     }
   }, [language])
 
