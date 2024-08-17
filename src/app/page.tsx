@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/pagination"
 import { Loading } from "@/components/Loading.components";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getLanguage } from "@/lib/language";
 
 export default function Home() {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
@@ -50,6 +51,12 @@ export default function Home() {
       }).finally(() => setLoading(false));
     }
   }, [language])
+
+  useEffect(() => {
+    getLanguage().then(res => {
+        setLanguage(res)
+    })
+  }, [])
 
   useEffect(() => {
     const domainsTemp = Array.from(domains);

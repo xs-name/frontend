@@ -32,6 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Mail, Loader2, Send, SquareAsterisk, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { getLanguage } from "@/lib/language";
 
 const loginSchema = z.object({
   value: z.string().min(1, {
@@ -74,6 +75,12 @@ const AuthPage = () => {
       }).finally(() => setLoading(false));
     }
   }, [language])
+
+  useEffect(() => {
+    getLanguage().then(res => {
+      setLanguage(res)
+    })
+  }, [])
 
   useEffect(() => {
     testValue()

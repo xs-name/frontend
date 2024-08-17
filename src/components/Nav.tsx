@@ -53,13 +53,21 @@ const Nav = () => {
     const [sitebar, setSitebar] = useState(false);
 
     useEffect(() => {
+        loadingPage()
+    }, [language])
+
+    useEffect(() => {
+        loadingPage()
+    }, [])
+
+    function loadingPage() {
         if(language){
             setPosition(language)
             axios.get(`/lang/${language}.json`).then((res:any) => {
                 setLang(res.data.nav)
             }).finally(() => setLoading(false));
         }
-    }, [language])
+    }
 
     //Сменя языка
     useEffect(() => {

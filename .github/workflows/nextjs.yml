@@ -1,0 +1,27 @@
+name: remote ssh command
+on:
+  push:
+    branches: ["main"]
+
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: DELPOY
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SHH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
+          node -v
+          cd ~/home/frontend-main/
+          git pull origin main
+          npm install
+          npm run build
+          pm2 restart xs-frontend

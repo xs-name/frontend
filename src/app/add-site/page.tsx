@@ -12,6 +12,7 @@ import { Loading } from "@/components/Loading.components";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
+import { getLanguage } from "@/lib/language";
 
 
 export default function Home() {
@@ -29,6 +30,12 @@ export default function Home() {
       }).finally(() => setLoading(false));
     }
   }, [language])
+
+  useEffect(() => {
+    getLanguage().then(res => {
+        setLanguage(res)
+    })
+  }, [])
 
   if(loading){
     return <Loading />

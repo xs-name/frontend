@@ -9,7 +9,6 @@ export const LanguageProvider = ({children}:any) => {
 
     useEffect(() => {
         getLanguage().then(res => {
-            console.log(res)
             setLanguage(res)
         })
     }, [])

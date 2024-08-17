@@ -8,6 +8,7 @@ import axios from 'axios';
 import Link from "next/link";
 import { Loading } from "./Loading.components";
 import { usePathname } from "next/navigation";
+import { getLanguage } from "@/lib/language";
 
 export const Sitebar = ({active, setActive}: any) => {
     const {language, setLanguage} = useLanguageContext()
@@ -45,6 +46,13 @@ export const Sitebar = ({active, setActive}: any) => {
             });
         }
     }, [language])
+
+    useEffect(() => {
+    getLanguage().then(res => {
+        setLanguage(res)
+    })
+    }, [])
+
 
     if(loading){
         return <Loading />
