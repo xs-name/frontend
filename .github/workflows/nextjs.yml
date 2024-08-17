@@ -20,7 +20,7 @@ jobs:
           export NVM_DIR=~/.nvm
           source ~/.nvm/nvm.sh
           node -v
-          cd ~/home/frontend/
+          cd /home/frontend/
           git pull origin main
           npm install
           npm run build
