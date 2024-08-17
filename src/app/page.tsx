@@ -29,7 +29,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getLanguage } from "@/lib/language";
 
 export default function Home() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
