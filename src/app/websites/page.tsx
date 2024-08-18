@@ -27,11 +27,9 @@ import {
 import { Loading } from "@/components/Loading.components";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getLanguage } from "@/lib/language";
-import { useUserContext } from "@/components/userProvider";
 
 export default function Home() {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
-  const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -56,13 +54,9 @@ export default function Home() {
 
   useEffect(() => {
     getLanguage().then(res => {
-      setLanguage(res)
+        setLanguage(res)
     })
   }, [])
-
-  useEffect(() => {
-    console.log(user)
-  }, [user])
 
   useEffect(() => {
     const domainsTemp = Array.from(domains);

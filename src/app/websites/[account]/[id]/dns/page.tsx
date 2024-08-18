@@ -173,7 +173,7 @@ export default function Home({params}:any) {
 
   useEffect(() => {
     getLanguage().then(res => {
-        setLanguage(res)
+      setLanguage(res)
     })
   }, [])
 
