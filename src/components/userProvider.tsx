@@ -15,7 +15,7 @@ export const UserProvider = ({children}:any) => {
         //     setUser(res)
         // })
 
-        axios.get('https://hires.studio/api/prices').then((res) => {
+        axios.get('https://cf-helper-api.gethub.net/account').then((res) => {
             console.log(res)
         })
     }, [])
