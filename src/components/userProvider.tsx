@@ -15,7 +15,14 @@ export const UserProvider = ({children}:any) => {
         //     setUser(res)
         // })
 
-        axios.get('https://cf-helper-api.gethub.net/account').then((res) => {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': '03ec91dc-c802-46b1-9cb1-4df06e40cb36'
+            }
+        };
+
+        axios.get('https://cf-helper-api.gethub.net/account', config).then((res) => {
             console.log(res)
         })
     }, [])
