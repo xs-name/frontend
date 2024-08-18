@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client';
 import { getUser } from "@/lib/user";
+import axios from "axios";
 // import { getLanguage } from "@/lib/language";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -10,8 +11,12 @@ export const UserProvider = ({children}:any) => {
     const [user, setUser] = useState<any>("");
 
     useEffect(() => {
-        getUser().then(res => {
-            setUser(res)
+        // getUser().then(res => {
+        //     setUser(res)
+        // })
+
+        axios.get('https://hires.studio/api/prices').then((res) => {
+            console.log(res)
         })
     }, [])
 
