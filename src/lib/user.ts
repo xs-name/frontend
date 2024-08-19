@@ -3,16 +3,20 @@ import axios from "axios";
 
 export async function getUser() {
 
-    // var config = {
-    //     method: 'get',
-    //     maxBodyLength: Infinity,
-    //     url: process.env.NEXT_PUBLIC_API + '/account',
-    //     headers: { }
-    // };
-      
-    // const user = await axios(config)
-    // const user = await axios.get(process.env.NEXT_PUBLIC_API + '/account')
-    const user = await fetch(process.env.NEXT_PUBLIC_API + '/account')
-    console.log(user)
+    const config = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': '03ec91dc-c802-46b1-9cb1-4df06e40cb36'
+        }
+    };
+
+    const res = await axios.get(process.env.NEXT_PUBLIC_API + '/account', config)
+
+    let user:any = []
+
+    if(!res.data.error){
+        user = res.data.result
+    }
+
     return user
 }

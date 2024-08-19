@@ -28,6 +28,7 @@ import { Loading } from "@/components/Loading.components";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getLanguage } from "@/lib/language";
 import { useUserContext } from "@/components/userProvider";
+import { getUser } from "@/lib/user";
 
 export default function Home() {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
@@ -61,8 +62,10 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    console.log(user)
-  }, [user])
+    getUser().then(res => {
+      setUser(res)
+    })
+  }, [])
 
   useEffect(() => {
     const domainsTemp = Array.from(domains);
@@ -104,7 +107,7 @@ export default function Home() {
 
   return (
     <main>
-      {isAuthorized?
+      {user.length > 0?
       <div>
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">

@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Loading } from "./Loading.components";
 import { useLanguageContext } from "./LanguageProvider";
 import axios from 'axios';
-
+import { Toaster } from "@/components/ui/sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Mail, Loader2, Send, SquareAsterisk, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { getLanguage } from "@/lib/language";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   value: z.string().min(1, {
@@ -62,7 +63,40 @@ const AuthPage = () => {
   function onSubmit(values: z.infer<typeof loginSchema>) {
     const data: any = values
     data.type = typeData
-    // console.log(data)
+    console.log(data)
+
+    const config = {
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+    }
+    switch(data.type){
+      case 'email':
+        axios.post(process.env.NEXT_PUBLIC_API + '/authorization/login', JSON.stringify(data), config).then((res) => {
+          if(res.data.error.length > 0){
+            toast("Произошла ошибка", {
+              description: res.data.error[0].message,
+            })
+          } else {
+            if(res.data.result[0].step){
+              setTypeData('password')
+              form.setValue("value", "")
+            }
+          }
+        })
+        break
+      case 'password':
+        axios.post(process.env.NEXT_PUBLIC_API + '/authorization/login', JSON.stringify(data), config).then((res) => {
+          if(res.data.error.length > 0){
+            toast("Произошла ошибка", {
+              description: res.data.error[0].message,
+            })
+          } else {
+            console.log(res.data)
+          }
+        })
+        break
+    }
   }
 
   const { watch } = form
@@ -111,12 +145,15 @@ const AuthPage = () => {
     }, 500)
   }
 
+ 
+
   if(loading){
     return <Loading />
   }
 
     return (
       <div className="w-full h-dvh flex justify-center items-center">
+        <Toaster />
         <Card className="w-[400px]">
         <CardHeader className="items-start">
           <img src="/logo.svg" className="w-32 mb-3" alt="logo CloudFlare Helper" />

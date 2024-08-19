@@ -11,19 +11,8 @@ export const UserProvider = ({children}:any) => {
     const [user, setUser] = useState<any>("");
 
     useEffect(() => {
-        // getUser().then(res => {
-        //     setUser(res)
-        // })
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': '03ec91dc-c802-46b1-9cb1-4df06e40cb36'
-            }
-        };
-
-        axios.get('https://cf-helper-api.gethub.net/account', config).then((res) => {
-            console.log(res)
+        getUser().then(res => {
+            setUser(res)
         })
     }, [])
 
