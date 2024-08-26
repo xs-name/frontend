@@ -9,7 +9,7 @@ import { Sitebar } from "@/components/Sitebar.components";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn, headers } from "@/lib/utils";
 import { Check, FolderUp, Loader2, Plus, Search, SearchX } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getLanguage } from "@/lib/language";
 
 export default function Home() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -79,11 +79,12 @@ export default function Home() {
   }, [search])
 
   useEffect(() => {
-    axios.get(`/test.json`).then((res:any) => {
-      if(res.data.status){
+    axios.get(process.env.NEXT_PUBLIC_API + `/zones`, {headers: headers}).then((res:any) => {
+      if(!res.data.error?.length){
+        const domainsTemp:any = Array.from(res.data.result);
         setDomainsAll(res.data.result)
         setDomains(res.data.result)
-        setDomainsVisible(res.data.result.splice(0, 12))
+        setDomainsVisible(domainsTemp.splice(0, 12))
         setMaxPage(Math.ceil(res.data.result.length / 12))
         setLoadingWebsites(false)
       }else{
@@ -217,7 +218,7 @@ export default function Home() {
               :
               <Pagination className="mt-6">
                 <PaginationContent>
-                  {maxPage > 0 ? 
+                  {maxPage > 1 ? 
                   <PaginationItem>
                     <PaginationLink onClick={() => setPage(1)} isActive={page == 1}>
                       1
@@ -225,7 +226,7 @@ export default function Home() {
                   </PaginationItem> : null
                   }
 
-                  {maxPage > 1 ? 
+                  {maxPage >= 2 ? 
                     <PaginationItem>
                     <PaginationLink onClick={() => setPage(2)} isActive={page == 2}>
                       2
@@ -233,7 +234,7 @@ export default function Home() {
                   </PaginationItem> : null
                   }
                   
-                  {maxPage > 2 ? 
+                  {maxPage == 3 ? 
                   <PaginationItem>
                     <PaginationLink onClick={() => setPage(3)} isActive={page == 3}>
                       3

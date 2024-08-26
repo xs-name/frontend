@@ -22,27 +22,29 @@ import { getLanguage } from "@/lib/language";
 import { useEffect, useState } from 'react';
 
 
-export const DnsTable = ({data, setData}: any) => {
-
-  useEffect(() => {
-    setData({...data, TTL: "Auto"})
-  }, [data.type])
+export const DnsTable = ({data, setData, className}: any) => {
 
   useEffect(() => {
     console.log(data)
+    setData({...data, TTL: '1'})
+  }, [data.type])
+
+  useEffect(() => {
+    // console.log(`${data.TTL}`)
+    // const ttl = data.TTL;
+    // setData({...data, TTL: `${ttl}`})
   }, [data])
 
 
     return(
         <>
-        {data.types.SRV.priority}
-        <div className="flex flex-col p-5">
+        <div className={`${className} flex flex-col p-5`}>
             {
             data.type == "A" || data.type == "AAAA" ?
             <div className="mb-2 text-sm">{data.name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : data.name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${data.name}.wanddecisions.com`}</span>} points to {data.types.A.address == "" ? <span className="text-muted-foreground font-medium">{data.type == "A" ? "[IPv4 address]" : "[IPv6 address]"}</span> : <span className="font-bold">{data.types.A.address}</span>} {data.proxyStatus ? "and has its traffic proxied through Cloudflare." : ""}</div>
             :
             data.type == "CAA" ?
-            <div className="mb-2 text-sm">{data.types.CAA.domain_name == "" ? <span className="text-muted-foreground font-medium">[domain name]</span> : <span className="font-bold">{data.types.CAA.domain_name}</span>} can issue certificates for {data.name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : data.name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${data.name}.wanddecisions.com`}</span>} and <span className="font-bold">{data.types.CAA.tag == '1' ? "only allow specific hostnames" : data.types.CAA.tag == '2' ? "only allow wildcards" : "sends violation reports to URL (http:, https:, or mailto:)"}.</span></div>
+            <div className="mb-2 text-sm">{data.types.CAA.domain_name == "" ? <span className="text-muted-foreground font-medium">[domain name]</span> : <span className="font-bold">{data.types.CAA.domain_name}</span>} can issue certificates for {data.name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : data.name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${data.name}.wanddecisions.com`}</span>} and <span className="font-bold">{data.types.CAA.tag == 'issue' ? "only allow specific hostnames" : data.types.CAA.tag == 'issuewild' ? "only allow wildcards" : "sends violation reports to URL (http:, https:, or mailto:)"}.</span></div>
             :
             data.type == "CERT" ?
             <div className="mb-2 text-sm">{data.name == "" ? <span className="text-muted-foreground font-medium">[name]</span> : data.name == "@" ? <span className="font-bold">wanddecisions.com</span> : <span className="font-bold">{`${data.name}.wanddecisions.com`}</span>} has certificate type {<span className="text-muted-foreground font-medium">[cert. type]</span>} and a public key encrypted with {<span className="text-muted-foreground font-medium">[algorithm]</span>}.</div>
@@ -99,11 +101,11 @@ export const DnsTable = ({data, setData}: any) => {
             :
             <div className="mb-2 text-sm"></div>
             }
-            <div className="flex gap-4">
+            <div className="flex gap-4 max-lg:flex-col">
             <div>
                 <Label className="text-xs text-muted-foreground">Type</Label>
                 <Select value={data.type} onValueChange={(value) => setData({...data, type: value})}>
-                <SelectTrigger className="w-[100px] mt-1">
+                <SelectTrigger className="w-[100px] mt-1 max-lg:w-full">
                     <SelectValue placeholder="" />
                 </SelectTrigger>
                 <SelectContent>
@@ -113,8 +115,8 @@ export const DnsTable = ({data, setData}: any) => {
                     <SelectItem value="CAA">CAA</SelectItem>
                     <SelectItem value="CERT">CERT</SelectItem>
                     <SelectItem value="CNAME">CNAME</SelectItem>
-                    <SelectItem value="DNSKEY">DNSKEY</SelectItem>
-                    <SelectItem value="DS">DS</SelectItem>
+                    {/* <SelectItem value="DNSKEY">DNSKEY</SelectItem> */}
+                    {/* <SelectItem value="DS">DS</SelectItem> */}
                     <SelectItem value="HTTPS">HTTPS</SelectItem>
                     <SelectItem value="LOC">LOC</SelectItem>
                     <SelectItem value="MX">MX</SelectItem>
@@ -132,20 +134,20 @@ export const DnsTable = ({data, setData}: any) => {
                 </SelectContent>
                 </Select>
             </div>
-            <div className={data.type == "CERT" || data.type == "DNSKEY" || data.type == "DS" || data.type == "HTTPS" || data.type == "LOC" || data.type == "NAPTR" || data.type == "SMIMEA" || data.type == "SSHFP" || data.type == "SVCB" || data.type == "TLSA" || data.type == "TXT" || data.type == "URI" ? 'w-1/2' : ''}>
+            <div className={data.type == "CERT" || data.type == "DNSKEY" || data.type == "DS" || data.type == "HTTPS" || data.type == "LOC" || data.type == "NAPTR" || data.type == "SMIMEA" || data.type == "SSHFP" || data.type == "SVCB" || data.type == "TLSA" || data.type == "TXT" || data.type == "URI" ? 'w-1/2 max-lg:w-full' : 'max-lg:w-full'}>
                 <Label className="text-xs text-muted-foreground">Name (required)</Label>
                 <Input value={data.name} onChange={(e) => setData({...data, name: e.target.value})} type="text" className="mb-1 mt-1"/>
                 <p className="text-xs text-muted-foreground">Use @ for root</p>
             </div>
             {data.type == "SRV" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground mt-1">Priority (required)</Label>
                 <Input className="mb-1 mt-1" value={data.types.SRV.priority} onChange={(e) => setData({...data, types: {...data.types, SRV: {...data.types.SRV, priority: e.target.value}}})} type="number" />
                 <p className="text-xs text-muted-foreground">0 - 65535</p>
                 </div> : null
             }
             {data.type == "SRV" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground mt-1">Weight (required)</Label>
                 <Input className="mb-1 mt-1" value={data.types.SRV.weight} onChange={(e) => setData({...data, types: {...data.types, SRV: {...data.types.SRV, weight: e.target.value}}})} type="number" />
                 <p className="text-xs text-muted-foreground">0 - 65535</p>
@@ -153,44 +155,44 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "MX" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground mt-1">Mail server (required)</Label>
                 <Input className="mb-1 mt-1" value={data.types.MX.mail} onChange={(e) => setData({...data, types: {...data.types, MX: {...data.types.MX, mail: e.target.value}}})} type="text" />
                 <p className="text-xs text-muted-foreground">E.g. mx1.example.com</p>
                 </div> : null
             }
             {data.type == "PTR" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground mt-1">Domain name (required)</Label>
                 <Input className="mb-1 mt-1" value={data.types.PTR.domain} onChange={(e) => setData({...data, types: {...data.types, PTR: {...data.types.PTR, domain: e.target.value}}})} type="text" />
                 <p className="text-xs text-muted-foreground">E.g. www.example.com</p>
                 </div> : null
             }
             {data.type == "CNAME" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground mt-1">Target (required)</Label>
-                <Input value={data.types.CNAME.target} onChange={(e) => setData({...data, types: {...data.types, CNAME: {...data.types.CNAME, target: e.target.value}}})} type="text" />
+                <Input className="mb-1 mt-1" value={data.types.CNAME.target} onChange={(e) => setData({...data, types: {...data.types, CNAME: {...data.types.CNAME, target: e.target.value}}})} type="text" />
                 </div> : null
             }
             {data.type == "A" || data.type == "AAAA" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground mt-1">{data.type == "A" ? "IPv4 address (required)" : "IPv6 address (required)"}</Label>
-                <Input value={data.types.A.address} onChange={(e) => setData({...data, types: {...data.types, A: {...data.types.A, address: e.target.value}}})} type="text" />
+                <Input className="mb-1 mt-1" value={data.types.A.address} onChange={(e) => setData({...data, types: {...data.types, A: {...data.types.A, address: e.target.value}}})} type="text" />
                 </div> : null
             }
             {data.type == "A" || data.type == "AAAA" || data.type == "CNAME"?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground">Proxy status</Label>
-                <div className="flex items-center space-x-2 h-9">
+                <div className="flex items-center space-x-2 h-9 mb-1 mt-1">
                     <Switch checked={data.proxyStatus} onCheckedChange={(value) => {
-                    setData({...data, proxyStatus: value, TTL: "Auto"})
+                    setData({...data, proxyStatus: value, TTL: "1"})
                     }} id="proxy-status" />
                     <Label htmlFor="proxy-status">{data.proxyStatus ? "Proxied" : "DNS only"}</Label>
                 </div>
                 </div> : null
             }
             {data.type == "CAA" ?
-                <div className="w-48">
+                <div className="w-48 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Flags (required)</Label>
                 <div className="flex items-center space-x-2 h-9">
                     {data.types.CAA.flags}
@@ -198,35 +200,35 @@ export const DnsTable = ({data, setData}: any) => {
                 </div> : null
             }
             {data.type == "NS" ?
-                <div>
+                <div className='max-lg:w-full'>
                 <Label className="text-xs text-muted-foreground">Nameserver (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.NS.nameserver} onChange={(e) => setData({...data, types: {...data.types, NS: {...data.types.NS, nameserver: e.target.value}}})} type="text" />
                 <p className="text-xs text-muted-foreground">E.g. ns1.example.com
                 </p>
                 </div> : null
             }
-            <div className="pl-3">
+            
+            <div className="pl-3 max-lg:pl-0">
                 <Label className="text-xs text-muted-foreground">TTL</Label>
                 {!data.proxyStatus || data.type == "CAA" || data.type == "CERT" || data.type == "DNSKEY" || data.type == "DS" || data.type == "HTTPS" || data.type == "LOC" || data.type == "MX" || data.type == "NAPTR" || data.type == "NS" || data.type == "PTR" || data.type == "SMIMEA" || data.type == "SRV" || data.type == "SSHFP" || data.type == "SVCB" || data.type == "TLSA" || data.type == "TXT" || data.type == "URI" ?
                 <Select value={data.TTL} onValueChange={(value) => setData({...data, TTL: value})}>
-                    <SelectTrigger className="w-[100px] mt-1">
+                    <SelectTrigger className="w-[100px] mt-1 max-lg:w-full">
                     <SelectValue placeholder="" />
                     </SelectTrigger>
                     <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="Auto">Auto</SelectItem>
-                        <SelectItem value="1min">1 min</SelectItem>
-                        <SelectItem value="2min">2 min</SelectItem>
-                        <SelectItem value="5min">5 min</SelectItem>
-                        <SelectItem value="10min">10 min</SelectItem>
-                        <SelectItem value="15min">15 min</SelectItem>
-                        <SelectItem value="30min">30 min</SelectItem>
-                        <SelectItem value="1hr">1 hr</SelectItem>
-                        <SelectItem value="2hr">2 hr</SelectItem>
-                        <SelectItem value="5hr">5 hr</SelectItem>
-                        <SelectItem value="5hr">5 hr</SelectItem>
-                        <SelectItem value="12hr">12 hr</SelectItem>
-                        <SelectItem value="1day">1 day</SelectItem>
+                        <SelectItem value="1">Auto</SelectItem>
+                        <SelectItem value="60">1 min</SelectItem>
+                        <SelectItem value="120">2 min</SelectItem>
+                        <SelectItem value="300">5 min</SelectItem>
+                        <SelectItem value="600">10 min</SelectItem>
+                        <SelectItem value="900">15 min</SelectItem>
+                        <SelectItem value="1800">30 min</SelectItem>
+                        <SelectItem value="3600">1 hr</SelectItem>
+                        <SelectItem value="7200">2 hr</SelectItem>
+                        <SelectItem value="18000">5 hr</SelectItem>
+                        <SelectItem value="43200">12 hr</SelectItem>
+                        <SelectItem value="86400">1 day</SelectItem>
                     </SelectGroup>
                     </SelectContent>
                 </Select>
@@ -249,7 +251,7 @@ export const DnsTable = ({data, setData}: any) => {
                 </div> : null
             }
             </div>
-            <div className="flex gap-4 mt-2">
+            <div className="flex gap-4 mt-2 max-lg:flex-col">
             { data.type == "CAA" ?
                 <div>
                 <Label className="text-xs text-muted-foreground">Tag (required)</Label>
@@ -259,9 +261,9 @@ export const DnsTable = ({data, setData}: any) => {
                     </SelectTrigger>
                     <SelectContent>
                     <SelectGroup>
-                        <SelectItem value="1">Only allow specific hostnames</SelectItem>
-                        <SelectItem value="2">Only allow wildcards</SelectItem>
-                        <SelectItem value="3">Send violation reports to URL (http:, https:, or mailto:)</SelectItem>
+                        <SelectItem value="issue">Only allow specific hostnames</SelectItem>
+                        <SelectItem value="issuewild">Only allow wildcards</SelectItem>
+                        <SelectItem value="iodef">Send violation reports to URL (http:, https:, or mailto:)</SelectItem>
                     </SelectGroup>
                     </SelectContent>
                 </Select>
@@ -301,7 +303,7 @@ export const DnsTable = ({data, setData}: any) => {
 
             {data.type == "CERT" ?
                 <div>
-                <Label className="text-xs text-muted-foreground">Algorithm (required)</Label>
+                <Label className="text-xs text-muted-foreground">Certificate (Base64) (required)</Label>
                 <Textarea className="resize-none" value={data.types.CERT.certificate} onChange={(e) => setData({...data, types: {...data.types, CERT: {...data.types.CERT, certificate: e.target.value}}})} placeholder="" />
                 <p className="text-xs text-muted-foreground">E.g. TEpBNFYyTGtWUVpsTHpaa0htQXVPd0...wxREdCM3BRTTNWbUwyVlRNNERKWg==</p>
                 </div> : null
@@ -339,7 +341,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SSHFP" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Algorithm (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.SSHFP.algorithm} onChange={(e) => setData({...data, types: {...data.types, SSHFP: {...data.types.SSHFP, algorithm: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -347,7 +349,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SSHFP" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Type (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.SSHFP.type} onChange={(e) => setData({...data, types: {...data.types, SSHFP: {...data.types.SSHFP, type: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -355,7 +357,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SSHFP" ?
-                <div className="w-1/2">
+                <div className="w-1/2 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Fingerprint (hexadecimal) (required)</Label>
                 <Textarea className="resize-none mt-1 mb-1" value={data.types.SSHFP.fingerprint} onChange={(e) => setData({...data, types: {...data.types, SSHFP: {...data.types.SSHFP, fingerprint: e.target.value}}})} placeholder=""/>
                 <p className="text-xs text-muted-foreground">E.g. 436c6f7564666c...61726520444e53</p>
@@ -363,7 +365,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "URI" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Priority (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.URI.priority} onChange={(e) => setData({...data, types: {...data.types, URI: {...data.types.URI, priority: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -371,7 +373,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "URI" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Weight (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.URI.weight} onChange={(e) => setData({...data, types: {...data.types, URI: {...data.types.URI, weight: e.target.value}}})} type="number" min={0} max={65535}/>
                 <p className="text-xs text-muted-foreground">0 - 65535</p>
@@ -379,14 +381,14 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "URI" ?
-                <div className="w-1/2">
+                <div className="w-1/2 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Target (required)</Label>
                 <Textarea className="resize-none mt-1 mb-1" value={data.types.URI.target} onChange={(e) => setData({...data, types: {...data.types, URI: {...data.types.URI, target: e.target.value}}})} placeholder=""/>
                 </div> : null
             }
 
             {data.type == "SRV" ?
-                <div className="w-1/2">
+                <div className="w-1/2 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Target (required)</Label>
                 <Textarea className="resize-none" value={data.types.SRV.target} onChange={(e) => setData({...data, types: {...data.types, SRV: {...data.types.SRV, target: e.target.value}}})} placeholder="" />
                 <p className="text-xs text-muted-foreground">E.g. www.example.com</p>
@@ -460,7 +462,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "NAPTR" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Order (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.NAPTR.order} onChange={(e) => setData({...data, types: {...data.types, NAPTR: {...data.types.NAPTR, order: e.target.value}}})} max={65535} min={0} type="number"/>
                 <p className="text-xs text-muted-foreground">0 - 65535</p>
@@ -468,7 +470,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "NAPTR" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Preference (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.NAPTR.preference} onChange={(e) => setData({...data, types: {...data.types, NAPTR: {...data.types.NAPTR, preference: e.target.value}}})} max={65535} min={0} type="number"/>
                 <p className="text-xs text-muted-foreground">0 - 65535</p>
@@ -476,7 +478,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "NAPTR" ?
-                <div  className="w-1/6">
+                <div  className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Flags (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.NAPTR.flags} onChange={(e) => setData({...data, types: {...data.types, NAPTR: {...data.types.NAPTR, flags: e.target.value}}})} type="text"/>
                 <p className="text-xs text-muted-foreground">S, A, U, P</p>
@@ -484,7 +486,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "NAPTR" ?
-                <div className="w-1/3">
+                <div className="w-1/3 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Service (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.NAPTR.service} onChange={(e) => setData({...data, types: {...data.types, NAPTR: {...data.types.NAPTR, service: e.target.value}}})} type="text"/>
                 <p className="text-xs text-muted-foreground">E.g. protocol=...</p>
@@ -492,7 +494,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SMIMEA" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Usage (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.SMIMEA.usage} onChange={(e) => setData({...data, types: {...data.types, SMIMEA: {...data.types.SMIMEA, usage: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -500,7 +502,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SMIMEA" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Selector (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.SMIMEA.selector} onChange={(e) => setData({...data, types: {...data.types, SMIMEA: {...data.types.SMIMEA, selector: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -508,7 +510,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SMIMEA" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Matching type (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.SMIMEA.matching_type} onChange={(e) => setData({...data, types: {...data.types, SMIMEA: {...data.types.SMIMEA, matching_type: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -516,7 +518,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SMIMEA" ?
-                <div className="w-1/2">
+                <div className="w-1/2 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Certificate (hexadecimal) (required)</Label>
                 <Textarea className="resize-none mt-1 mb-1" value={data.types.SMIMEA.certificate} onChange={(e) => setData({...data, types: {...data.types, SMIMEA: {...data.types.SMIMEA, certificate: e.target.value}}})} placeholder="" />
                 <p className="text-xs text-muted-foreground">E.g. 436c6f7564666c...61726520444e53</p>
@@ -532,14 +534,14 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "SVCB" ?
-                <div className="w-1/3">
+                <div className="w-1/3 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Target (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.SVCB.target} onChange={(e) => setData({...data, types: {...data.types, SVCB: {...data.types.SVCB, target: e.target.value}}})} type="text"/>
                 </div> : null
             }
 
             {data.type == "SVCB" ?
-                <div className="w-1/3">
+                <div className="w-1/3 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Value</Label>
                 <Input className="mt-1 mb-1" value={data.types.SVCB.value} onChange={(e) => setData({...data, types: {...data.types, SVCB: {...data.types.SVCB, value: e.target.value}}})} type="text"/>
                 <p className="text-xs text-muted-foreground">E.g. alpn="h3,h2" ipv4hint="127.0.0.1" ipv6hint="::1"</p>
@@ -547,7 +549,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "TLSA" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Usage (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.TLSA.usage} onChange={(e) => setData({...data, types: {...data.types, TLSA: {...data.types.TLSA, usage: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -555,7 +557,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "TLSA" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Selector (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.TLSA.selector} onChange={(e) => setData({...data, types: {...data.types, TLSA: {...data.types.TLSA, selector: e.target.value}}})}  type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -563,7 +565,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "TLSA" ?
-                <div className="w-1/6">
+                <div className="w-1/6 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Matching type (required)</Label>
                 <Input className="mt-1 mb-1" value={data.types.TLSA.matching_type} onChange={(e) => setData({...data, types: {...data.types, TLSA: {...data.types.TLSA, matching_type: e.target.value}}})} type="number" min={0} max={255}/>
                 <p className="text-xs text-muted-foreground">0 - 255</p>
@@ -571,7 +573,7 @@ export const DnsTable = ({data, setData}: any) => {
             }
 
             {data.type == "TLSA" ?
-                <div className="w-1/2">
+                <div className="w-1/2 max-lg:w-full">
                 <Label className="text-xs text-muted-foreground">Certificate (hexadecimal) (required)</Label>
                 <Textarea className="resize-none mt-1 mb-1" value={data.types.TLSA.certificate} onChange={(e) => setData({...data, types: {...data.types, TLSA: {...data.types.TLSA, certificate: e.target.value}}})} placeholder="" />
                 <p className="text-xs text-muted-foreground">E.g. 436c6f7564666c...61726520444e53</p>
@@ -588,13 +590,13 @@ export const DnsTable = ({data, setData}: any) => {
             
             </div>
             {data.type == "NAPTR" ?
-            <div className="flex gap-4 mt-2">
-                <div className="w-1/3">
+            <div className="flex gap-4 mt-2 max-lg:flex-col">
+                <div className="w-1/3 max-lg:w-full">
                     <Label className="text-xs text-muted-foreground">RegEx</Label>
                     <Input className="mt-1 mb-1" value={data.types.NAPTR.regEx} onChange={(e) => setData({...data, types: {...data.types, NAPTR: {...data.types.NAPTR, regEx: e.target.value}}})} type="text"/>
                     <p className="text-xs text-muted-foreground">E.g. delim-char=...</p>
                 </div>
-                <div className="w-2/3">
+                <div className="w-2/3 max-lg:w-full">
                     <Label className="text-xs text-muted-foreground">Replacement</Label>
                     <Input className="mt-1 mb-1" value={data.types.NAPTR.replacement} onChange={(e) => setData({...data, types: {...data.types, NAPTR: {...data.types.NAPTR, replacement: e.target.value}}})} type="text"/>
                 </div>
@@ -603,7 +605,7 @@ export const DnsTable = ({data, setData}: any) => {
             {data.type == "LOC" ?
             <div>
                 <p className="text-sm font-semibold">Set latitude</p>
-                <div className="flex gap-4">
+                <div className="flex gap-4 max-lg:flex-col">
                 <div className="w-full">
                     <Label className="text-xs text-muted-foreground">Degrees (required)</Label>
                     <Input className="mt-1 w-full" value={data.types.LOC.latitude_degrees} onChange={(e) => setData({...data, types: {...data.types, LOC: {...data.types.LOC, latitude_degrees: e.target.value}}})} type="number"/>
@@ -632,7 +634,7 @@ export const DnsTable = ({data, setData}: any) => {
                 </div>
                 </div>
                 <p className="text-sm font-semibold mt-3">Set longitude</p>
-                <div className="flex gap-4">
+                <div className="flex gap-4 max-lg:flex-col">
                 <div className="w-full">
                     <Label className="text-xs text-muted-foreground">Degrees (required)</Label>
                     <Input className="mt-1 w-full" value={data.types.LOC.longitude_degrees} onChange={(e) => setData({...data, types: {...data.types, LOC: {...data.types.LOC, longitude_degrees: e.target.value}}})} type="number"/>
@@ -661,7 +663,7 @@ export const DnsTable = ({data, setData}: any) => {
                 </div>
                 </div>
                 <p className="text-sm font-semibold mt-3">Precision (in meters)</p>
-                <div className="flex gap-4">
+                <div className="flex gap-4 max-lg:flex-col">
                 <div className="w-full">
                     <Label className="text-xs text-muted-foreground">Horizontal (required)</Label>
                     <Input className="mt-1 w-full" value={data.types.LOC.horizontal} onChange={(e) => setData({...data, types: {...data.types, LOC: {...data.types.LOC, horizontal: e.target.value}}})} type="number"/>

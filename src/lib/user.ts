@@ -1,13 +1,11 @@
 import axios from "axios";
+import { headers } from "./utils";
 
 
 export async function getUser() {
 
     const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': '03ec91dc-c802-46b1-9cb1-4df06e40cb36'
-        }
+        headers: headers
     };
 
     const res = await axios.get(process.env.NEXT_PUBLIC_API + '/account', config)

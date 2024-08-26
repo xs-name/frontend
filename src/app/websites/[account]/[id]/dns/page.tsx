@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { notFound } from 'next/navigation'
 import { MoveLeft, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
 
 import {
   Select,
@@ -30,6 +32,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getLanguage } from "@/lib/language";
 import { DnsTable } from "@/components/dnsTable.components";
 import { DnsTableRow } from "@/components/dnsTableRow.components";
+import { headers } from "@/lib/utils";
 
 
 export default function Home({params}:any) {
@@ -38,12 +41,14 @@ export default function Home({params}:any) {
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
+  const [domain, setDomain] = useState<any>([]);
+  const [DNS, setDNS] = useState<any>([]);
 
   const [dataTable, setDataTable] = useState({
     type: "A",
     name: "",
-    TTL: "",
-    proxyStatus: "",
+    TTL: "1",
+    proxyStatus: false,
     types: {
       A: {
         address: ""
@@ -64,7 +69,7 @@ export default function Home({params}:any) {
       },
       DNSKEY: {
         flags: "",
-        protocol: "3 - DNSSEC",
+        protocol: 3,
         algorithm: "",
         public_key: ""
       },
@@ -150,17 +155,329 @@ export default function Home({params}:any) {
     }
   });
 
-  const [data, setData] = useState({
-    type: "A",
-    name: "idenstore.ru",
-    content: "65.109.4.197",
-    proxyStatus: true,
-    TTL: "Auto"
-  });
-
-
   const [isEditing, setIsEditing] = useState(false);
 
+  function getDNS(){
+    axios.get(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
+      if(!res.data.error?.length){
+        setDNS(res.data.result[0])
+      }else{
+        //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
+      }
+    })
+  }
+
+  function deleteDNS(id: string){
+    const data = {
+      id: id
+    }
+
+    axios.delete(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, {headers: headers, data: data}).then((res:any) => {
+      console.log(res.data)
+      if(!res.data.error?.length){
+        getDNS()
+      }else{
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message,
+        })
+      }
+    })
+  }
+
+  function updateDNS(id: string, dataTable: any, type: string, setActive: any){
+    let data: any = {}
+
+    switch(dataTable.type){
+      case "A":
+        data = {
+          type: dataTable.type,
+          name: dataTable.name == "@" ? domain.name : dataTable.name,
+          content: dataTable.types.A.address,
+          proxied: dataTable.proxyStatus,
+          ttl: Number(dataTable.TTL)
+        }
+        break;
+      case "AAAA":
+        data = {
+          type: dataTable.type,
+          name: dataTable.name == "@" ? domain.name : dataTable.name,
+          content: dataTable.types.A.address,
+          proxied: dataTable.proxyStatus,
+          ttl: Number(dataTable.TTL)
+        }
+        break
+      case "CAA":
+        data = {
+          type: dataTable.type,
+          name: dataTable.name == "@" ? domain.name : dataTable.name,
+          // content: dataTable.types.A.address,
+          // proxied: dataTable.proxyStatus,
+          ttl: Number(dataTable.TTL),
+          data: {
+            flags: dataTable.types.CAA.flags,
+            tag: dataTable.types.CAA.tag,
+            value: dataTable.types.CAA.domain_name
+          }
+        }
+        break
+        case "CERT":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.A.address,
+            // proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.CERT.algorithm,
+              certificate: dataTable.types.CERT.certificate,
+              key_tag: dataTable.types.CERT.key_tag,
+              type: dataTable.types.CERT.cert
+            }
+          }
+        break;
+        case "CNAME":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.CNAME.target,
+            proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+          }
+        break;
+        case "DNSKEY":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.DNSKEY.algorithm,
+              flags: dataTable.types.DNSKEY.flags,
+              protocol: dataTable.types.DNSKEY.protocol,
+              public_key: dataTable.types.DNSKEY.public_key
+            }
+          }
+        break;
+        case "DS":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.DS.algorithm,
+              digest: dataTable.types.DS.digest,
+              digest_type: dataTable.types.DS.digest_type,
+              key_tag: dataTable.types.DS.key_tag
+            }
+          }
+        break;
+        case "HTTPS":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.CNAME.target,
+            // proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+            data: {
+              priority: dataTable.types.HTTPS.priority,
+              target: dataTable.types.HTTPS.target,
+              value: dataTable.types.HTTPS.value
+            }
+          }
+        break;
+        case "LOC":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.CNAME.target,
+            // proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+            data: {
+              altitude: dataTable.types.LOC.altitude,
+              lat_degrees: dataTable.types.LOC.latitude_degrees,
+              lat_direction: dataTable.types.LOC.latitude_direction,
+              lat_minutes: dataTable.types.LOC.latitude_minutes,
+              lat_seconds: dataTable.types.LOC.latitude_seconds,
+              long_degrees: dataTable.types.LOC.longitude_degrees,
+              long_direction: dataTable.types.LOC.longitude_direction,
+              long_minutes: dataTable.types.LOC.longitude_minutes,
+              long_seconds: dataTable.types.LOC.longitude_seconds,
+              precision_horz: dataTable.types.LOC.horizontal,
+              precision_vert: dataTable.types.LOC.vertical,
+              size: dataTable.types.LOC.size
+            }
+          }
+        break;
+        case "MX":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.MX.mail,
+            priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+          }
+        break;
+        case "NAPTR":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.MX.mail,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              flags: dataTable.types.NAPTR.flags,
+              order: dataTable.types.NAPTR.order,
+              preference: dataTable.types.NAPTR.preference,
+              regex: dataTable.types.NAPTR.regEx,
+              replacement: dataTable.types.NAPTR.replacement,
+              service: dataTable.types.NAPTR.service
+            }
+          }
+        break;
+        case "NS":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.NS.nameserver,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL)
+          }
+        break;
+        case "PTR":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.PTR.domain,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL)
+          }
+        break;
+        case "SMIMEA":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              certificate: dataTable.types.SMIMEA.certificate,
+              matching_type: dataTable.types.SMIMEA.matching_type,
+              selector: dataTable.types.SMIMEA.selector,
+              usage: dataTable.types.SMIMEA.usage
+            }
+          }
+        break;
+        case "SRV":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              name: domain.name,
+              port: dataTable.types.SRV.port,
+              priority: dataTable.types.SRV.priority,
+              // proto: dataTable.types.SRV.p
+              // service: dataTable.types.SRV.
+              target: dataTable.types.SRV.target,
+              weight: dataTable.types.SRV.weight
+            }
+          }
+        break;
+        case "SSHFP":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.SSHFP.algorithm,
+              fingerprint: dataTable.types.SSHFP.fingerprint,
+              type: dataTable.types.SSHFP.type
+            }
+          }
+        break;
+        case "SVCB":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              priority: dataTable.types.SVCB.priority,
+              target: dataTable.types.SVCB.target,
+              value: dataTable.types.SVCB.value
+            }
+          }
+        break;
+        case "TLSA":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              certificate: dataTable.types.TLSA.certificate,
+              matching_type: dataTable.types.TLSA.matching_type,
+              selector: dataTable.types.TLSA.selector,
+              usage: dataTable.types.TLSA.usage
+            }
+          }
+        break;
+        case "TXT":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.TXT.сontent,
+            ttl: Number(dataTable.TTL)
+          }
+        break;
+        case "URI":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            priority: Number(dataTable.types.URI.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              target: dataTable.types.URI.target,
+              weight: dataTable.types.URI.weight
+            }
+          }
+        break;
+    }
+
+    data.id = id
+
+    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, {headers: headers}).then((res:any) => {
+      // console.log(res.data)
+      if(!res.data.error?.length){
+        getDNS()
+        setActive(false)
+      }else{
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message,
+        })
+      }
+    })
+  }
+
+
+  useEffect(() => {
+    if(params.account && params.id){
+      axios.get(process.env.NEXT_PUBLIC_API + `/zones/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
+        if(!res.data.error?.length){
+          setDomain(res.data.result)
+        }else{
+          //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
+        }
+      })
+
+      getDNS()
+    }
+  }, [])
 
   useEffect(() => {
     if(language){
@@ -177,6 +494,283 @@ export default function Home({params}:any) {
     })
   }, [])
 
+  function addDNS(){
+    let data: any = {}
+    console.log(dataTable)
+    switch(dataTable.type){
+      case "A":
+        data = {
+          type: dataTable.type,
+          name: dataTable.name == "@" ? domain.name : dataTable.name,
+          content: dataTable.types.A.address,
+          proxied: dataTable.proxyStatus,
+          ttl: Number(dataTable.TTL)
+        }
+        break;
+      case "AAAA":
+        data = {
+          type: dataTable.type,
+          name: dataTable.name == "@" ? domain.name : dataTable.name,
+          content: dataTable.types.A.address,
+          proxied: dataTable.proxyStatus,
+          ttl: Number(dataTable.TTL)
+        }
+        break
+      case "CAA":
+        data = {
+          type: dataTable.type,
+          name: dataTable.name == "@" ? domain.name : dataTable.name,
+          // content: dataTable.types.A.address,
+          // proxied: dataTable.proxyStatus,
+          ttl: Number(dataTable.TTL),
+          data: {
+            flags: dataTable.types.CAA.flags,
+            tag: dataTable.types.CAA.tag,
+            value: dataTable.types.CAA.domain_name
+          }
+        }
+        break
+        case "CERT":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.A.address,
+            // proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.CERT.algorithm,
+              certificate: dataTable.types.CERT.certificate,
+              key_tag: dataTable.types.CERT.key_tag,
+              type: dataTable.types.CERT.cert
+            }
+          }
+        break;
+        case "CNAME":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.CNAME.target,
+            proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+          }
+        break;
+        case "DNSKEY":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.DNSKEY.algorithm,
+              flags: dataTable.types.DNSKEY.flags,
+              protocol: dataTable.types.DNSKEY.protocol,
+              public_key: dataTable.types.DNSKEY.public_key
+            }
+          }
+        break;
+        case "DS":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.DS.algorithm,
+              digest: dataTable.types.DS.digest,
+              digest_type: dataTable.types.DS.digest_type,
+              key_tag: dataTable.types.DS.key_tag
+            }
+          }
+        break;
+        case "HTTPS":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.CNAME.target,
+            // proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+            data: {
+              priority: dataTable.types.HTTPS.priority,
+              target: dataTable.types.HTTPS.target,
+              value: dataTable.types.HTTPS.value
+            }
+          }
+        break;
+        case "LOC":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.CNAME.target,
+            // proxied: dataTable.proxyStatus,
+            ttl: Number(dataTable.TTL),
+            data: {
+              altitude: dataTable.types.LOC.altitude,
+              lat_degrees: dataTable.types.LOC.latitude_degrees,
+              lat_direction: dataTable.types.LOC.latitude_direction,
+              lat_minutes: dataTable.types.LOC.latitude_minutes,
+              lat_seconds: dataTable.types.LOC.latitude_seconds,
+              long_degrees: dataTable.types.LOC.longitude_degrees,
+              long_direction: dataTable.types.LOC.longitude_direction,
+              long_minutes: dataTable.types.LOC.longitude_minutes,
+              long_seconds: dataTable.types.LOC.longitude_seconds,
+              precision_horz: dataTable.types.LOC.horizontal,
+              precision_vert: dataTable.types.LOC.vertical,
+              size: dataTable.types.LOC.size
+            }
+          }
+        break;
+        case "MX":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.MX.mail,
+            priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+          }
+        break;
+        case "NAPTR":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.MX.mail,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              flags: dataTable.types.NAPTR.flags,
+              order: dataTable.types.NAPTR.order,
+              preference: dataTable.types.NAPTR.preference,
+              regex: dataTable.types.NAPTR.regEx,
+              replacement: dataTable.types.NAPTR.replacement,
+              service: dataTable.types.NAPTR.service
+            }
+          }
+        break;
+        case "NS":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.NS.nameserver,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL)
+          }
+        break;
+        case "PTR":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.PTR.domain,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL)
+          }
+        break;
+        case "SMIMEA":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              certificate: dataTable.types.SMIMEA.certificate,
+              matching_type: dataTable.types.SMIMEA.matching_type,
+              selector: dataTable.types.SMIMEA.selector,
+              usage: dataTable.types.SMIMEA.usage
+            }
+          }
+        break;
+        case "SRV":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              name: domain.name,
+              port: dataTable.types.SRV.port,
+              priority: dataTable.types.SRV.priority,
+              // proto: dataTable.types.SRV.p
+              // service: dataTable.types.SRV.
+              target: dataTable.types.SRV.target,
+              weight: dataTable.types.SRV.weight
+            }
+          }
+        break;
+        case "SSHFP":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              algorithm: dataTable.types.SSHFP.algorithm,
+              fingerprint: dataTable.types.SSHFP.fingerprint,
+              type: dataTable.types.SSHFP.type
+            }
+          }
+        break;
+        case "SVCB":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              priority: dataTable.types.SVCB.priority,
+              target: dataTable.types.SVCB.target,
+              value: dataTable.types.SVCB.value
+            }
+          }
+        break;
+        case "TLSA":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            // content: dataTable.types.SMIMEA.,
+            // priority: Number(dataTable.types.MX.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              certificate: dataTable.types.TLSA.certificate,
+              matching_type: dataTable.types.TLSA.matching_type,
+              selector: dataTable.types.TLSA.selector,
+              usage: dataTable.types.TLSA.usage
+            }
+          }
+        break;
+        case "TXT":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            content: dataTable.types.TXT.сontent,
+            ttl: Number(dataTable.TTL)
+          }
+        break;
+        case "URI":
+          data = {
+            type: dataTable.type,
+            name: dataTable.name == "@" ? domain.name : dataTable.name,
+            priority: Number(dataTable.types.URI.priority),
+            ttl: Number(dataTable.TTL),
+            data: {
+              target: dataTable.types.URI.target,
+              weight: dataTable.types.URI.weight
+            }
+          }
+        break;
+    }
+
+    axios.post(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, {headers: headers}).then((res:any) => {
+      console.log(res.data)
+      if(!res.data.error?.length){
+        getDNS()
+      }else{
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message,
+        })
+      }
+    })
+  }
+
   if(loading){
     return <Loading />
   }
@@ -189,12 +783,13 @@ export default function Home({params}:any) {
     <main>
       {isAuthorized?
       <div>
+        <Toaster />
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8">
-            <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">wanddecisions.com</h1>
+            <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{domain.name}</h1>
             <p className="leading-7">Управляйте DNS-записями вашего домена.</p>
-            <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/"}><MoveLeft className="h-4"/>Назад к веб-сайтам</Link>
+            <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/websites"}><MoveLeft className="h-4"/>Назад к веб-сайтам</Link>
             
             <div className="flex flex-col border rounded-md w-full mt-8">
               <div className="flex flex-col p-5 w-full items-start mb-6">
@@ -211,7 +806,7 @@ export default function Home({params}:any) {
                   <div className="flex flex-col border-t p-5">
                     <div className="flex gap-2 justify-end">
                     <Button className="" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
-                    <Button className="">Save</Button>
+                    <Button onClick={() => addDNS()}>Save</Button>
                     </div>
                   </div>
                 </>
@@ -219,30 +814,17 @@ export default function Home({params}:any) {
               }
 
               <div className="flex flex-col w-full">
-                <div className="flex w-full border-b bg-slate-100">
-                  <div className="w-[12px]"></div>
-                  <div className="w-[14%] pl-2 pt-2 pb-2 pr-4 font-semibold">Type</div>
-                  <div className="w-[23%] pl-2 pt-2 pb-2 pr-4 font-semibold">Name</div>
-                  <div className="w-[29%] pl-2 pt-2 pb-2 pr-4 font-semibold">Content</div>
-                  <div className="w-[22%] pl-2 pt-2 pb-2 pr-4 font-semibold">Proxy status</div>
-                  <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 font-semibold">TTL</div>
-                  <div className="w-[12.5%] pl-2 pt-2 pb-2 pr-4 font-semibold flex justify-end">Actions</div>
+                <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
+                  {/* <div className="w-[12px]"></div> */}
+                  <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Type</div>
+                  <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Name</div>
+                  <div className="w-[25%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm ">Content</div>
+                  <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Proxy status</div>
+                  <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">TTL</div>
+                  <div className="w-[11%] pl-2 pt-2 pb-2 pr-4 font-semibold flex justify-end text-sm">Actions</div>
                 </div>
                 <div>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  <DnsTableRow data={data} setData={setData}/>
-                  
+                  {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS}/>)}
                 </div>
               </div>
               

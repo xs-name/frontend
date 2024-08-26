@@ -89,11 +89,11 @@ const Nav = () => {
             {/* SITEBAR */}
             <div className="z-30 bg-background fixed w-full h-16 shadow-sm shadow-slate-900/20 shadow-b-2 shadow-r-[3px] -shadow-spread-2 flex items-center pl-10 pr-10 max-md:pl-0 max-md:pr-0 justify-between">
                 <div className="flex h-full items-center">
-                    <div onClick={() => setSitebar(!sitebar)} className="hidden h-full items-center justify-center w-16 cursor-pointer max-md:flex">
+                    <div onClick={() => setSitebar(!sitebar)} className="hidden h-full items-center justify-center w-16 cursor-pointer max-md:flex max-md:border-r max-md:mr-2">
                         <Menu className={sitebar ? "opacity-0 transition-all absolute" : "opacity-1 transition-all absolute"}/>
                         <X className={sitebar ? "opacity-1 transition-all absolute" : "opacity-0 transition-all absolute"}/>
                     </div>
-                    <Link href="/"><img className="w-16" src="/logo.svg" alt="logo" /></Link>
+                    <Link href="/websites"><img className="w-16" src="/logo.svg" alt="logo" /></Link>
                 </div>
                 <div className="flex h-full items-center space-x-4 text-sm">
                     <div className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <Plus className="h-4"/>{lang?.connect}</div>

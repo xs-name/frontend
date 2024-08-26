@@ -96,6 +96,20 @@ const AuthPage = () => {
           }
         })
         break
+      case 'email':
+        axios.post(process.env.NEXT_PUBLIC_API + '/authorization/login', JSON.stringify(data), config).then((res) => {
+          if(res.data.error.length > 0){
+            toast("Произошла ошибка", {
+              description: res.data.error[0].message,
+            })
+          } else {
+            if(res.data.result[0].step){
+              setTypeData('password')
+              form.setValue("value", "")
+            }
+          }
+        })
+        break
     }
   }
 
