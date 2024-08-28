@@ -28,7 +28,8 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
         type: "A",
         name: "",
         TTL: "1",
-        proxyStatus: false,
+        domain: "",
+        proxyStatus: true,
         types: {
           A: {
             address: ""
@@ -140,56 +141,56 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
 
       switch(element.type){
         case "A":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, A: {...dataTable.types.A, address: element.content}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, A: {...dataTable.types.A, address: element.content}}})
         break;
         case "AAAA":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, A: {...dataTable.types.A, address: element.content}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, A: {...dataTable.types.A, address: element.content}}})
         break;
         case "CAA":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, CAA: {...dataTable.types.CAA, flags: element.data.flags, tag: element.data.tag, domain_name: element.data.value}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, CAA: {...dataTable.types.CAA, flags: element.data.flags, tag: element.data.tag, domain_name: element.data.value}}})
         break;
         case "CERT":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, CERT: {...dataTable.types.CERT, cert: element.data.type, key_tag: element.data.key_tag, algorithm: element.data.algorithm, certificate: element.data.certificate}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, CERT: {...dataTable.types.CERT, cert: element.data.type, key_tag: element.data.key_tag, algorithm: element.data.algorithm, certificate: element.data.certificate}}})
         break;
         case "CNAME":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, CNAME: {...dataTable.types.CNAME, target: element.content}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, CNAME: {...dataTable.types.CNAME, target: element.content}}})
         break;
         //? DNSKEY и DS
         case "HTTPS":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, HTTPS: {...dataTable.types.HTTPS, priority: element.data.priority, target: element.data.target, value: element.data.value}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, HTTPS: {...dataTable.types.HTTPS, priority: element.data.priority, target: element.data.target, value: element.data.value}}})
         break;
         case "LOC":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, LOC: {...dataTable.types.LOC, latitude_degrees: element.data.lat_degrees, latitude_minutes: element.data.lat_minutes, latitude_seconds: element.data.lat_seconds, latitude_direction: element.data.lat_direction, longitude_degrees: element.data.long_degrees, longitude_minutes: element.data.long_minutes, longitude_seconds: element.data.long_seconds, longitude_direction: element.data.long_direction, size: element.data.size, altitude: element.data.altitude, vertical: element.data.precision_vert, horizontal: element.data.precision_horz}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, LOC: {...dataTable.types.LOC, latitude_degrees: element.data.lat_degrees, latitude_minutes: element.data.lat_minutes, latitude_seconds: element.data.lat_seconds, latitude_direction: element.data.lat_direction, longitude_degrees: element.data.long_degrees, longitude_minutes: element.data.long_minutes, longitude_seconds: element.data.long_seconds, longitude_direction: element.data.long_direction, size: element.data.size, altitude: element.data.altitude, vertical: element.data.precision_vert, horizontal: element.data.precision_horz}}})
         break;
         case "MX":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, MX: {...dataTable.types.MX, mail: element.content, priority: element.priority}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, MX: {...dataTable.types.MX, mail: element.content, priority: element.priority}}})
         break;
         case "NAPTR":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, NAPTR: {...dataTable.types.NAPTR, order: element.data.order, preference: element.data.preference, flags: element.data.flags, service: element.data.service, regEx: element.data.regex, replacement: element.data.replacement}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, NAPTR: {...dataTable.types.NAPTR, order: element.data.order, preference: element.data.preference, flags: element.data.flags, service: element.data.service, regEx: element.data.regex, replacement: element.data.replacement}}})
         break;
         case "NS":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, NS: {...dataTable.types.NS, nameserver: element.content}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, NS: {...dataTable.types.NS, nameserver: element.content}}})
         break;
         case "SMIMEA":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SMIMEA: {...dataTable.types.SMIMEA, usage: element.data.usage, selector: element.data.selector, matching_type: element.data.matching_type, certificate: element.data.certificate}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SMIMEA: {...dataTable.types.SMIMEA, usage: element.data.usage, selector: element.data.selector, matching_type: element.data.matching_type, certificate: element.data.certificate}}})
         break;
         case "SRV":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SRV: {...dataTable.types.SRV, priority: element.data.priority, weight: element.data.weight, port: element.data.port, target: element.data.target}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SRV: {...dataTable.types.SRV, priority: element.data.priority, weight: element.data.weight, port: element.data.port, target: element.data.target}}})
         break;
         case "SSHFP":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SSHFP: {...dataTable.types.SSHFP, algorithm: element.data.algorithm, type: element.data.type, fingerprint: element.data.fingerprint}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SSHFP: {...dataTable.types.SSHFP, algorithm: element.data.algorithm, type: element.data.type, fingerprint: element.data.fingerprint}}})
         break;
         case "SVCB":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SVCB: {...dataTable.types.SVCB, priority: element.data.priority, target: element.data.target, value: element.data.value}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, SVCB: {...dataTable.types.SVCB, priority: element.data.priority, target: element.data.target, value: element.data.value}}})
         break;
         case "TLSA":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, TLSA: {...dataTable.types.TLSA, usage: element.data.usage, selector: element.data.selector, matching_type: element.data.matching_type, certificate: element.data.certificate}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, TLSA: {...dataTable.types.TLSA, usage: element.data.usage, selector: element.data.selector, matching_type: element.data.matching_type, certificate: element.data.certificate}}})
         break;
         case "TXT":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, TXT: {...dataTable.types.TXT, сontent: element.content}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, TXT: {...dataTable.types.TXT, сontent: element.content}}})
         break;
         case "URI":
-          setDataTable({...dataTable, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, URI: {...dataTable.types.URI, priority: element.priority, weight: element.data.weight, target: element.data.target}}})
+          setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, URI: {...dataTable.types.URI, priority: element.priority, weight: element.data.weight, target: element.data.target}}})
         break;
       }
 
@@ -217,7 +218,7 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
             <div className="flex w-full">
                 {/* <div className="w-[12px]"></div> */}
                 <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.type}</p></div>
-                <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.name}</p></div>
+                <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.name === dataTable.domain ? element?.name : element?.name.replace(`.${dataTable.domain}`, '')}</p></div>
                 <div className="w-[25%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.content}</p></div>
                 <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.proxied === true? "Proxied" : "DNS only"}</p></div>
                 <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{TTL[element?.ttl]}</p></div>
@@ -248,12 +249,9 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
               <DialogTrigger>
                 <div className="p-2 cursor-pointer rounded-md bg-primary text-white"><Pencil className="w-4 h-4" /></div>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[425px] max-h-dvh lg:max-w-screen-lg overflow-y-scroll">
                 <DialogHeader>
                   <DialogTitle>Edit record</DialogTitle>
-                  {/* <DialogDescription>
-                    Make changes to your profile here. Click save when youre done.
-                  </DialogDescription> */}
                 </DialogHeader>
                 <DnsTable className="pt-0 pl-0 pr-0 pb-0" data={dataTable} setData={setDataTable}/>
                 <DialogFooter className="max-sm:gap-2">
@@ -272,10 +270,10 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
               </DialogContent>
             </Dialog>
           </div>
-          <div className="mt-5 font-semibold">
+          <div className="mt-5 font-semibold overflow-hidden">
             {element?.name}
           </div>
-          <div className="font-semibold">
+          <div className="font-semibold overflow-hidden">
             {element?.content}
           </div>
         </div>

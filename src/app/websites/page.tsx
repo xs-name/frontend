@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn, headers } from "@/lib/utils";
-import { Check, FolderUp, Loader2, Plus, Search, SearchX } from "lucide-react";
+import { Check, Clock, FolderUp, Loader2, Plus, Search, SearchX } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from 'axios';
@@ -127,12 +127,16 @@ export default function Home() {
                       <p>{el.name}</p>
                       <div className="flex items-center justify-between">
                         {el.status == "active" ?
-                        <div className="flex items-center text-sm font-medium">
-                          <Check className="text-lime-500 h-4"/>
-                          {lang?.active}
-                        </div>
+                          <div className="flex items-center text-sm font-medium">
+                            <Check className="text-lime-500 h-4"/>
+                            {lang?.active}
+                          </div>
                         :
-                        null
+                        <div className="flex items-center text-sm font-medium">
+                          <Clock className="text-blue-600 h-4"/>
+                          {el.status}
+                        </div>
+                        
                         }
                         
                         <FolderUp className="text-primary h-5"/>

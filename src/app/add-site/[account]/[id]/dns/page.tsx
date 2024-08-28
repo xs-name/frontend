@@ -13,8 +13,8 @@ import { Loading } from "@/components/Loading.components";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
-import { notFound } from 'next/navigation'
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoveLeft, Plus } from "lucide-react";
+import { notFound, useRouter } from 'next/navigation'
+import { MoveLeft, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
@@ -43,7 +43,8 @@ export default function Home({params}:any) {
   const [loading, setLoading] = useState(true)
   const [domain, setDomain] = useState<any>([]);
   const [DNS, setDNS] = useState<any>([]);
-  const [page, setPage] = useState<any>(1);
+
+  const router = useRouter()
 
   const [dataTable, setDataTable] = useState({
     type: "A",
@@ -157,14 +158,10 @@ export default function Home({params}:any) {
     }
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    getDNS()
-  }, [page])
+  const [isEditing, setIsEditing] = useState(true);
 
   function getDNS(){
-    axios.get(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}?page=${page}&size=10`, {headers: headers}).then((res:any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
       if(!res.data.error?.length){
         setDNS(res.data.result[0])
       }else{
@@ -188,13 +185,6 @@ export default function Home({params}:any) {
         })
       }
     })
-  }
-
-  function paginate(num: number){
-    console.log(num)
-    if(num > 0 && num < DNS.page.total_pages){
-      setPage(num)
-    }
   }
 
   function updateDNS(id: string, dataTable: any, type: string, setActive: any){
@@ -786,6 +776,16 @@ export default function Home({params}:any) {
     })
   }
 
+  function further(){
+    if(DNS?.data?.length > 0){
+      router.push(`/add-site/${domain.account.id}/${domain.id}/ssl`)
+    } else {
+      toast("Произошла ошибка", {
+        description: "Пожалуйста, добавьте хотя бы 1 DNS"
+      })
+    }
+  }
+
   if(loading){
     return <Loading />
   }
@@ -803,8 +803,8 @@ export default function Home({params}:any) {
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{domain.name}</h1>
-            <p className="leading-7">Управляйте DNS-записями вашего домена.</p>
-            <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/websites"}><MoveLeft className="h-4"/>Назад к веб-сайтам</Link>
+            <p className="leading-7">Оптимизируйте безопасность, производительность и надежность вашего веб-трафика.</p>
+            {/* <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/websites"}><MoveLeft className="h-4"/>Назад к веб-сайтам</Link> */}
             
             <div className="flex flex-col border rounded-md w-full mt-8">
               <div className="flex flex-col p-5 max-sm:p-4 w-full items-start mb-6">
@@ -841,46 +841,11 @@ export default function Home({params}:any) {
                 <div>
                   {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS}/>)}
                 </div>
-                <div className="flex items-center p-4 gap-3">
-                  <div className="flex gap-2">
-                    <div onClick={() => paginate(1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hidden h-8 w-8 p-0 lg:flex">
-                      <ChevronsLeft className="w-[15px] h-[16px]"/>
-                    </div>
-                    <div onClick={() => paginate(page - 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hidden h-8 w-8 p-0 lg:flex">
-                      <ChevronLeft className="w-[15px] h-[16px]"/>
-                    </div>
-                    <div onClick={() => paginate(page + 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hidden h-8 w-8 p-0 lg:flex">
-                      <ChevronRight className="w-[15px] h-[16px]"/>
-                    </div>
-                    <div onClick={() => paginate(DNS?.page?.total_pages)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground hidden h-8 w-8 p-0 lg:flex">
-                      <ChevronsRight className="w-[15px] h-[16px]"/>
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground">Showing <strong>{DNS?.page?.page}-{DNS?.page?.total_pages}</strong> of <strong>{DNS?.page?.total_count}</strong> dns</div>
-                </div>
               </div>
-              
-            </div>
-
-            <div className="flex flex-col border rounded-md w-full mt-8">
-              <div className="flex flex-col p-5 w-full items-start mb-6">
-                <b className="text-xl font-semibold">Серверы имен</b>
-                <p className="text-sm mt-[5px]">Измените ваши серверы имен или авторитативные DNS-серверы. Это назначенные вам серверы имен.</p>
-              </div>
-
-              <div className="flex flex-col w-full">
-                <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
-                  <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm max-sm:hidden">Тип</div>
-                  <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm max-sm:w-full">Значение</div>
-                </div>
-                <div>
-                  {domain?.name_servers?.map((el: any) => 
-                    <div className="flex w-full border-t" key={el}>
-                      <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:hidden"><p className="text-stroke ">NS</p></div>
-                      <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full"><p className="text-stroke">{el}</p></div>
-                    </div>
-                  )}
-                </div>
+              <div className="flex pt-4 pb-4 pr-4 justify-end">
+                <Button onClick={() => {
+                  further()
+                }}>Continue</Button>
               </div>
             </div>
           </div>
