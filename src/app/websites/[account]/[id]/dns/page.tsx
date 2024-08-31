@@ -191,8 +191,7 @@ export default function Home({params}:any) {
   }
 
   function paginate(num: number){
-    console.log(num)
-    if(num > 0 && num < DNS.page.total_pages){
+    if(num > 0 && num <= DNS.page.total_pages){
       setPage(num)
     }
   }
@@ -473,6 +472,7 @@ export default function Home({params}:any) {
         toast("Произошла ошибка", {
           description: res.data.error[0].message,
         })
+        getDNS()
       }
     })
   }
@@ -831,7 +831,7 @@ export default function Home({params}:any) {
               <div className="flex flex-col w-full">
                 <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
                   {/* <div className="w-[12px]"></div> */}
-                  <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Type</div>
+                  <div className="w-[12%] pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Type</div>
                   <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Name</div>
                   <div className="w-[25%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm ">Content</div>
                   <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Proxy status</div>
