@@ -84,7 +84,7 @@ export default function Home() {
         <Toaster />
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
-          <div className="w-[1100px] max-2xl:w-full p-8">
+          <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">{lang?.title}</h1>
             <p className="leading-7">{lang?.description}</p>
             <div className="grid gap-2 mt-8 max-w-96">

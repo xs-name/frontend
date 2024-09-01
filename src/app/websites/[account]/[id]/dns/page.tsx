@@ -801,7 +801,7 @@ export default function Home({params}:any) {
         <Toaster />
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
-          <div className="w-[1100px] max-2xl:w-full p-8">
+          <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{domain.name}</h1>
             <p className="leading-7">Управляйте DNS-записями вашего домена.</p>
             <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/websites"}><MoveLeft className="h-4"/>Назад к веб-сайтам</Link>

@@ -148,9 +148,9 @@ export const DnsTable = ({data, setData, className}: any) => {
             }
             {data.type == "SRV" ?
                 <div className='max-lg:w-full'>
-                <Label className="text-xs text-muted-foreground mt-1">Weight (required)</Label>
-                <Input className="mb-1 mt-1" value={data.types.SRV.weight} onChange={(e) => setData({...data, types: {...data.types, SRV: {...data.types.SRV, weight: e.target.value}}})} type="number" />
-                <p className="text-xs text-muted-foreground">0 - 65535</p>
+                    <Label className="text-xs text-muted-foreground mt-1">Weight (required)</Label>
+                    <Input className="mb-1 mt-1" value={data.types.SRV.weight} onChange={(e) => setData({...data, types: {...data.types, SRV: {...data.types.SRV, weight: e.target.value}}})} type="number" />
+                    <p className="text-xs text-muted-foreground">0 - 65535</p>
                 </div> : null
             }
 

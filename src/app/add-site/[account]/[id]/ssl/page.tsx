@@ -212,7 +212,7 @@ export default function SSL({ params }: any) {
         <div>
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
-            <div className="w-[1100px] max-2xl:w-full p-8">
+            <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
               {loadingFetch ? <div className="flex gap-2 items-center"><Loader2 className="animate-spin w-5 h-5"/> {lang?.loading}</div>
               :
               <>

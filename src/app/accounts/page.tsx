@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, MoreHorizontal, Plus, Search, SearchX } from "lucide-react"
+import { ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Copy, Eye, EyeOff, Loader2, MoreHorizontal, Plus, Search, SearchX } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -45,6 +45,21 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import Link from "next/link"
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
+import { Label } from "@radix-ui/react-label"
  
 
 export default function Accounts() {
@@ -57,12 +72,21 @@ export default function Accounts() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<any>([])
   const [selectedAll, setSelectedAll] = useState<any>(false)
+  const [search, setSearch] = useState('');
 
   const [loadingAccounts, setLoadingAccounts] = useState(true)
+  const [openDelete, setOpenDelete] = useState(false)
+  const [loadingDelete, setLoadingDelete] = useState(false)
+  const [inpitPassword, setInpitPassword] = useState(true);
+  const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    console.log(selected)
-  }, [selected])
+  const [openView, setOpenView] = useState(false)
+  const [loadingView, setLoadingView] = useState(false);
+  const [access, setAccess] = useState(false)
+  const [idView, setIdView] = useState<any>(null)
+  const [viewData, setViweData] = useState<any>(null)
+
+
 
   useEffect(() => {
     if(language){
@@ -77,11 +101,9 @@ export default function Accounts() {
     getLanguage().then(res => {
       setLanguage(res)
     })
-  }, [])
-
-  useEffect(() => {
     getAccounts()
   }, [])
+
 
   useEffect(() => {
     getAccounts()
@@ -126,6 +148,54 @@ export default function Accounts() {
     }).finally(() => setLoadingAccounts(false))
   }
 
+  useEffect(() => {
+    setPage(1)
+    getAccounts()
+  }, [search])
+
+  function deleteAccounts (){
+    // '{"id": [5340, 5341], "password": "asdasd123"}'
+    const data = {
+      id: selected,
+      password: password
+    };
+    axios.delete(process.env.NEXT_PUBLIC_API + `/cf-accounts`, {headers: headers, data: data}).then((res:any) => {
+      if(!res.data.error?.length){
+        getAccounts()
+      }else{
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message
+        })
+      }
+    }).finally(() => {
+      setLoadingDelete(false)
+      setPassword('')
+      setOpenDelete(false)
+    })
+  }
+
+  function viewAccounts (){
+    // '{"id": [5340, 5341], "password": "asdasd123"}'
+    const data = {
+      id: idView,
+      password: password
+    };
+    axios.post(process.env.NEXT_PUBLIC_API + `/cf-accounts`, data, {headers: headers}).then((res:any) => {
+
+      if(!res.data.error?.length){
+        setViweData(res.data.result[0])
+        setAccess(true)
+      }else{
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message
+        })
+      }
+    }).finally(() => {
+      setLoadingView(false)
+      setPassword('')
+    })
+  }
+
   // useEffect(() => {
   //   console.log('table', table.getRowModel())
   // }, [table])
@@ -138,9 +208,86 @@ export default function Accounts() {
     <main>
       {isAuthorized?
       <div>
+        <Toaster />
         <Nav />
+        <AlertDialog open={openView} onOpenChange={setOpenView}>
+          {access ? 
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Данные аккаунта</AlertDialogTitle>
+                <AlertDialogDescription>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-1 flex-col">
+                      <div className="font-semibold text-black">Почта: </div>
+                      <div onClick={() => navigator.clipboard.writeText(viewData.email)} className="flex items-center gap-2 cursor-pointer">{viewData.email} <Copy className="w-[10px] h-[10px]"/></div>
+                    </div>
+                    <div className="flex gap-1 flex-col">
+                      <div className="font-semibold text-black">Токен: </div>
+                      <div onClick={() => navigator.clipboard.writeText(viewData.token)} className="flex items-center gap-2 cursor-pointer">{viewData.token} <Copy className="w-[10px] h-[10px]"/></div>
+                    </div>
+                    <div className="flex gap-1 flex-col">
+                      <div className="font-semibold text-black">id: </div>
+                      <div onClick={() => navigator.clipboard.writeText(viewData.account_id)} className="flex items-center gap-2 cursor-pointer">{viewData.account_id} <Copy className="w-[10px] h-[10px]"/></div>
+                    </div>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <Button onClick={() => {
+                  setLoadingView(false)
+                  setOpenView(false)
+                  setAccess(false)
+                  setIdView(null)
+                }}>Continue</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          :
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Подтверждение</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Вы действительно хотите посмотреть данные аккаунта?
+                </AlertDialogDescription>
+                <div className='max-lg:w-full'>
+                  <Label className="text-xs text-muted-foreground mt-1">Введите пароль</Label>
+                  <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+                </div> 
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={loadingView}>Cancel</AlertDialogCancel>
+                <Button disabled={loadingView} onClick={() => {
+                  setLoadingView(true)
+                  viewAccounts()
+                }}>{loadingView ? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Continue"}</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          }
+        </AlertDialog>
+        <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
+          <AlertDialogTrigger>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Подтверждение</AlertDialogTitle>
+              <AlertDialogDescription>
+              Вы действительно хотите удалить {selected.length} аккаунта?
+              </AlertDialogDescription>
+              <div className='max-lg:w-full'>
+                <Label className="text-xs text-muted-foreground mt-1">Введите пароль</Label>
+                <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+              </div> 
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={loadingDelete}>Cancel</AlertDialogCancel>
+              <Button disabled={loadingDelete} onClick={() => {
+                setLoadingDelete(true)
+                deleteAccounts()
+              }}>{loadingDelete ? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Continue"}</Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
-          <div className="w-[1100px] max-2xl:w-full p-8">
+          <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">Accounts</h1>
             <p className="leading-7">{lang?.description}</p>
             <div className="flex justify-between mt-8 max-sm:flex-col max-sm:gap-2">
@@ -150,8 +297,8 @@ export default function Accounts() {
                   type="search"
                   placeholder="email@email.com"
                   className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-                  // value={search}
-                  // onChange={(e) => setSearch(e.target.value)}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <Link href="/accounts/add"><Button><Plus className="h-4 mr-1"/>Add accounts</Button></Link>
@@ -159,48 +306,56 @@ export default function Accounts() {
             {data?.data?.length == 0 && !loadingAccounts ? <div className="flex gap-2 items-center"><SearchX /> {lang?.not}</div> : null}
             {loadingAccounts ? <div className="flex gap-2 items-center mt-4"><Loader2 className="animate-spin w-5 h-5"/>Downloading a list of accounts...</div> : 
               <div className="w-full mt-5">
-              <Table className="border rounded-lg">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[30px]"><Checkbox name="all" checked={selected.length === data?.data?.length} onCheckedChange={(value) => handleSelectedAll(value)} /></TableHead>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data?.data?.map((item: any) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        <Checkbox name={item.id} checked={selected.includes(item.id)} onCheckedChange={(value) => handleSelect(value, item.id)}/>
-                      </TableCell>
-                      <TableCell>{item?.account_id}</TableCell>
-                      <TableCell>{item?.email}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              onClick={() => navigator.clipboard.writeText(item.email)}
-                            >
-                              Copy email
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>View customer</DropdownMenuItem>
-                            <DropdownMenuItem>View payment details</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                <div className="flex justify-between items-center mb-3 h-[34px]">
+                  <div className="text-sm text-muted-foreground">Выделено {selected.length} элементов</div>
+                  {selected.length > 0 ? <Button variant="destructive" onClick={() => setOpenDelete(true)} className="h-[34px]">Удалить</Button> : null}
+                </div>
+                <div className="rounded-md border max-sm:overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[30px]"><Checkbox name="all" checked={selected.length === data?.data?.length} onCheckedChange={(value) => handleSelectedAll(value)} /></TableHead>
+                        <TableHead className="max-lg:hidden">ID</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead className="text-right max-sm:hidden">Action</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data?.data?.map((item: any) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            <Checkbox name={item.id} checked={selected.includes(item.id)} onCheckedChange={(value) => handleSelect(value, item.id)}/>
+                          </TableCell>
+                          <TableCell className="max-lg:hidden max-sm:hidden">{item?.account_id}</TableCell>
+                          <TableCell className="max-sm:text-xs">{item?.email}</TableCell>
+                          <TableCell className="text-right max-sm:hidden">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                  <span className="sr-only">Open menu</span>
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuItem
+                                  onClick={() => navigator.clipboard.writeText(item.email)}
+                                >
+                                  Copy email
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => {
+                                  setIdView(item.id)
+                                  setOpenView(true)
+                                }}>View</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               <div className="flex items-center justify-between mt-3 gap-3 max-sm:flex-col">
                 <div className="flex whitespace-nowrap text-sm text-muted-foreground">{page} of {data.all_page} row(s) selected.</div>
                 <div className="flex gap-2">

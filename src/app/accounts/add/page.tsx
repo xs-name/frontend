@@ -174,7 +174,7 @@ export default function Accounts() {
         </div> : null} */}
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
-          <div className="w-[1100px] max-2xl:w-full p-8">
+          <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">Add accounts</h1>
             <p className="leading-7">{lang?.description}</p>
             {step == 1? 
@@ -183,7 +183,7 @@ export default function Accounts() {
                     <Label className="text-xs text-muted-foreground">Аккаунты</Label>
                     <Textarea value={accounts} onChange={(e) => setAccounts(e.target.value)} placeholder="Поместите свои аккаунты" />
                 </div>
-                <div className="flex justify-between mt-3 items-end">
+                <div className="flex justify-between mt-3 items-end max-sm:flex-col max-sm:gap-2 max-sm:mt-2 max-sm:items-start">
                     <div className='max-lg:w-full'>
                         <Label className="text-xs text-muted-foreground">Символ разделитель</Label>
                         <Input maxLength={1} value={symbol} onChange={(e) => setSymbol(e.target.value)} type="text" placeholder="Символ разделителя" />
@@ -201,9 +201,9 @@ export default function Accounts() {
                             <TabsTrigger value="failures" className="gap-2">Failures <Badge>{accountResult.length - countCorrect}</Badge></TabsTrigger>
                         </TabsList>
                         <TabsContent value="successful">
-                            <ScrollArea className="h-[400px] overflow-y-auto border">
+                            <ScrollArea className="h-[400px] border rounded-md">
                                 <Table className="w-full">
-                                    <TableHeader>
+                                    <TableHeader className="sticky top-0 bg-white">
                                         <TableRow>
                                             <TableHead>Email</TableHead>
                                             <TableHead>Token</TableHead>
@@ -222,9 +222,9 @@ export default function Accounts() {
                             </ScrollArea>
                         </TabsContent>
                         <TabsContent value="failures" >
-                            <ScrollArea className="h-[400px] overflow-y-auto border">
+                            <ScrollArea className="h-[400px] border rounded-md">
                                 <Table className="w-full">
-                                    <TableHeader>
+                                    <TableHeader className="sticky top-0 bg-white">
                                         <TableRow>
                                             <TableHead>Email</TableHead>
                                             <TableHead>Token</TableHead>
@@ -277,9 +277,9 @@ export default function Accounts() {
                         <TabsTrigger value="failures" className="gap-2">Failures <Badge>{resulData?.invalid?.length}</Badge></TabsTrigger>
                     </TabsList>
                     <TabsContent value="successful">
-                        <ScrollArea className="h-[400px] overflow-y-auto border">
+                        <ScrollArea className="h-[400px] border rounded-md">
                             <Table className="w-full">
-                                <TableHeader>
+                                <TableHeader className="sticky top-0 bg-white">
                                     <TableRow>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Message</TableHead>
@@ -297,9 +297,9 @@ export default function Accounts() {
                         </ScrollArea>
                     </TabsContent>
                     <TabsContent value="failures" >
-                        <ScrollArea className="h-[400px] overflow-y-auto border">
+                        <ScrollArea className="h-[400px] border rounded-md">
                             <Table className="w-full">
-                                <TableHeader>
+                                <TableHeader className="sticky top-0 bg-white">
                                     <TableRow>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Message</TableHead>
@@ -319,7 +319,6 @@ export default function Accounts() {
                 </Tabs>
                 <div className="flex justify-end">
                     <Link href={'/accounts'}><Button>Continue</Button></Link>
-                    
                 </div>
                 
                 {/* <Table className="w-full border">
