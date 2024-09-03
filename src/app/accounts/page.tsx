@@ -116,10 +116,32 @@ export default function Accounts() {
         select.push(data.data[i].id)
       }
       setSelected(select);
-     } else {
-      setSelected([]);
-     }
+    } else {
+      let arr = selected;
+      for(let i = 0; i< data.data.length; i++){
+        arr = arr.filter((el: any) => el !== data.data[i].id)
+      }
+      setSelected(arr);
+    }
   }
+
+  useEffect(() => {
+    let isActive = true;
+
+    if(data?.data?.length == 0 || data?.data?.length == undefined){
+      setSelectedAll(false)
+      return
+    }
+
+    for(let i = 0; i < data?.data?.length; i++){
+      console.log(selected.indexOf(data.data[i].id))
+      if(selected.indexOf(data.data[i].id) == -1){
+        isActive = false
+        break
+      }
+    }
+    setSelectedAll(isActive)
+  }, [selected, data])
 
   function handleSelect(value: any, name: any) {
     if (value) {
@@ -319,7 +341,7 @@ export default function Accounts() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[30px]"><Checkbox name="all" checked={selected.length === data?.data?.length} onCheckedChange={(value) => handleSelectedAll(value)} /></TableHead>
+                        <TableHead className="w-[30px]"><Checkbox name="all" checked={selectedAll} onClick={(value) => handleSelectedAll(!selectedAll)} /></TableHead>
                         <TableHead className="max-lg:hidden">ID</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead className="text-right max-sm:hidden">Action</TableHead>

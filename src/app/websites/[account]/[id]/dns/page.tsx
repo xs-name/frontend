@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { notFound } from 'next/navigation'
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoveLeft, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Copy, Loader2, MoveLeft, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
@@ -44,6 +44,10 @@ export default function Home({params}:any) {
   const [domain, setDomain] = useState<any>([]);
   const [DNS, setDNS] = useState<any>([]);
   const [page, setPage] = useState<any>(1);
+  const [loadingUpdate, setLoadingUpdate] = useState(false)
+  const [loadingDelete, setLoadingDelete] = useState(false)
+
+  const [loadingAdd, setLoadingAdd] = useState(false)
 
   const [dataTable, setDataTable] = useState({
     type: "A",
@@ -187,7 +191,7 @@ export default function Home({params}:any) {
           description: res.data.error[0].message,
         })
       }
-    })
+    }).then(() => setLoadingDelete(false))
   }
 
   function paginate(num: number){
@@ -474,7 +478,7 @@ export default function Home({params}:any) {
         })
         getDNS()
       }
-    })
+    }).finally(() => setLoadingUpdate(false))
   }
 
 
@@ -783,7 +787,7 @@ export default function Home({params}:any) {
           description: res.data.error[0].message,
         })
       }
-    })
+    }).then(() => setLoadingAdd(false))
   }
 
   if(loading){
@@ -820,8 +824,11 @@ export default function Home({params}:any) {
                   </div>
                   <div className="flex flex-col border-t p-5 max-sm:p-4">
                     <div className="flex gap-2 justify-end">
-                    <Button className="" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
-                    <Button onClick={() => addDNS()}>Save</Button>
+                    <Button disabled={loadingAdd} className="" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
+                    <Button disabled={loadingAdd} onClick={() => {
+                      addDNS()
+                      setLoadingAdd(true)
+                    }}>{loadingAdd? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Save"}</Button>
                     </div>
                   </div>
                 </>
@@ -839,7 +846,7 @@ export default function Home({params}:any) {
                   <div className="w-[11%] pl-2 pt-2 pb-2 pr-4 font-semibold flex justify-end text-sm">Actions</div>
                 </div>
                 <div>
-                  {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS}/>)}
+                  {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS} setLoadingUpdate={setLoadingUpdate} loadingUpdate={loadingUpdate} loadingDelete={loadingDelete} setLoadingDelete={setLoadingDelete}/>)}
                 </div>
                 <div className="flex items-center p-4 gap-3 max-sm:flex-col">
                   <div className="flex gap-2">
@@ -877,7 +884,7 @@ export default function Home({params}:any) {
                   {domain?.name_servers?.map((el: any) => 
                     <div className="flex w-full border-t" key={el}>
                       <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:hidden"><p className="text-stroke ">NS</p></div>
-                      <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full"><p className="text-stroke">{el}</p></div>
+                      <div className="w-[84%] flex gap-2 items-center cursor-pointer pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full" onClick={() => navigator.clipboard.writeText(el)}><p className="text-stroke">{el}</p> <Copy className="w-[10px] h-[10px]"/></div>
                     </div>
                   )}
                 </div>

@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { notFound, useRouter } from 'next/navigation'
-import { MoveLeft, Plus } from "lucide-react";
+import { Loader2, MoveLeft, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
@@ -43,6 +43,9 @@ export default function Home({params}:any) {
   const [loading, setLoading] = useState(true)
   const [domain, setDomain] = useState<any>([]);
   const [DNS, setDNS] = useState<any>([]);
+  const [loadingAdd, setLoadingAdd] = useState(false)
+  const [loadingUpdate, setLoadingUpdate] = useState(false)
+  const [loadingDelete, setLoadingDelete] = useState(false)
 
   const router = useRouter()
 
@@ -184,7 +187,7 @@ export default function Home({params}:any) {
           description: res.data.error[0].message,
         })
       }
-    })
+    }).then(() => setLoadingDelete(false))
   }
 
   function updateDNS(id: string, dataTable: any, type: string, setActive: any){
@@ -464,7 +467,7 @@ export default function Home({params}:any) {
           description: res.data.error[0].message,
         })
       }
-    })
+    }).finally(() => setLoadingUpdate(false))
   }
 
 
@@ -773,7 +776,7 @@ export default function Home({params}:any) {
           description: res.data.error[0].message,
         })
       }
-    })
+    }).then(() => setLoadingAdd(false))
   }
 
   function further(){
@@ -820,8 +823,11 @@ export default function Home({params}:any) {
                   </div>
                   <div className="flex flex-col border-t p-5 max-sm:p-4">
                     <div className="flex gap-2 justify-end">
-                    <Button className="" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
-                    <Button onClick={() => addDNS()}>Save</Button>
+                    <Button disabled={loadingAdd} className="" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
+                    <Button disabled={loadingAdd} onClick={() => {
+                      addDNS()
+                      setLoadingAdd(true)
+                    }}>{loadingAdd? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Save"}</Button>
                     </div>
                   </div>
                 </>
@@ -839,7 +845,7 @@ export default function Home({params}:any) {
                   <div className="w-[11%] pl-2 pt-2 pb-2 pr-4 font-semibold flex justify-end text-sm">Actions</div>
                 </div>
                 <div>
-                  {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS}/>)}
+                  {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS} setLoadingUpdate={setLoadingUpdate} loadingUpdate={loadingUpdate} loadingDelete={loadingDelete} setLoadingDelete={setLoadingDelete}/>)}
                 </div>
               </div>
               <div className="flex pt-4 pb-4 pr-4 justify-end">

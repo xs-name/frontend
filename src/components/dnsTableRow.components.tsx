@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronRight, Pencil, Settings2, Trash2 } from "lucide-react";
+import { ChevronRight, Loader2, Pencil, Settings2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DnsTable } from "./dnsTable.components";
 import { Button } from "./ui/button";
@@ -19,10 +19,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
+export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLoadingUpdate, loadingDelete, setLoadingDelete}: any) => {
 
     const [active, setActive] = useState(false);
     const [modal, setModal] = useState(false)
+
+    useEffect(() => {
+      console.log(loadingUpdate)
+    }, [loadingUpdate])
+
+    // const [loadingUpdate, setLoadingUpdate] = useState(false)
 
     const [dataTable, setDataTable] = useState({
         type: "A",
@@ -139,6 +145,13 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
     useEffect(() => {
       // console.log('element', element.type, element)
 
+      
+
+      if(element?.name != dataTable.domain){
+        element.name = element?.name.replace(`.${dataTable.domain}`, '');
+      }
+    
+
       switch(element.type){
         case "A":
           setDataTable({...dataTable, domain: element.zone_name, proxyStatus: element.proxied, type: element.type, name: element.name, TTL: element.ttl, types: {...dataTable.types, A: {...dataTable.types.A, address: element.content}}})
@@ -228,12 +241,18 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
                 <div>
                     <DnsTable data={dataTable} setData={setDataTable}/>
                     <div className="flex justify-between pr-5 pl-5 pb-5">
-                        <Button onClick={() => deleteDNS(element.id)}>
-                          <Trash2 className="mr-2 h-4 w-4"/> Delete
+                        <Button disabled={loadingUpdate || loadingDelete} onClick={() => {
+                          setLoadingDelete(true)
+                          deleteDNS(element.id)
+                        }}>
+                          {loadingDelete? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : <div className="flex items-center gap-1"><Trash2 className="mr-2 h-4 w-4"/> Delete</div>}
                         </Button>
                         <div className="flex gap-2 justify-end">
-                          <Button className="" variant="secondary" onClick={() => setActive(false)}>Cancel</Button>
-                          <Button onClick={() => updateDNS(element.id, dataTable, element.type, setActive)}>Save</Button>
+                          <Button disabled={loadingUpdate || loadingDelete} className="" variant="secondary" onClick={() => setActive(false)}>Cancel</Button>
+                          <Button disabled={loadingUpdate || loadingDelete} onClick={() => {
+                            setLoadingUpdate(true)
+                            updateDNS(element.id, dataTable, element.type, setActive)
+                          }}>{loadingUpdate? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Save"}</Button>
                         </div>
                     </div>
                 </div> : null
@@ -255,17 +274,19 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element}: any) => {
                 </DialogHeader>
                 <DnsTable className="pt-0 pl-0 pr-0 pb-0" data={dataTable} setData={setDataTable}/>
                 <DialogFooter className="max-sm:gap-2">
-                  <Button variant="destructive" onClick={() => {
+                  <Button disabled={loadingUpdate || loadingDelete} variant="destructive" onClick={() => {
                     deleteDNS(element.id)
+                    setLoadingDelete(true)
                     setModal(false)
                   }}>
-                    <Trash2 className="mr-2 h-4 w-4"/> Delete
+                    {loadingDelete? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : <div className="flex items-center gap-1"><Trash2 className="mr-2 h-4 w-4"/> Delete</div>}
                   </Button>
-                  <Button type="submit" variant="secondary" onClick={() => setModal(false)}>Cancel</Button>
-                  <Button type="submit" onClick={() => {
+                  <Button disabled={loadingUpdate || loadingDelete} type="submit" variant="secondary" onClick={() => setModal(false)}>Cancel</Button>
+                  <Button disabled={loadingUpdate || loadingDelete} type="submit" onClick={() => {
+                    setLoadingUpdate(true)
                     updateDNS(element.id, dataTable, element.type, setActive)
                     setModal(false)
-                  }}>Save</Button>
+                  }}>{loadingUpdate? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Save"}</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
