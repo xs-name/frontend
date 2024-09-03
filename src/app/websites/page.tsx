@@ -54,7 +54,7 @@ export default function Home() {
 
   useEffect(() => {
     getLanguage().then(res => {
-        setLanguage(res)
+      setLanguage(res)
     })
   }, [])
 
@@ -81,6 +81,11 @@ export default function Home() {
   useEffect(() => {
     axios.get(process.env.NEXT_PUBLIC_API + `/zones`, {headers: headers}).then((res:any) => {
       if(!res.data.error?.length){
+        const revers = res.data.result.sort((a:any, b:any) => {
+          let one :any = new Date(b.created_on)
+          let two :any = new Date(a.created_on)
+          return one - two
+        });
         const domainsTemp:any = Array.from(res.data.result);
         setDomainsAll(res.data.result)
         setDomains(res.data.result)
@@ -136,10 +141,11 @@ export default function Home() {
                           <Clock className="text-blue-600 h-4"/>
                           {el.status}
                         </div>
-                        
                         }
                         
-                        <FolderUp className="text-primary h-5"/>
+                        <div className="flex items-center gap-2">
+                          <FolderUp className="text-primary h-5"/>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
