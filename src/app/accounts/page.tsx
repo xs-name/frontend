@@ -135,8 +135,13 @@ export default function Accounts() {
     }
   }
 
+  useEffect(() => {
+    getAccounts()
+    setPage(1)
+  }, [search])
+
   function getAccounts(){
-    axios.get(process.env.NEXT_PUBLIC_API + `/cf-accounts?size=20&page=${page}`, {headers: headers}).then((res:any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + `/cf-accounts?size=20&page=${page}&email=${search}`, {headers: headers}).then((res:any) => {
       if(!res.data.error?.length){
         setData(res.data.result[0])
         // setPage(res.data.result[0].current_page)
@@ -303,8 +308,8 @@ export default function Accounts() {
               </div>
               <Link href="/accounts/add"><Button><Plus className="h-4 mr-1"/>Add accounts</Button></Link>
             </div>
-            {data?.data?.length == 0 && !loadingAccounts ? <div className="flex gap-2 items-center"><SearchX /> {lang?.not}</div> : null}
-            {loadingAccounts ? <div className="flex gap-2 items-center mt-4"><Loader2 className="animate-spin w-5 h-5"/>Downloading a list of accounts...</div> : 
+            {data?.data?.length == 0 && !loadingAccounts ? <div className="flex gap-2 items-center mt-2"><SearchX /> {lang?.not}</div> : null}
+            {loadingAccounts ? <div className="flex gap-2 items-center mt-4"><Loader2 className="animate-spin w-5 h-5"/>Downloading a list of accounts...</div> : data?.data?.length == 0 && !loadingAccounts ? null :
               <div className="w-full mt-5">
                 <div className="flex justify-between items-center mb-3 h-[34px]">
                   <div className="text-sm text-muted-foreground">Выделено {selected.length} элементов</div>
