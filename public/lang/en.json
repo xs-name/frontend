@@ -27,7 +27,9 @@
         "settings": "Settings",
         "support": "Support",
         "dns": "DNS",
-        "ssl": "SSL"
+        "ssl": "SSL",
+        "account": "Account",
+        "billing": "Billing"
     },
     "home": {
         "title": "Websites",

@@ -115,7 +115,7 @@ export default function Accounts() {
       for(let i = 0; i< data.data.length; i++){
         select.push(data.data[i].id)
       }
-      setSelected(select);
+      setSelected([...select, ...selected]);
     } else {
       let arr = selected;
       for(let i = 0; i< data.data.length; i++){

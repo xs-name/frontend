@@ -89,7 +89,7 @@ export default function SSL() {
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
-              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Settings</h1>
+              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Account</h1>
               <p className="leading-7 mb-5">
                 Customize your edge certificates, which encrypt traffic.
               </p>

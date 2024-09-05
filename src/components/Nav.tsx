@@ -96,9 +96,9 @@ const Nav = () => {
                     <Link href="/websites"><img className="w-16" src="/logo.svg" alt="logo" /></Link>
                 </div>
                 <div className="flex h-full items-center space-x-4 text-sm">
-                    <div className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <Plus className="h-4"/>{lang?.connect}</div>
+                    <Link href="/add-site" className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <Plus className="h-4"/>{lang?.connect}</Link>
                     <Separator orientation="vertical" className="h-5 max-md:hidden"/>
-                    <div className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"><Import className="h-4"/>{lang?.import}</div>
+                    <Link href='/accounts/add' className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"><Import className="h-4"/>{lang?.import}</Link>
                     <Separator orientation="vertical" className="h-5 max-md:hidden"/>
                     <DropdownMenu>
                         <DropdownMenuTrigger className="cursor-pointer max-md:hidden" asChild>
@@ -114,38 +114,7 @@ const Nav = () => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Separator orientation="vertical" className="h-5 max-md:hidden"/>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="cursor-pointer">
-                            <div className="flex items-center gap-1 h-full cursor-pointer"><UserRound className="h-4"/>{lang?.account}</div>
-                            {/* <Button variant="outline">Open</Button> */}
-                            {/* <Avatar>
-                                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                                <AvatarFallback>CN</AvatarFallback>
-                            </Avatar> */}
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56 left-10">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem>
-                                    <User className="mr-2 h-4 w-4" />
-                                    <span>Profile</span>
-                                    {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Settings className="mr-2 h-4 w-4" />
-                                    <span>Settings</span>
-                                    {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                            {/* <DropdownMenuSeparator /> */}
-                            {/* <DropdownMenuItem>
-                                <LogOut className="mr-2 h-4 w-4" />
-                                <span>Log out</span>
-                                <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                            </DropdownMenuItem> */}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <Link href="/account" className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <UserRound className="h-4"/>{lang?.account}</Link>
                     <Separator orientation="vertical" className="h-5"/>
                     <div className="h-full flex items-center cursor-pointer max-md:pr-5"><LogOut className="w-5 cursor-pointer"/></div>
                 </div>

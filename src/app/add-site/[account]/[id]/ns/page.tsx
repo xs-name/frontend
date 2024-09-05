@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { notFound, useRouter } from 'next/navigation'
-import { MoveLeft, Plus } from "lucide-react";
+import { Copy, MoveLeft, Plus } from "lucide-react";
 import { Switch } from "@/components/ui/switch"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
@@ -816,7 +816,8 @@ export default function Home({params}:any) {
                   {domain?.name_servers?.map((el: any) => 
                     <div className="flex w-full border-t" key={el}>
                       <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:hidden"><p className="text-stroke ">NS</p></div>
-                      <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full"><p className="text-stroke">{el}</p></div>
+                      {/* <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full"><p className="text-stroke">{el}</p></div> */}
+                      <div className="w-[84%] flex gap-2 items-center cursor-pointer pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full hover:text-primary" onClick={() => navigator.clipboard.writeText(el)}><p className="text-stroke">{el}</p> <Copy className="w-[10px] h-[10px]"/></div>
                     </div>
                   )}
                 </div>

@@ -45,12 +45,11 @@ export default function Home() {
 
   useEffect(() => {
     getLanguage().then(res => {
-        setLanguage(res)
+      setLanguage(res)
     })
   }, [])
 
   function addDomain() {
-    setProcessLoading(true)
     if(domain != ""){
       const data = {
         name: domain
@@ -64,13 +63,13 @@ export default function Home() {
             description: res.data.error[0]?.message
           })
         }
-      })
+      }).finally(() => setProcessLoading(false))
     } else {
       toast("Произошла ошибка", {
         description: "Enter an existing domain name"
       })
+      setProcessLoading(false)
     }
-    setProcessLoading(false)
   }
 
   if(loading){
@@ -92,10 +91,10 @@ export default function Home() {
               <Input value={domain} onChange={(e) => setDomain(e.target.value)} className="w-full" type="text" placeholder="example.com" required />
             </div>
             <div className="flex mt-8 max-w-96 items-center justify-between max-sm:flex-col max-sm:items-start max-sm:mt-4 max-sm:gap-2">
-              <Button onClick={() => {
+              <Button disabled={processLoading} onClick={() => {
                 setProcessLoading(true)
                 addDomain()
-              }}>{processLoading? <Loader2 className="animate-spin w-5 h-5"/> : lang?.button}</Button>
+              }}>{processLoading? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : lang?.button}</Button>
               <Link className="font-medium text-primary underline" href={""}>{lang?.create_domain}</Link>
             </div>
           </div>

@@ -277,7 +277,7 @@ export default function SSL({ params }: any) {
                     <p className="mt-3 mb-3">Redirect all requests with scheme “http” to “https”. This applies to all http requests to the zone.</p>
                   </div>
                   <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                    <Switch checked={AlwaysHTTPS} onCheckedChange={(value: boolean) => changeSettings('always_use_https', value, setAlwaysHTTPS)} id="airplane-mode" />
+                    <Switch disabled={loadingSettings.indexOf('always_use_https') >= 0} checked={AlwaysHTTPS} onCheckedChange={(value: boolean) => changeSettings('always_use_https', value, setAlwaysHTTPS)} id="airplane-mode" />
                     {loadingSettings.map((item: any) => 
                       item === 'always_use_https' ?
                       <Loader2 key={item} className="animate-spin w-5 h-5 ml-2"/> : null
@@ -305,7 +305,7 @@ export default function SSL({ params }: any) {
                     <p className="mt-3 mb-3">Only allow HTTPS connections from visitors that support the selected TLS protocol version or newer.</p>
                   </div>
                   <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                    <Select value={minTLS} onValueChange={(value) => changeSettings('min_tls_version', value, setMinTLS)}>
+                    <Select disabled={loadingSettings.indexOf('min_tls_version') >= 0} value={minTLS} onValueChange={(value) => changeSettings('min_tls_version', value, setMinTLS)}>
                       <SelectTrigger className="w-[150px] mt-1" defaultValue="1.0">
                         <SelectValue placeholder="" />
                       </SelectTrigger>
@@ -331,7 +331,7 @@ export default function SSL({ params }: any) {
                     <p className="mt-3 mb-3">Enable the latest version of the TLS protocol for improved security and performance.</p>
                   </div>
                   <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                    <Switch id="airplane-mode" checked={TSL13} onCheckedChange={(value: boolean) => changeSettings('tls_1_3', value, setTSL13)}  />
+                    <Switch disabled={loadingSettings.indexOf('tls_1_3') >= 0} id="airplane-mode" checked={TSL13} onCheckedChange={(value: boolean) => changeSettings('tls_1_3', value, setTSL13)}  />
                     {loadingSettings.map((item: any) => 
                       item === 'tls_1_3' ?
                       <Loader2 key={item} className="animate-spin w-5 h-5 ml-2"/> : null
@@ -345,7 +345,7 @@ export default function SSL({ params }: any) {
                     <p className="mt-3 mb-3">Automatic HTTPS Rewrites helps fix mixed content by changing “http” to “https” for all resources or links on your web site that can be served with HTTPS.</p>
                   </div>
                   <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                    <Switch id="airplane-mode" checked={HTTPSRewrites} onCheckedChange={(value: boolean) => changeSettings('automatic_https_rewrites', value, setHTTPSRewrites)}/>
+                    <Switch disabled={loadingSettings.indexOf('automatic_https_rewrites') >= 0} id="airplane-mode" checked={HTTPSRewrites} onCheckedChange={(value: boolean) => changeSettings('automatic_https_rewrites', value, setHTTPSRewrites)}/>
                     {loadingSettings.map((item: any) => 
                       item === 'automatic_https_rewrites' ?
                       <Loader2 key={item} className="animate-spin w-5 h-5 ml-2"/> : null

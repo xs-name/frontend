@@ -1,6 +1,6 @@
 'use client';
 
-import { Proportions, Users, Globe, Settings, Phone, Lock, SquareChartGantt } from "lucide-react";
+import { Proportions, Users, Globe, Settings, Phone, Lock, SquareChartGantt, User, Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react";
 import { useLanguageContext } from "./LanguageProvider";
@@ -28,6 +28,11 @@ export const Sitebar = ({active, setActive}: any) => {
                     setSitebar([
                         {name: res.data.sitebar.dns, link: pathname.slice(0, -3) + "dns", icon: <SquareChartGantt />},
                         {name: res.data.sitebar.ssl, link: pathname.slice(0, -3) + "ssl", icon: <Lock />}
+                    ])
+                } else if(pathname.slice(0, 10) == "/account" || pathname.slice(0, 10) == "/billing"){
+                    setSitebar([
+                        {name: res.data.sitebar.account, link: "/account", icon: <User />},
+                        {name: res.data.sitebar.billing, link: "/billing", icon: <Wallet />}
                     ])
                 } else {
                     setSitebar([

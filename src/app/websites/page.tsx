@@ -81,7 +81,7 @@ export default function Home() {
   useEffect(() => {
     axios.get(process.env.NEXT_PUBLIC_API + `/zones`, {headers: headers}).then((res:any) => {
       if(!res.data.error?.length){
-        const revers = res.data.result.sort((a:any, b:any) => {
+        const revers = res?.data?.result?.sort((a:any, b:any) => {
           let one :any = new Date(b.created_on)
           let two :any = new Date(a.created_on)
           return one - two
