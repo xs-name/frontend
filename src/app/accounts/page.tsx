@@ -134,7 +134,7 @@ export default function Accounts() {
     }
 
     for(let i = 0; i < data?.data?.length; i++){
-      console.log(selected.indexOf(data.data[i].id))
+      // console.log(selected.indexOf(data.data[i].id))
       if(selected.indexOf(data.data[i].id) == -1){
         isActive = false
         break

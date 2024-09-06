@@ -24,9 +24,6 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
     const [active, setActive] = useState(false);
     const [modal, setModal] = useState(false)
 
-    useEffect(() => {
-      console.log(loadingUpdate)
-    }, [loadingUpdate])
 
     // const [loadingUpdate, setLoadingUpdate] = useState(false)
 

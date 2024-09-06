@@ -63,7 +63,7 @@ const AuthPage = () => {
   function onSubmit(values: z.infer<typeof loginSchema>) {
     const data: any = values
     data.type = typeData
-    console.log(data)
+    // console.log(data)
 
     const config = {
       headers: { 
@@ -92,7 +92,7 @@ const AuthPage = () => {
               description: res.data.error[0].message,
             })
           } else {
-            console.log(res.data)
+            // console.log(res.data)
           }
         })
         break

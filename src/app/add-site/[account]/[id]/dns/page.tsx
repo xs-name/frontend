@@ -179,7 +179,7 @@ export default function Home({params}:any) {
     }
 
     axios.delete(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, {headers: headers, data: data}).then((res:any) => {
-      console.log(res.data)
+      // console.log(res.data)
       if(!res.data.error?.length){
         getDNS()
       }else{
@@ -477,7 +477,7 @@ export default function Home({params}:any) {
         if(!res.data.error?.length){
           setDataTable({...dataTable, domain: res.data.result?.name})
           setDomain(res.data.result)
-          console.log('domain', res.data.result)
+          // console.log('domain', res.data.result)
         }else{
           //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
         }
@@ -767,7 +767,7 @@ export default function Home({params}:any) {
     }
 
     axios.post(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, {headers: headers}).then((res:any) => {
-      console.log(res.data)
+      // console.log(res.data)
       if(!res.data.error?.length){
         getDNS()
         setIsEditing(false)

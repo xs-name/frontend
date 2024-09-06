@@ -153,7 +153,7 @@ export default function Accounts() {
         if(!res.data.error?.length){
             setStep(3)
             setResultData(res.data.result[0])
-            console.log(res.data.result[0])
+            // console.log(res.data.result[0])
         }else{
           //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
         }

@@ -74,24 +74,14 @@ export default function SSL() {
 
                 <div className="flex gap-8">
                     <div className="flex flex-col w-[200px]">
-                        <div className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer bg-slate-100 font-medium border-l-2 border-primary">Finances</div>
-                        <div className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer">Subscriptions</div>
+                        <Link href="/billing/finances" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer">Finances</Link>
+                        <Link href="/billing/subscriptions" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer bg-slate-100 font-medium border-l-2 border-primary">Subscriptions</Link>
                     </div>
                     <div className="flex flex-col w-[calc(100%_-_232px)]">
-                        <div className="border rounded-md flex">
-                            <div className="p-8 w-1/2">
-                                <b>Current balance</b>
-                                <p className="mt-4 mb-4">You can top up your balance with various cryptocurrencies.</p>
-                                <Button>Top up balance</Button>
-                            </div>
-                            <div className="bg-slate-100 w-1/2 flex items-center justify-center">
-                                <div className="text-xl font-bold">$ 155.3</div>
-                            </div>
-                        </div>
-
+                      
                         <div className="border rounded-md flex flex-col mt-4">
                             <div className="p-8 ">
-                                <b>Current balance</b>
+                                <b>Subscriptions</b>
                                 <p className="mt-2 mb-4">Here are displayed all your top-ups and expenses, except for subscriptions.</p>
                             </div>
 

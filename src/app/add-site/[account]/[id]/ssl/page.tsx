@@ -88,7 +88,7 @@ export default function SSL({ params }: any) {
 
   function updateSettings(){
     axios.get(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
-      console.log(res.data)
+      // console.log(res.data)
       if(!res.data.error?.length){
         setSettings(res.data.result)
         setSSL(res.data.result.find((el: any) => el.id === "ssl").value)
@@ -142,7 +142,7 @@ export default function SSL({ params }: any) {
   }
 
   function changeSettings (type: any, value: any, setType: any) {
-    console.log(type, value)
+    // console.log(type, value)
     if(type == "ssl"){
       setOpenText({
         type: type,

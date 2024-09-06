@@ -26,18 +26,18 @@ export const Sitebar = ({active, setActive}: any) => {
                 setLang(res.data.sitebar)
                 if(pathname.slice(0, 10) == "/websites/"){
                     setSitebar([
-                        {name: res.data.sitebar.dns, link: pathname.slice(0, -3) + "dns", icon: <SquareChartGantt />},
-                        {name: res.data.sitebar.ssl, link: pathname.slice(0, -3) + "ssl", icon: <Lock />}
+                        {name: res.data.sitebar.dns, link: pathname.slice(0, -3) + "dns", active: [], icon: <SquareChartGantt />},
+                        {name: res.data.sitebar.ssl, link: pathname.slice(0, -3) + "ssl", active: [], icon: <Lock />}
                     ])
-                } else if(pathname.slice(0, 10) == "/account" || pathname.slice(0, 10) == "/billing"){
+                } else if(pathname.slice(0, 10) == "/account" || pathname == "/billing/finances" || pathname == "/billing/subscriptions"){
                     setSitebar([
-                        {name: res.data.sitebar.account, link: "/account", icon: <User />},
-                        {name: res.data.sitebar.billing, link: "/billing", icon: <Wallet />}
+                        {name: res.data.sitebar.account, link: "/account", active: [], icon: <User />},
+                        {name: res.data.sitebar.billing, link: "/billing/finances", active: ['/billing/finances', '/billing/subscriptions'], icon: <Wallet />}
                     ])
                 } else {
                     setSitebar([
-                        {name: res.data.sitebar.websites, link: "/websites", icon: <Proportions />},
-                        {name: res.data.sitebar.accounts, link: "/accounts", icon: <Users />},
+                        {name: res.data.sitebar.websites, link: "/websites", active: [], icon: <Proportions />},
+                        {name: res.data.sitebar.accounts, link: "/accounts", active: [], icon: <Users />},
                         // {name: res.data.sitebar.domain, link: "/domain", icon: <Globe />}
                     ])
                 }
@@ -72,7 +72,7 @@ export const Sitebar = ({active, setActive}: any) => {
                 </div>
                 <div className="border-b flex flex-col gap-1 items-center pl-4 justify-between pt-5 pb-5">
                     {sitebar.map((item: any) => 
-                        <Link key={item.link} href={item.link} className={pathname == item.link ? `flex gap-4 border-primary/40 rounded-l-full border-l border-t border-b bg-primary/10 items-center w-full pt-2 pb-2 text-primary pl-5` : `flex gap-4 rounded-l-full hover:bg-primary/10 items-center w-full pt-2 pb-2 text-primary pl-5`} >
+                        <Link key={item.link} href={item.link} className={pathname == item.link || item.active.indexOf(pathname) != -1 ? `flex gap-4 border-primary/40 rounded-l-full border-l border-t border-b bg-primary/10 items-center w-full pt-2 pb-2 text-primary pl-5` : `flex gap-4 rounded-l-full hover:bg-primary/10 items-center w-full pt-2 pb-2 text-primary pl-5`} >
                             {item.icon}
                             <p className="leading-7 font-medium">{item.name}</p>
                         </Link>
