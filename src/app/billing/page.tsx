@@ -17,28 +17,6 @@ import { getLanguage } from "@/lib/language";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch";
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-
 import { headers } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { useUserContext } from "@/components/userProvider";
@@ -115,6 +93,23 @@ export default function SSL() {
                             <div className="p-8 ">
                                 <b>Current balance</b>
                                 <p className="mt-2 mb-4">Here are displayed all your top-ups and expenses, except for subscriptions.</p>
+                            </div>
+
+                            <div className="flex flex-col w-full">
+                              <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Description</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Type</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Amount</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Status</div>
+                              </div>
+                              <div className="flex w-full border-b max-lg:hidden">
+                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
+                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
+                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
+                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
+                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
+                              </div>
                             </div>
                         </div>
                     </div>
