@@ -114,7 +114,7 @@ const Nav = () => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Separator orientation="vertical" className="h-5 max-md:hidden"/>
-                    <Link href="/account/finances" className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <UserRound className="h-4"/>{lang?.account}</Link>
+                    <Link href="/account" className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <UserRound className="h-4"/>{lang?.account}</Link>
                     <Separator orientation="vertical" className="h-5"/>
                     <div className="h-full flex items-center cursor-pointer max-md:pr-5"><LogOut className="w-5 cursor-pointer"/></div>
                 </div>

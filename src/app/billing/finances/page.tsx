@@ -30,11 +30,21 @@ export default function SSL() {
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true);
 
+  const [pay, setPay] = useState([])
+
   useEffect(() => {
     getUser().then(res => {
       setUser(res)
+      getPay()
     })
   }, [])
+
+  function getPay() {
+    axios.get(process.env.NEXT_PUBLIC_API + '/account/payments', {headers: headers}).then((res: any) => {
+      console.log(res.data)
+      setPay(res.data)
+    })
+  }
 
 
   useEffect(() => {
@@ -58,7 +68,6 @@ export default function SSL() {
   if (loading) {
     return <Loading />;
   }
-
 
   return (
     <main>

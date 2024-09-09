@@ -12,7 +12,7 @@ import { Loading } from "@/components/Loading.components";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Loader2, MoveLeft } from "lucide-react";
+import { Check, Loader2, MoveLeft } from "lucide-react";
 import { getLanguage } from "@/lib/language";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch";
@@ -22,7 +22,7 @@ import { notFound } from "next/navigation";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
 
-export default function SSL() {
+export default function Tariffs() {
 
   const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
   const {user, setUser} = useUserContext();
@@ -30,12 +30,21 @@ export default function SSL() {
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true);
 
+  const [tariff, setTariff] = useState([])
+
   useEffect(() => {
     getUser().then(res => {
       setUser(res)
     })
+    getTariffs()
   }, [])
 
+  function getTariffs(){
+    axios.get(process.env.NEXT_PUBLIC_API + '/account/subscriptions/available').then((res: any) => {
+      console.log(res.data.result)
+      setTariff(res.data.result)
+    })
+  }
 
   useEffect(() => {
     if (language) {
@@ -72,6 +81,25 @@ export default function SSL() {
                 Customize your edge certificates, which encrypt traffic.
               </p>
 
+              <div className="mt-10">
+                <div className="flex justify-evenly pt-10 pb-10 h-full w-[930px] bg-slate-50 rounded-3xl">
+                  {tariff.map((item: any) => 
+                    <div className={item.title == "Business" ? "relative w-[300px]" : "w-[235px]"} key={item.title}>
+                      <div className={item.title == "Business" ? "absolute top-[-65px] bg-primary w-[300px] rounded-3xl pt-5 pb-5 pr-8 pl-8" : "w-[235px]"}>
+                        {item.title == "Business" ? <div className="flex justify-end mb-6"><div className="bg-blue-500 text-xs font-bold text-white pt-[2px] pb-[2px] pr-4 pl-4 rounded-md">MOST POPULAR</div></div> : null}
+                        <div className={item.title == "Business" ? "text-4xl font-bold text-white" : "text-4xl font-bold"}>${Number(item.price).toFixed(0)} <span className="text-lg font-normal text-slate-400">/month</span></div>
+                        <div className={item.title == "Business" ? "text-2xl mt-5 mb-3 text-white" : "text-2xl mb-3 mt-5"}>{item.title}</div>
+                        <div className="mt-2">
+                          {item.permissions?.map((plus: any) =>
+                            <div className={item.title == "Business"? "flex gap-1 mb-1 items-center text-white" : "flex gap-1 mb-1 items-center"}><div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div>{plus.permission}</div>
+                          )}
+                        </div>
+                        <Button variant={item.title == "Business" ? "secondary" : "default"} className="w-full mt-3">Выбрать</Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
               
             </div>
           </div>
