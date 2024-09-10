@@ -205,16 +205,16 @@ export default function Accounts() {
                                 <Table className="w-full">
                                     <TableHeader className="sticky top-0 bg-white">
                                         <TableRow>
-                                            <TableHead>Email <div className="hidden max-sm:flex">Token</div></TableHead>
-                                            <TableHead className="max-sm:hidden">Token</TableHead>
+                                            <TableHead>Email <div className="hidden max-lg:flex">Token</div></TableHead>
+                                            <TableHead className="max-lg:hidden">Token</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {accountResult.map((item: any) => 
                                             item.status?
                                             <TableRow key={item.email}>
-                                                <TableCell>{item.email} <div className="hidden max-sm:flex">{item.token}</div></TableCell>
-                                                <TableCell className="max-sm:hidden">{item.token}</TableCell>
+                                                <TableCell>{item.email} <div className="hidden max-lg:flex">{item.token}</div></TableCell>
+                                                <TableCell className="max-lg:hidden">{item.token}</TableCell>
                                             </TableRow> : null
                                         )}
                                     </TableBody>
@@ -226,16 +226,16 @@ export default function Accounts() {
                                 <Table className="w-full">
                                     <TableHeader className="sticky top-0 bg-white">
                                         <TableRow>
-                                            <TableHead>Email <div className="hidden max-sm:flex">Token</div></TableHead>
-                                            <TableHead className="max-sm:hidden">Token</TableHead>
+                                            <TableHead>Email <div className="hidden max-lg:flex">Token</div></TableHead>
+                                            <TableHead className="max-lg:hidden">Token</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {accountResult.map((item: any) => 
                                             !item.status?
                                             <TableRow key={item.email}>
-                                                <TableCell>{item.email} <div className="hidden max-sm:flex">{item.token}</div></TableCell>
-                                                <TableCell className="max-sm:hidden">{item.token}</TableCell>
+                                                <TableCell>{item.email} <div className="hidden max-lg:flex">{item.token}</div></TableCell>
+                                                <TableCell className="max-lg:hidden">{item.token}</TableCell>
                                             </TableRow> : null
                                         )}
                                     </TableBody>
@@ -281,15 +281,15 @@ export default function Accounts() {
                             <Table className="w-full">
                                 <TableHeader className="sticky top-0 bg-white">
                                     <TableRow>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Message</TableHead>
+                                        <TableHead>Email <div className="hidden max-lg:flex">Message</div></TableHead>
+                                        <TableHead className="max-lg:hidden">Message</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {resulData?.valid?.map((item: any) => 
                                         <TableRow key={item.email}>
-                                            <TableCell>{item.email}</TableCell>
-                                            <TableCell>{item.message}</TableCell>
+                                            <TableCell>{item.email} <div className="hidden max-lg:flex">{item.message}</div></TableCell>
+                                            <TableCell className="max-lg:hidden">{item.message}</TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>
@@ -301,15 +301,15 @@ export default function Accounts() {
                             <Table className="w-full">
                                 <TableHeader className="sticky top-0 bg-white">
                                     <TableRow>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Message</TableHead>
+                                        <TableHead>Email <div className="hidden max-lg:flex">Message</div></TableHead>
+                                        <TableHead className="max-lg:hidden">Message</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {resulData?.invalid?.map((item: any) => 
                                         <TableRow key={item.email}>
-                                            <TableCell>{item.email}</TableCell>
-                                            <TableCell>{item.message}</TableCell>
+                                            <TableCell>{item.email} <div className="hidden max-lg:flex">{item.message}</div></TableCell>
+                                            <TableCell className="max-lg:hidden">{item.message}</TableCell>
                                         </TableRow>
                                     )}
                                 </TableBody>

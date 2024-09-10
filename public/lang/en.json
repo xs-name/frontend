@@ -51,5 +51,31 @@
     },
     "ssl": {
         "loading": "Loading, please wait..."
+    },
+    "accounts": {
+        "title": "Accounts",
+        "description": "{accounts_description}",
+        "add_accounts": "Add accounts",
+        "downloading_accounts": "Downloading a list of accounts...",
+        "delete": "Delete",
+        "data_account": "Account details",
+        "email": "Email",
+        "token": "Token",
+        "continue": "Continue",
+        "confirmation": "Confirmation",
+        "confirmation_description": "Do you really want to view your account details?",
+        "enter_password": "Enter the password",
+        "cancel": "Cancel",
+        "loading": "Загрузка",
+        "confirm_count_1": "Do you really want to delete",
+        "confirm_count_2": "accounts?",
+        "highlighted": "elements are highlighted",
+        "action": "Action",
+        "actions": "Actions",
+        "open_menu": "Open menu",
+        "copy_email": "Copy email",
+        "view": "View",
+        "of": "of",
+        "rows_selected": "row(s) selected"
     }
 }

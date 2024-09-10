@@ -91,7 +91,7 @@ export default function Tariffs() {
                         <div className={item.title == "Business" ? "text-2xl mt-5 mb-3 text-white" : "text-2xl mb-3 mt-5"}>{item.title}</div>
                         <div className="mt-2">
                           {item.permissions?.map((plus: any) =>
-                            <div className={item.title == "Business"? "flex gap-1 mb-1 items-center text-white" : "flex gap-1 mb-1 items-center"}><div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div>{plus.permission}</div>
+                            <div key={plus.permission} className={item.title == "Business"? "flex gap-1 mb-1 items-center text-white" : "flex gap-1 mb-1 items-center"}><div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div>{plus.permission}</div>
                           )}
                         </div>
                         <Button variant={item.title == "Business" ? "secondary" : "default"} className="w-full mt-3">Выбрать</Button>

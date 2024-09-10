@@ -91,7 +91,7 @@ export default function Accounts() {
   useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
-        setLang(res.data.home)
+        setLang(res.data.accounts)
         // setLoadingWebsites(false)
       }).finally(() => setLoading(false));
     }
@@ -241,15 +241,15 @@ export default function Accounts() {
           {access ? 
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Данные аккаунта</AlertDialogTitle>
+                <AlertDialogTitle>{lang?.data_account}</AlertDialogTitle>
                 <AlertDialogDescription>
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-1 flex-col">
-                      <div className="font-semibold text-black">Почта: </div>
+                      <div className="font-semibold text-black">{lang?.email}: </div>
                       <div onClick={() => navigator.clipboard.writeText(viewData.email)} className="flex items-center gap-2 cursor-pointer">{viewData.email} <Copy className="w-[10px] h-[10px]"/></div>
                     </div>
                     <div className="flex gap-1 flex-col">
-                      <div className="font-semibold text-black">Токен: </div>
+                      <div className="font-semibold text-black">{lang?.token}: </div>
                       <div onClick={() => navigator.clipboard.writeText(viewData.token)} className="flex items-center gap-2 cursor-pointer">{viewData.token} <Copy className="w-[10px] h-[10px]"/></div>
                     </div>
                     <div className="flex gap-1 flex-col">
@@ -265,27 +265,27 @@ export default function Accounts() {
                   setOpenView(false)
                   setAccess(false)
                   setIdView(null)
-                }}>Continue</Button>
+                }}>{lang?.continue}</Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           :
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Подтверждение</AlertDialogTitle>
+                <AlertDialogTitle>{lang?.confirmation}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Вы действительно хотите посмотреть данные аккаунта?
+                  {lang?.confirmation_description}
                 </AlertDialogDescription>
                 <div className='max-lg:w-full'>
-                  <Label className="text-xs text-muted-foreground mt-1">Введите пароль</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.enter_password}</Label>
                   <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingView}>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingView}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingView} onClick={() => {
                   setLoadingView(true)
                   viewAccounts()
-                }}>{loadingView ? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Continue"}</Button>
+                }}>{loadingView ? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> {lang?.loading}</div> : lang?.continue}</Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           }
@@ -295,27 +295,27 @@ export default function Accounts() {
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Подтверждение</AlertDialogTitle>
+              <AlertDialogTitle>{lang?.confirmation}</AlertDialogTitle>
               <AlertDialogDescription>
-              Вы действительно хотите удалить {selected.length} аккаунта?
+              {lang?.confirm_count_1} {selected.length} {lang?.confirm_count_2}
               </AlertDialogDescription>
               <div className='max-lg:w-full'>
-                <Label className="text-xs text-muted-foreground mt-1">Введите пароль</Label>
+                <Label className="text-xs text-muted-foreground mt-1">{lang?.enter_password}</Label>
                 <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
               </div> 
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={loadingDelete}>Cancel</AlertDialogCancel>
+              <AlertDialogCancel disabled={loadingDelete}>{lang?.cancel}</AlertDialogCancel>
               <Button disabled={loadingDelete} onClick={() => {
                 setLoadingDelete(true)
                 deleteAccounts()
-              }}>{loadingDelete ? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Continue"}</Button>
+              }}>{loadingDelete ? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> {lang?.loading}</div> : lang?.continue}</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
-            <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">Accounts</h1>
+            <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">{lang?.title}</h1>
             <p className="leading-7">{lang?.description}</p>
             <div className="flex justify-between mt-8 max-sm:flex-col max-sm:gap-2">
               <div className="relative">
@@ -328,14 +328,14 @@ export default function Accounts() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <Link href="/accounts/add"><Button><Plus className="h-4 mr-1"/>Add accounts</Button></Link>
+              <Link href="/accounts/add"><Button><Plus className="h-4 mr-1"/>{lang?.add_accounts}</Button></Link>
             </div>
             {data?.data?.length == 0 && !loadingAccounts ? <div className="flex gap-2 items-center mt-2"><SearchX /> {lang?.not}</div> : null}
-            {loadingAccounts ? <div className="flex gap-2 items-center mt-4"><Loader2 className="animate-spin w-5 h-5"/>Downloading a list of accounts...</div> : data?.data?.length == 0 && !loadingAccounts ? null :
+            {loadingAccounts ? <div className="flex gap-2 items-center mt-4"><Loader2 className="animate-spin w-5 h-5"/>{lang?.downloading_accounts}</div> : data?.data?.length == 0 && !loadingAccounts ? null :
               <div className="w-full mt-5">
                 <div className="flex justify-between items-center mb-3 h-[34px]">
-                  <div className="text-sm text-muted-foreground">Выделено {selected.length} элементов</div>
-                  {selected.length > 0 ? <Button variant="destructive" onClick={() => setOpenDelete(true)} className="h-[34px]">Удалить</Button> : null}
+                  <div className="text-sm text-muted-foreground">{selected.length} {lang?.highlighted}</div>
+                  {selected.length > 0 ? <Button variant="destructive" onClick={() => setOpenDelete(true)} className="h-[34px]">{lang?.delete}</Button> : null}
                 </div>
                 <div className="rounded-md border max-sm:overflow-hidden">
                   <Table>
@@ -343,8 +343,8 @@ export default function Accounts() {
                       <TableRow>
                         <TableHead className="w-[30px]"><Checkbox name="all" checked={selectedAll} onClick={(value) => handleSelectedAll(!selectedAll)} /></TableHead>
                         <TableHead className="max-lg:hidden">ID</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead className="text-right max-sm:hidden">Action</TableHead>
+                        <TableHead>{lang?.email}</TableHead>
+                        <TableHead className="text-right max-sm:hidden">{lang?.action}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -359,22 +359,22 @@ export default function Accounts() {
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="h-8 w-8 p-0">
-                                  <span className="sr-only">Open menu</span>
+                                  <span className="sr-only">{lang?.open_menu}</span>
                                   <MoreHorizontal className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <DropdownMenuLabel>{lang?.actions}</DropdownMenuLabel>
                                 <DropdownMenuItem
                                   onClick={() => navigator.clipboard.writeText(item.email)}
                                 >
-                                  Copy email
+                                  {lang?.copy_email}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => {
                                   setIdView(item.id)
                                   setOpenView(true)
-                                }}>View</DropdownMenuItem>
+                                }}>{lang?.view}</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -384,7 +384,7 @@ export default function Accounts() {
                   </Table>
                 </div>
               <div className="flex items-center justify-between mt-3 gap-3 max-sm:flex-col">
-                <div className="flex whitespace-nowrap text-sm text-muted-foreground">{page} of {data.all_page} row(s) selected.</div>
+                <div className="flex whitespace-nowrap text-sm text-muted-foreground">{page} {lang?.of} {data.all_page} {lang?.rows_selected}.</div>
                 <div className="flex gap-2">
                   <div onClick={() => paginate(1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex">
                     <ChevronsLeft className="w-[15px] h-[16px]"/>
