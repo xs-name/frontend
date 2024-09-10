@@ -66,7 +66,7 @@
         "confirmation_description": "Do you really want to view your account details?",
         "enter_password": "Enter the password",
         "cancel": "Cancel",
-        "loading": "Загрузка",
+        "loading": "Loading",
         "confirm_count_1": "Do you really want to delete",
         "confirm_count_2": "accounts?",
         "highlighted": "elements are highlighted",
@@ -76,6 +76,14 @@
         "copy_email": "Copy email",
         "view": "View",
         "of": "of",
-        "rows_selected": "row(s) selected"
+        "rows_selected": "row(s) selected",
+        "add_accounts_description": "{add_accounts_description}",
+        "place_accounts": "Place your accounts",
+        "separator_character": "Separator character",
+        "successful": "Successful",
+        "failures": "Failures",
+        "message": "Message",
+        "processing": "Processing",
+        "back": "Back"
     }
 }

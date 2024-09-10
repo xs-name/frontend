@@ -1,30 +1,7 @@
 "use client"
-
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
 import { ArrowUpDown, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, MoreHorizontal, Plus, Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import Nav from "@/components/Nav"
 import { useEffect, useState } from "react"
@@ -73,7 +50,7 @@ export default function Accounts() {
   useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
-        setLang(res.data.home)
+        setLang(res.data.accounts)
         // setLoadingWebsites(false)
       }).finally(() => setLoading(false));
     }
@@ -175,20 +152,20 @@ export default function Accounts() {
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
-            <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">Add accounts</h1>
-            <p className="leading-7">{lang?.description}</p>
+            <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">{lang?.add_accounts}</h1>
+            <p className="leading-7">{lang?.add_accounts_description}</p>
             {step == 1? 
             <div className="flex flex-col mt-4">
                 <div className='max-lg:w-full'>
-                    <Label className="text-xs text-muted-foreground">Аккаунты</Label>
-                    <Textarea value={accounts} onChange={(e) => setAccounts(e.target.value)} placeholder="Поместите свои аккаунты" />
+                    <Label className="text-xs text-muted-foreground">{lang?.title}</Label>
+                    <Textarea value={accounts} onChange={(e) => setAccounts(e.target.value)} placeholder={lang?.place_accounts} />
                 </div>
                 <div className="flex justify-between mt-3 items-end max-sm:flex-col max-sm:gap-2 max-sm:mt-2 max-sm:items-start">
                     <div className='max-lg:w-full'>
-                        <Label className="text-xs text-muted-foreground">Символ разделитель</Label>
-                        <Input maxLength={1} value={symbol} onChange={(e) => setSymbol(e.target.value)} type="text" placeholder="Символ разделителя" />
+                        <Label className="text-xs text-muted-foreground">{lang?.separator_character}</Label>
+                        <Input maxLength={1} value={symbol} onChange={(e) => setSymbol(e.target.value)} type="text" placeholder={lang?.separator_character} />
                     </div>
-                    <Button type="submit" onClick={() => CheckingData()}>Continue</Button>
+                    <Button type="submit" onClick={() => CheckingData()}>{lang?.continue}</Button>
                 </div>
             </div>
             :
@@ -197,16 +174,16 @@ export default function Accounts() {
                 <div className="flex flex-col gap-3 mt-2">
                     <Tabs defaultValue="successful" className="w-full">
                         <TabsList>
-                            <TabsTrigger value="successful" className="gap-2">Successful <Badge>{countCorrect}</Badge></TabsTrigger>
-                            <TabsTrigger value="failures" className="gap-2">Failures <Badge>{accountResult.length - countCorrect}</Badge></TabsTrigger>
+                            <TabsTrigger value="successful" className="gap-2">{lang?.successful} <Badge>{countCorrect}</Badge></TabsTrigger>
+                            <TabsTrigger value="failures" className="gap-2">{lang?.failures} <Badge>{accountResult.length - countCorrect}</Badge></TabsTrigger>
                         </TabsList>
                         <TabsContent value="successful">
                             <ScrollArea className="h-[400px] border rounded-md">
                                 <Table className="w-full">
                                     <TableHeader className="sticky top-0 bg-white">
                                         <TableRow>
-                                            <TableHead>Email <div className="hidden max-lg:flex">Token</div></TableHead>
-                                            <TableHead className="max-lg:hidden">Token</TableHead>
+                                            <TableHead>{lang?.email} <div className="hidden max-lg:flex">{lang?.token}</div></TableHead>
+                                            <TableHead className="max-lg:hidden">{lang?.token}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -226,8 +203,8 @@ export default function Accounts() {
                                 <Table className="w-full">
                                     <TableHeader className="sticky top-0 bg-white">
                                         <TableRow>
-                                            <TableHead>Email <div className="hidden max-lg:flex">Token</div></TableHead>
-                                            <TableHead className="max-lg:hidden">Token</TableHead>
+                                            <TableHead>{lang?.email} <div className="hidden max-lg:flex">{lang?.token}</div></TableHead>
+                                            <TableHead className="max-lg:hidden">{lang?.token}</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -244,11 +221,11 @@ export default function Accounts() {
                         </TabsContent>
                     </Tabs>
                     <div className="flex justify-end gap-2">
-                        <Button disabled={loadingAccounts} variant="secondary" onClick={() => setStep(1)}>Назад</Button>
+                        <Button disabled={loadingAccounts} variant="secondary" onClick={() => setStep(1)}>{lang?.back}</Button>
                         <Button disabled={loadingAccounts} type="submit" onClick={() => {
                             saveAccounts()
                             setLoadingAccounts(true)
-                        }}>{loadingAccounts? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Обрабатываем</div> : "Continue"}</Button>
+                        }}>{loadingAccounts? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> {lang?.processing}</div> : lang?.continue}</Button>
                     </div>
                     
                     {/* <Table className="w-full border">
@@ -273,16 +250,16 @@ export default function Accounts() {
             <div className="flex flex-col gap-3 mt-2">
                 <Tabs defaultValue={resulData?.valid?.length == 0 ? 'failures' : 'successful'} className="w-full">
                     <TabsList>
-                        <TabsTrigger value="successful" className="gap-2">Successful <Badge>{resulData?.valid?.length}</Badge></TabsTrigger>
-                        <TabsTrigger value="failures" className="gap-2">Failures <Badge>{resulData?.invalid?.length}</Badge></TabsTrigger>
+                        <TabsTrigger value="successful" className="gap-2">{lang?.successful} <Badge>{resulData?.valid?.length}</Badge></TabsTrigger>
+                        <TabsTrigger value="failures" className="gap-2">{lang?.failures} <Badge>{resulData?.invalid?.length}</Badge></TabsTrigger>
                     </TabsList>
                     <TabsContent value="successful">
                         <ScrollArea className="h-[400px] border rounded-md">
                             <Table className="w-full">
                                 <TableHeader className="sticky top-0 bg-white">
                                     <TableRow>
-                                        <TableHead>Email <div className="hidden max-lg:flex">Message</div></TableHead>
-                                        <TableHead className="max-lg:hidden">Message</TableHead>
+                                        <TableHead>{lang?.email} <div className="hidden max-lg:flex">{lang?.message}</div></TableHead>
+                                        <TableHead className="max-lg:hidden">{lang?.message}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -301,8 +278,8 @@ export default function Accounts() {
                             <Table className="w-full">
                                 <TableHeader className="sticky top-0 bg-white">
                                     <TableRow>
-                                        <TableHead>Email <div className="hidden max-lg:flex">Message</div></TableHead>
-                                        <TableHead className="max-lg:hidden">Message</TableHead>
+                                        <TableHead>{lang?.email} <div className="hidden max-lg:flex">{lang?.message}</div></TableHead>
+                                        <TableHead className="max-lg:hidden">{lang?.message}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -318,7 +295,7 @@ export default function Accounts() {
                     </TabsContent>
                 </Tabs>
                 <div className="flex justify-end">
-                    <Link href={'/accounts'}><Button>Continue</Button></Link>
+                    <Link href={'/accounts'}><Button>{lang?.continue}</Button></Link>
                 </div>
                 
                 {/* <Table className="w-full border">
