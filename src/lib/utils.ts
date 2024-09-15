@@ -7,5 +7,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export const headers = {
   'Content-Type': 'application/json',
-  'Authorization': process.env.NEXT_PUBLIC_KEY
+  // 'Authorization': process.env.NEXT_PUBLIC_KEY
 };
+
+export const config = {
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  withCredentials: true
+}

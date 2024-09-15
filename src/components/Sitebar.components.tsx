@@ -9,8 +9,10 @@ import Link from "next/link";
 import { Loading } from "./Loading.components";
 import { usePathname } from "next/navigation";
 import { getLanguage } from "@/lib/language";
+import { useUserContext } from "./userProvider";
 
 export const Sitebar = ({active, setActive}: any) => {
+    const {user, setUser} = useUserContext();
     const {language, setLanguage} = useLanguageContext()
     const [lang, setLang] = useState<any>();
     const [loading, setLoading] = useState(true)
@@ -68,7 +70,7 @@ export const Sitebar = ({active, setActive}: any) => {
             <div onClick={(e) => e.stopPropagation()} className={active? "fixed top-0 h-dvh bg-background w-[260px] max-md:translate-x-[0] transition-all pt-16 border-r pointer-events-auto" : "fixed top-0 h-dvh bg-background w-[260px] max-md:translate-x-[-100%] transition-all pt-16 border-r pointer-events-auto"}>
                 <div className="border-b flex h-14 items-center pl-4 pr-4 justify-between">
                     <p className="leading-7 [&:not(:first-child)]:mt-6 font-medium">{lang?.plan}</p>
-                    <Badge>{lang?.enterprise}</Badge>
+                    <Badge>{user?.subscribe == null ? "Free" : user?.subscribe}</Badge>
                 </div>
                 <div className="border-b flex flex-col gap-1 items-center pl-4 justify-between pt-5 pb-5">
                     {sitebar.map((item: any) => 

@@ -33,7 +33,7 @@ import { Loading } from "@/components/Loading.components"
 import { getLanguage } from "@/lib/language"
 import { useLanguageContext } from "@/components/LanguageProvider"
 import AuthPage from "@/components/AuthPage.component"
-import { headers } from "@/lib/utils"
+import { config, headers } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -60,10 +60,12 @@ import {
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
 import { Label } from "@radix-ui/react-label"
+import { getUser } from "@/lib/user"
+import { useUserContext } from "@/components/userProvider"
  
 
 export default function Accounts() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+  const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -86,7 +88,16 @@ export default function Accounts() {
   const [idView, setIdView] = useState<any>(null)
   const [viewData, setViweData] = useState<any>(null)
 
-
+  useEffect(() => {
+    getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
+      setUser(res)
+    })
+  }, [])
 
   useEffect(() => {
     if(language){
@@ -98,9 +109,6 @@ export default function Accounts() {
   }, [language])
 
   useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
     getAccounts()
   }, [])
 
@@ -163,7 +171,7 @@ export default function Accounts() {
   }, [search])
 
   function getAccounts(){
-    axios.get(process.env.NEXT_PUBLIC_API + `/cf-accounts?size=20&page=${page}&email=${search}`, {headers: headers}).then((res:any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + `/cf-accounts?size=20&page=${page}&email=${search}`, config).then((res:any) => {
       if(!res.data.error?.length){
         setData(res.data.result[0])
         // setPage(res.data.result[0].current_page)
@@ -186,7 +194,11 @@ export default function Accounts() {
       id: selected,
       password: password
     };
-    axios.delete(process.env.NEXT_PUBLIC_API + `/cf-accounts`, {headers: headers, data: data}).then((res:any) => {
+
+    const newConfig: any = config;
+    newConfig.data = data
+
+    axios.delete(process.env.NEXT_PUBLIC_API + `/cf-accounts`, newConfig).then((res:any) => {
       if(!res.data.error?.length){
         getAccounts()
       }else{
@@ -207,7 +219,7 @@ export default function Accounts() {
       id: idView,
       password: password
     };
-    axios.post(process.env.NEXT_PUBLIC_API + `/cf-accounts`, data, {headers: headers}).then((res:any) => {
+    axios.post(process.env.NEXT_PUBLIC_API + `/cf-accounts`, data, config).then((res:any) => {
 
       if(!res.data.error?.length){
         setViweData(res.data.result[0])
@@ -233,7 +245,7 @@ export default function Accounts() {
 
   return (
     <main>
-      {isAuthorized?
+      {user.length != 0?
       <div>
         <Toaster />
         <Nav />

@@ -32,12 +32,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { getLanguage } from "@/lib/language";
 import { DnsTable } from "@/components/dnsTable.components";
 import { DnsTableRow } from "@/components/dnsTableRow.components";
-import { headers } from "@/lib/utils";
+import { config, headers } from "@/lib/utils";
+import { useUserContext } from "@/components/userProvider";
+import { getUser } from "@/lib/user";
 
 
 export default function Home({params}:any) {
 
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+  const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -45,6 +47,17 @@ export default function Home({params}:any) {
   const [DNS, setDNS] = useState<any>([]);
 
   const router = useRouter()
+
+  useEffect(() => {
+    getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
+      setUser(res)
+    })
+  }, [])
 
   const [dataTable, setDataTable] = useState({
     type: "A",
@@ -161,7 +174,7 @@ export default function Home({params}:any) {
   const [isEditing, setIsEditing] = useState(true);
 
   function getDNS(){
-    axios.get(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, config).then((res:any) => {
       if(!res.data.error?.length){
         setDNS(res.data.result[0])
       }else{
@@ -175,7 +188,10 @@ export default function Home({params}:any) {
       id: id
     }
 
-    axios.delete(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, {headers: headers, data: data}).then((res:any) => {
+    const newConfig: any = config;
+    newConfig.data = data
+
+    axios.delete(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, newConfig).then((res:any) => {
       // console.log(res.data)
       if(!res.data.error?.length){
         getDNS()
@@ -454,7 +470,7 @@ export default function Home({params}:any) {
 
     data.id = id
 
-    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, {headers: headers}).then((res:any) => {
+    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, config).then((res:any) => {
       // console.log(res.data)
       if(!res.data.error?.length){
         getDNS()
@@ -470,7 +486,7 @@ export default function Home({params}:any) {
 
   useEffect(() => {
     if(params.account && params.id){
-      axios.get(process.env.NEXT_PUBLIC_API + `/zones/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
+      axios.get(process.env.NEXT_PUBLIC_API + `/zones/${params.account}/${params.id}`, config).then((res:any) => {
         if(!res.data.error?.length){
           setDataTable({...dataTable, domain: res.data.result?.name})
           setDomain(res.data.result)
@@ -493,11 +509,6 @@ export default function Home({params}:any) {
     }
   }, [language])
 
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
 
   function addDNS(){
     let data: any = {}
@@ -763,7 +774,7 @@ export default function Home({params}:any) {
         break;
     }
 
-    axios.post(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, {headers: headers}).then((res:any) => {
+    axios.post(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, data, config).then((res:any) => {
       // console.log(res.data)
       if(!res.data.error?.length){
         getDNS()
@@ -790,7 +801,7 @@ export default function Home({params}:any) {
 
   return (
     <main>
-      {isAuthorized?
+      {user.length != 0?
       <div>
         <Toaster />
         <Nav />

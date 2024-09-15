@@ -46,7 +46,6 @@ import { getUser } from "@/lib/user";
 
 export default function SSL() {
 
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
   const {user, setUser} = useUserContext();
   const { language, setLanguage } = useLanguageContext();
   const [lang, setLang] = useState<any>();
@@ -54,6 +53,11 @@ export default function SSL() {
 
   useEffect(() => {
     getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
       setUser(res)
     })
   }, [])
@@ -71,11 +75,6 @@ export default function SSL() {
     }
   }, [language]);
 
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
 
   if (loading) {
     return <Loading />;
@@ -84,7 +83,7 @@ export default function SSL() {
 
   return (
     <main>
-      {isAuthorized ? (
+      {user.length != 0? (
         <div>
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">

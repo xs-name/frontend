@@ -9,7 +9,7 @@ import { Sitebar } from "@/components/Sitebar.components";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { cn, headers } from "@/lib/utils";
+import { cn, config, headers } from "@/lib/utils";
 import { Check, Clock, FolderUp, Loader2, Plus, Search, SearchX } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -27,9 +27,11 @@ import {
 import { Loading } from "@/components/Loading.components";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getLanguage } from "@/lib/language";
+import { useUserContext } from "@/components/userProvider";
+import { getUser } from "@/lib/user";
 
 export default function Home() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+  const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -44,19 +46,28 @@ export default function Home() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    if(language){
-      axios.get(`/lang/${language}.json`).then((res:any) => {
-        setLang(res.data.home)
-        // setLoadingWebsites(false)
-      }).finally(() => setLoading(false));
-    }
+    loadingPage()
   }, [language])
 
   useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
+    loadingPage()
+    getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
+      setUser(res)
     })
   }, [])
+
+  function loadingPage() {
+    if(language){
+      axios.get(`/lang/${language}.json`).then((res:any) => {
+        setLang(res.data.home)
+      }).finally(() => setLoading(false));
+    }
+  }
 
   useEffect(() => {
     const domainsTemp = Array.from(domains);
@@ -79,7 +90,7 @@ export default function Home() {
   }, [search])
 
   useEffect(() => {
-    axios.get(process.env.NEXT_PUBLIC_API + `/zones`, {headers: headers}).then((res:any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + `/zones`, config).then((res:any) => {
       if(!res.data.error?.length){
         const revers = res?.data?.result?.sort((a:any, b:any) => {
           let one :any = new Date(b.created_on)
@@ -104,7 +115,7 @@ export default function Home() {
 
   return (
     <main>
-      {isAuthorized?
+      {user.length != 0?
       <div>
         <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">

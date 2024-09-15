@@ -15,14 +15,16 @@ import { Button } from "@/components/ui/button";
 import { getLanguage } from "@/lib/language";
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
-import { headers } from "@/lib/utils";
+import { config, headers } from "@/lib/utils";
 import { redirect } from 'next/navigation'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from "lucide-react";
+import { getUser } from "@/lib/user";
+import { useUserContext } from "@/components/userProvider";
 
 
 export default function Home() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+  const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -32,7 +34,16 @@ export default function Home() {
 
   const router = useRouter()
 
-
+  useEffect(() => {
+    getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
+      setUser(res)
+    })
+  }, [])
 
   useEffect(() => {
     if(language){
@@ -43,18 +54,13 @@ export default function Home() {
     }
   }, [language])
 
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
 
   function addDomain() {
     if(domain != ""){
       const data = {
         name: domain
       }
-      axios.post(process.env.NEXT_PUBLIC_API + `/zones`, data, {headers: headers}).then((res:any) => {
+      axios.post(process.env.NEXT_PUBLIC_API + `/zones`, data, config).then((res:any) => {
         if(!res.data.error?.length){
           router.push(`/add-site/${res.data.result.account.id}/${res.data.result.id}/dns`)
           console.log(res.data)
@@ -78,7 +84,7 @@ export default function Home() {
 
   return (
     <main>
-      {isAuthorized?
+      {user.length != 0?
       <div>
         <Toaster />
         <Nav />

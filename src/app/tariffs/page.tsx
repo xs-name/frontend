@@ -34,6 +34,11 @@ export default function Tariffs() {
 
   useEffect(() => {
     getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
       setUser(res)
     })
     getTariffs()
@@ -57,11 +62,6 @@ export default function Tariffs() {
     }
   }, [language]);
 
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
 
   if (loading) {
     return <Loading />;

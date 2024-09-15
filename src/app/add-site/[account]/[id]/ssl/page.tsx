@@ -39,12 +39,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { headers } from "@/lib/utils";
+import { config, headers } from "@/lib/utils";
 import { notFound, useRouter } from "next/navigation";
+import { useUserContext } from "@/components/userProvider";
+import { getUser } from "@/lib/user";
 
 export default function SSL({ params }: any) {
 
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+  const {user, setUser} = useUserContext();
   const { language, setLanguage } = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true);
@@ -75,6 +77,17 @@ export default function SSL({ params }: any) {
   });
 
   useEffect(() => {
+    getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
+      setUser(res)
+    })
+  }, [])
+
+  useEffect(() => {
     if (language) {
       axios
         .get(`/lang/${language}.json`)
@@ -87,7 +100,7 @@ export default function SSL({ params }: any) {
   }, [language]);
 
   function updateSettings(){
-    axios.get(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}`, config).then((res:any) => {
       // console.log(res.data)
       if(!res.data.error?.length){
         setSettings(res.data.result)
@@ -111,7 +124,7 @@ export default function SSL({ params }: any) {
     if(params.account && params.id){
       updateSettings()
 
-      axios.get(process.env.NEXT_PUBLIC_API + `/zones/${params.account}/${params.id}`, {headers: headers}).then((res:any) => {
+      axios.get(process.env.NEXT_PUBLIC_API + `/zones/${params.account}/${params.id}`, config).then((res:any) => {
         if(!res.data.error?.length){
           setDomain(res.data.result)
         }else{
@@ -128,7 +141,7 @@ export default function SSL({ params }: any) {
       value: openText.value
     }
 
-    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}/${openText.type}`, data, {headers: headers}).then((res:any) => {
+    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}/${openText.type}`, data, config).then((res:any) => {
       if(!res.data.error?.length){
         updateSettings()
       }else{
@@ -170,7 +183,7 @@ export default function SSL({ params }: any) {
       setType(value)
     }
 
-    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}/${type}`, data, {headers: headers}).then((res:any) => {
+    axios.patch(process.env.NEXT_PUBLIC_API + `/zones/settings/${params.account}/${params.id}/${type}`, data, config).then((res:any) => {
       if(!res.data.error?.length){
         updateSettings()
       }else{
@@ -181,12 +194,6 @@ export default function SSL({ params }: any) {
     
   }
 
-
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
 
   function further(){
     // if(DNS.data.length > 0){
@@ -208,7 +215,7 @@ export default function SSL({ params }: any) {
 
   return (
     <main>
-      {isAuthorized ? (
+      {user.length != 0? (
         <div>
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">

@@ -10,7 +10,7 @@ import { Loading } from "@/components/Loading.components"
 import { getLanguage } from "@/lib/language"
 import { useLanguageContext } from "@/components/LanguageProvider"
 import AuthPage from "@/components/AuthPage.component"
-import { headers } from "@/lib/utils"
+import { config, headers } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -28,11 +28,13 @@ import { Label } from "@radix-ui/react-label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useUserContext } from "@/components/userProvider"
+import { getUser } from "@/lib/user"
  
 
 
 export default function Accounts() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
+    const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
@@ -47,6 +49,19 @@ export default function Accounts() {
 
   const [accountResult, setAccountResult] = useState<any>([]);
 
+
+  useEffect(() => {
+    getUser().then(res => {
+        if(res.length != 0){
+            setLanguage(res.language)
+        } else {
+            setLanguage('en')
+        }
+      setUser(res)
+    })
+  }, [])
+
+
   useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
@@ -56,11 +71,6 @@ export default function Accounts() {
     }
   }, [language])
 
-  useEffect(() => {
-    getLanguage().then(res => {
-        setLanguage(res)
-    })
-  }, [])
 
   function CheckingData(){
     let arr = accounts.split('\n');
@@ -126,7 +136,7 @@ export default function Accounts() {
         }
     }
 
-    axios.post(process.env.NEXT_PUBLIC_API + `/cf-accounts/import`, {data: data}, {headers: headers}).then((res:any) => {
+    axios.post(process.env.NEXT_PUBLIC_API + `/cf-accounts/import`, {data: data}, config).then((res:any) => {
         if(!res.data.error?.length){
             setStep(3)
             setResultData(res.data.result[0])
@@ -143,7 +153,7 @@ export default function Accounts() {
 
   return (
     <main>
-      {isAuthorized?
+      {user.length != 0?
       <div>
         {/* {loadingAccounts?
         <div className="h-dvh w-dvw fixed top-0 left-0 flex items-center justify-center bg-black/20 z-50">

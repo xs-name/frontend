@@ -1,39 +1,47 @@
 'use server'
 import { cookies } from 'next/headers'
+import { getUser } from './user'
+import axios from 'axios'
+import { config } from './utils'
 
 export async function getLanguage() {
-    const cookieStore = cookies()
-    const hasCookie = cookieStore.has('lang')
+    // axios.get(process.env.NEXT_PUBLIC_API + '/account', config).then((res) => {
+    //     console.log('result', res.data.result)
+    //     return "en"
+    // })
 
-    if(!hasCookie){
-        return "en"
-    } else {
-        const lang:any = cookieStore.get('lang')
-        return lang.value
-    }
+    // console.log(res.data.result)
+
+    // if(res.data.result.length !== 0){
+    //     console.log('res', res.data.result.language)
+    //     return res.data.result.language
+    // } else {
+    //     console.log('en')
+    //     return "en"
+    // }
 }
 
-export async function setCookieLanguage(lang: any) {
-    if(!lang){
-        const cookieStore = cookies()
+// export async function setCookieLanguage(lang: any) {
+//     if(!lang){
 
-        cookies().set({
-            name: 'lang',
-            value: 'en',
-            httpOnly: true,
-            path: '/',
-        })
-    }else{
-        const cookieStore = cookies()
+//         cookies().set({
+//             name: 'lang',
+//             value: 'en',
+//             httpOnly: true,
+//             path: '/',
+//         })
 
-        cookies().set({
-            name: 'lang',
-            value: lang,
-            httpOnly: true,
-            path: '/',
-        })
-    }
+//     }else{
+
+//         cookies().set({
+//             name: 'lang',
+//             value: lang,
+//             httpOnly: true,
+//             path: '/',
+//         })
+
+//     }
     
 
-    return lang
-}
+//     return lang
+// }

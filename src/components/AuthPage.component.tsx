@@ -34,6 +34,8 @@ import Link from "next/link";
 import { Mail, Loader2, Send, SquareAsterisk, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { getLanguage } from "@/lib/language";
 import { toast } from "sonner";
+import { useRouter } from 'next/navigation'
+import { config } from "@/lib/utils";
 
 const loginSchema = z.object({
   value: z.string().min(1, {
@@ -51,6 +53,8 @@ const AuthPage = () => {
   const {language, setLanguage} = useLanguageContext()
   const [lang, setLang] = useState<any>();
 
+  const router = useRouter()
+
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -65,51 +69,67 @@ const AuthPage = () => {
     data.type = typeData
     // console.log(data)
 
-    const config = {
-      headers: { 
-        'Content-Type': 'application/json'
-      },
-    }
     switch(data.type){
       case 'email':
-        axios.post(process.env.NEXT_PUBLIC_API + '/authorization/login', JSON.stringify(data), config).then((res) => {
-          if(res.data.error.length > 0){
-            toast("Произошла ошибка", {
-              description: res.data.error[0].message,
-            })
-          } else {
-            if(res.data.result[0].step){
-              setTypeData('password')
-              form.setValue("value", "")
+        {
+          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
+            if(res.data.error.length > 0){
+              toast("Произошла ошибка", {
+                description: res.data.error[0].message,
+              })
+            } else {
+              if(res.data.result[0].step){
+                setTypeData('password')
+                form.setValue("value", "")
+              }
             }
-          }
-        })
-        break
+          })
+        }
       case 'password':
-        axios.post(process.env.NEXT_PUBLIC_API + '/authorization/login', JSON.stringify(data), config).then((res) => {
-          if(res.data.error.length > 0){
-            toast("Произошла ошибка", {
-              description: res.data.error[0].message,
-            })
-          } else {
-            // console.log(res.data)
-          }
-        })
-        break
-      case 'email':
-        axios.post(process.env.NEXT_PUBLIC_API + '/authorization/login', JSON.stringify(data), config).then((res) => {
-          if(res.data.error.length > 0){
-            toast("Произошла ошибка", {
-              description: res.data.error[0].message,
-            })
-          } else {
-            if(res.data.result[0].step){
-              setTypeData('password')
-              form.setValue("value", "")
+        {
+          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
+            if(res.data.error.length > 0){
+              toast("Произошла ошибка", {
+                description: res.data.error[0].message,
+              })
+            } else {
+              // console.log(res.data)
+              if(res.data.result[0].type == "redirect"){
+                router.push(res.data.result[0].location)
+              }
             }
-          }
-        })
-        break
+          })
+        }
+      case 'telegram':
+        {
+          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
+            if(res.data.error.length > 0){
+              toast("Произошла ошибка", {
+                description: res.data.error[0].message,
+              })
+            } else {
+              if(res.data.result[0].step){
+                setTypeData('tgpassword')
+                form.setValue("value", "")
+              }
+            }
+          })
+        }
+      case 'tgpassword':
+        {
+          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
+            if(res.data.error.length > 0){
+              toast("Произошла ошибка", {
+                description: res.data.error[0].message,
+              })
+            } else {
+              // console.log(res.data)
+              if(res.data.result[0].type == "redirect"){
+                router.push(res.data.result[0].location)
+              }
+            }
+          })
+        }
     }
   }
 
@@ -135,7 +155,7 @@ const AuthPage = () => {
   }, [watchPrompt]);
 
   function testValue () {
-    if(typeData != 'onetimekey' && typeData != 'password'){
+    if(typeData != 'onetimekey' && typeData != 'password' && typeData != 'tgpassword'){
       if(EMAIL_REGEXP.test(watchPrompt)){
         setTypeData('email')
       }else if(TELEGRAM_ID.test(watchPrompt) && watchPrompt.length >= 6){
@@ -187,7 +207,7 @@ const AuthPage = () => {
           <Loader2 className="mr-2 h-4 w-4 animate-spin loading-animate"/>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {typeData == "password" ? 
+              {typeData == "password" || typeData == "tgpassword" ? 
               <FormField
                 control={form.control}
                 name="value"
@@ -222,8 +242,11 @@ const AuthPage = () => {
             </form>
           </Form>
           <div className="flex gap-2">
-            {typeData == 'password' ? <Button variant="outline" type="button" className="w-full mt-2" onClick={() => setTypeData("none")}><ArrowLeft className="w-4 mr-1"/>{lang?.back}</Button> : null}
-            <Button variant="outline" type="button" className="w-full mt-2" onClick={() => changeAuthMode()}>{typeData == 'onetimekey' ? lang?.loginTypeOne : lang?.loginTypeTwo}</Button>
+            {typeData == 'password' || typeData == "tgpassword" ? <Button variant="outline" type="button" className="w-full mt-2" onClick={() => {
+              setTypeData("none")
+              form.setValue("value", "")
+            }}><ArrowLeft className="w-4 mr-1"/>{lang?.back}</Button> : null}
+            {/* <Button variant="outline" type="button" className="w-full mt-2" onClick={() => changeAuthMode()}>{typeData == 'onetimekey' ? lang?.loginTypeOne : lang?.loginTypeTwo}</Button> */}
           </div>
         </CardContent>
       </Card>

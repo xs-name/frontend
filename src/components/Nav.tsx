@@ -41,16 +41,22 @@ import { useState, useEffect } from "react"
 import { useLanguageContext } from "./LanguageProvider";
 import axios from 'axios';
 import { Loading } from "./Loading.components";
-import { setCookieLanguage } from "@/lib/language";
 import { Sitebar } from "./Sitebar.components";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner"
+import { useRouter } from 'next/navigation'
+import { config } from "@/lib/utils";
+import { getUser } from "@/lib/user";
 
 const Nav = () => {
-    const [position, setPosition] = useState("")
+    // const [position, setPosition] = useState("")
     const {language, setLanguage} = useLanguageContext()
     const [lang, setLang] = useState<any>();
     const [loading, setLoading] = useState(true)
 
     const [sitebar, setSitebar] = useState(false);
+
+    const router = useRouter()
 
     useEffect(() => {
         loadingPage()
@@ -60,9 +66,18 @@ const Nav = () => {
         loadingPage()
     }, [])
 
+    useEffect(() => {
+        getUser().then(res => {
+            if(res.length != 0){
+                setLanguage(res.language)
+            } else {
+                setLanguage('en')
+            }
+        })
+    }, [])
+
     function loadingPage() {
         if(language){
-            setPosition(language)
             axios.get(`/lang/${language}.json`).then((res:any) => {
                 setLang(res.data.nav)
             }).finally(() => setLoading(false));
@@ -70,13 +85,39 @@ const Nav = () => {
     }
 
     //Сменя языка
-    useEffect(() => {
-        if(position != language){
-            setCookieLanguage(position).then(res => {
-                setLanguage(res)
-            })
+    // useEffect(() => {
+    //     if(position != language){
+    //         setCookieLanguage(position).then(res => {
+    //             setLanguage(res)
+    //             if(!res){
+    //                 axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/language", {value: 'en'}, config)
+    //             } else {
+    //                 axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/language", {value: res}, config)
+    //             }
+    //         })
+    //     }
+    // }, [position])
+
+    function changeLang(value: any){
+        if(!value){
+            axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/language", {value: 'en'}, config)
+        } else {
+            axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/language", {value: value}, config)
         }
-    }, [position])
+        setLanguage(value)
+    }
+
+    function logout(){
+        axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/logout', {}, config).then((res) => {
+            if(res.data.error.length > 0){
+              toast("Произошла ошибка", {
+                description: res.data.error[0].message,
+              })
+            } else {
+                router.push("/")
+            }
+          })
+    }
 
     if(loading){
         return <Loading />
@@ -84,6 +125,7 @@ const Nav = () => {
 
     return (
         <>
+            <Toaster />
             {/* SITEBAR */}
             <Sitebar active={sitebar} setActive={setSitebar}/>
             {/* SITEBAR */}
@@ -107,7 +149,7 @@ const Nav = () => {
                         <DropdownMenuContent className="w-56 max-md:hidden">
                             <DropdownMenuLabel>{lang?.language}</DropdownMenuLabel>
                             <DropdownMenuSeparator/>
-                            <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+                            <DropdownMenuRadioGroup value={language} onValueChange={(value) => changeLang(value)}>
                                 <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
                                 <DropdownMenuRadioItem value="ru">Russian</DropdownMenuRadioItem>
                             </DropdownMenuRadioGroup>
@@ -116,7 +158,7 @@ const Nav = () => {
                     <Separator orientation="vertical" className="h-5 max-md:hidden"/>
                     <Link href="/account" className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <UserRound className="h-4"/>{lang?.account}</Link>
                     <Separator orientation="vertical" className="h-5"/>
-                    <div className="h-full flex items-center cursor-pointer max-md:pr-5"><LogOut className="w-5 cursor-pointer"/></div>
+                    <div className="h-full flex items-center cursor-pointer max-md:pr-5"><LogOut className="w-5 cursor-pointer" onClick={() => logout()}/></div>
                 </div>
             </div>
         </>

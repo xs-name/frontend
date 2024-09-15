@@ -17,24 +17,39 @@ import { getLanguage } from "@/lib/language";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch";
 
-import { headers } from "@/lib/utils";
+import { config, headers } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
 
 export default function SSL() {
 
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
   const {user, setUser} = useUserContext();
   const { language, setLanguage } = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true);
+  const [sub, setSub] = useState<any>([])
 
   useEffect(() => {
     getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
       setUser(res)
+      getSub()
     })
   }, [])
+
+  function getSub() {
+    axios.get(process.env.NEXT_PUBLIC_API + '/account/subscriptions/purchases', config).then((res: any) => {
+      if(res.data.error.length == 0){
+        console.log(res.data.result)
+        setSub(res.data.result)
+      }
+    })
+  }
 
 
   useEffect(() => {
@@ -49,12 +64,6 @@ export default function SSL() {
     }
   }, [language]);
 
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
-
   if (loading) {
     return <Loading />;
   }
@@ -62,7 +71,7 @@ export default function SSL() {
 
   return (
     <main>
-      {isAuthorized ? (
+      {user.length != 0? (
         <div>
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
@@ -93,13 +102,15 @@ export default function SSL() {
                                 <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Amount</div>
                                 <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Status</div>
                               </div>
-                              <div className="flex w-full border-b max-lg:hidden">
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                              </div>
+                              {sub?.data?.map((el:any) => 
+                                <div key={el.id} className="flex w-full border-b max-lg:hidden">
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
+                                </div>
+                              )}
                             </div>
                         </div>
                     </div>

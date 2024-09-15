@@ -5,16 +5,19 @@ import { headers } from "./utils";
 export async function getUser() {
 
     const config = {
-        headers: headers
+        headers: headers,
+        withCredentials: true
     };
 
     const res = await axios.get(process.env.NEXT_PUBLIC_API + '/account', config)
 
     let user:any = []
 
-    if(!res.data.error){
-        user = res.data.result
+
+    if(res.data.error.length == 0){
+        return res.data.result
+    } else {
+        return user
     }
 
-    return user
 }

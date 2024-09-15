@@ -12,37 +12,62 @@ import { Loading } from "@/components/Loading.components";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Loader2, MoveLeft } from "lucide-react";
+import { ChevronRight, Loader2, MoveLeft } from "lucide-react";
 import { getLanguage } from "@/lib/language";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch";
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
 
-import { headers } from "@/lib/utils";
+import { config, headers } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
+import { useRouter } from 'next/navigation'
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function SSL() {
 
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(true);
   const {user, setUser} = useUserContext();
   const { language, setLanguage } = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true);
 
-  const [pay, setPay] = useState([])
+  const [pay, setPay] = useState<any>([])
+
+  const [sum, setSum] = useState<any>(0)
+  const [modal, setModal] = useState(false)
+  const [loadingPay, setLoadingPay] = useState(false)
+
+  const router = useRouter()
 
   useEffect(() => {
     getUser().then(res => {
+      if(res.length != 0){
+        setLanguage(res.language)
+      } else {
+        setLanguage('en')
+      }
       setUser(res)
       getPay()
     })
   }, [])
 
   function getPay() {
-    axios.get(process.env.NEXT_PUBLIC_API + '/account/payments', {headers: headers}).then((res: any) => {
+    axios.get(process.env.NEXT_PUBLIC_API + '/account/payments', config).then((res: any) => {
       console.log(res.data)
-      setPay(res.data)
+      if(res.data.error.length == 0){
+        setPay(res.data.result[0])
+      }
     })
   }
 
@@ -59,11 +84,25 @@ export default function SSL() {
     }
   }, [language]);
 
-  useEffect(() => {
-    getLanguage().then(res => {
-      setLanguage(res)
-    })
-  }, [])
+  function payCreate(){
+    if(sum > 0){
+      axios.post(process.env.NEXT_PUBLIC_API + "/account/payments/cryptomus/create", {amount: Number(sum)}, config).then((res) => {
+        if(res.data.error.length == 0){
+          router.push(`https://pay.cryptomus.com/pay/${res.data.result[0].payment_id}`)
+          setLoadingPay(false)
+        } else {
+          toast("Произошла ошибка", {
+            description: res.data.error[0].message
+          })
+          setLoadingPay(false)
+        }
+      })
+    } else{
+      toast("Ошибка!", {
+        description: "Amount не может быть меньше 0"
+      })
+    }
+  }
 
   if (loading) {
     return <Loading />;
@@ -71,8 +110,29 @@ export default function SSL() {
 
   return (
     <main>
-      {isAuthorized ? (
+      {user.length != 0? (
         <div>
+          <Toaster />
+          <Dialog open={modal} onOpenChange={setModal}>
+              <DialogTrigger>
+              </DialogTrigger>
+              <DialogContent className="w-[425px] max-h-dvh lg:max-w-screen-lg">
+                <DialogHeader>
+                  <DialogTitle>Replenishment of the balance</DialogTitle>
+                </DialogHeader>
+                <DialogDescription>
+                  <div className='w-full mb-4'>
+                    <Label className="text-xs text-muted-foreground mt-1">Amount</Label>
+                    <Input type="number" min={0} value={sum} onChange={(e) => setSum(e.target.value)} />
+                  </div>
+
+                  <Button onClick={() => {
+                    setLoadingPay(true)
+                    payCreate()
+                  }} disabled={loadingPay} className='w-full mt-2' variant='secondary'> {loadingPay? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Pay with cryptocurrency"}</Button>
+                </DialogDescription>
+              </DialogContent>
+            </Dialog>
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
@@ -91,10 +151,10 @@ export default function SSL() {
                             <div className="p-8 w-1/2">
                                 <b>Current balance</b>
                                 <p className="mt-4 mb-4">You can top up your balance with various cryptocurrencies.</p>
-                                <Button>Top up balance</Button>
+                                <Button onClick={() => setModal(true)}>Top up balance</Button>
                             </div>
                             <div className="bg-slate-100 w-1/2 flex items-center justify-center">
-                                <div className="text-xl font-bold">$ 155.3</div>
+                              <div className="text-xl font-bold">$ {user?.balance}</div>
                             </div>
                         </div>
 
@@ -107,32 +167,26 @@ export default function SSL() {
                             <div className="flex flex-col w-full">
                               <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
                                 <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Description</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Type</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Payer currency</div>
                                 <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Amount</div>
                                 <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Status</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4 flex justify-end text-sm">Payment</div>
                               </div>
-                              <div className="flex w-full border-b max-lg:hidden">
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                              </div>
-                              <div className="flex w-full border-b max-lg:hidden">
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                              </div>
-                              <div className="flex w-full border-b max-lg:hidden">
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                                <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">2024-01-01</div>
-                              </div>
+                              {pay?.data?.map((el:any) => 
+                                <div key={el.id} className="flex w-full border-b max-lg:hidden">
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{new Date(el.created_at).toLocaleString('ru', {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                  })}</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{el.payer_currency == null ? "NULL" : el.payer_currency}</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{Number(el.amount).toFixed(2)} $</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{el?.status}</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-smflex justify-end text-sm flex "><Link href={`https://pay.cryptomus.com/pay/${el.payment_id}`} className="cursor-pointer flex text-primary items-center">To pay <ChevronRight className={"w-4 transition-all h-[16px]"}/></Link></div>
+                                </div>
+                              )}
                             </div>
                         </div>
                     </div>
