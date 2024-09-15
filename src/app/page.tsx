@@ -46,6 +46,8 @@ export default function Home() {
   const [maxPage, setMaxPage] = useState(1);
   const [search, setSearch] = useState("");
 
+  // TEEEEST
+
   useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
