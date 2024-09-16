@@ -47,6 +47,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { useRouter } from 'next/navigation'
 import { config } from "@/lib/utils";
 import { getUser } from "@/lib/user";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Nav = () => {
     // const [position, setPosition] = useState("")

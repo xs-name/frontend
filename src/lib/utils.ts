@@ -12,7 +12,8 @@ export const headers = {
 
 export const config = {
   headers: { 
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    // 'Authorization': process.env.NEXT_PUBLIC_KEY
   },
   withCredentials: true
 }

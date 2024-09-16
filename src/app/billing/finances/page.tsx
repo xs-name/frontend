@@ -13,9 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Loader2, MoveLeft } from "lucide-react";
-import { getLanguage } from "@/lib/language";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Switch } from "@/components/ui/switch";
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
 
@@ -111,28 +108,26 @@ export default function SSL() {
   return (
     <main>
       {user.length != 0? (
-        <div>
+        <>
           <Toaster />
           <Dialog open={modal} onOpenChange={setModal}>
-              <DialogTrigger>
-              </DialogTrigger>
-              <DialogContent className="w-[425px] max-h-dvh lg:max-w-screen-lg">
-                <DialogHeader>
-                  <DialogTitle>Replenishment of the balance</DialogTitle>
-                </DialogHeader>
-                <DialogDescription>
-                  <div className='w-full mb-4'>
-                    <Label className="text-xs text-muted-foreground mt-1">Amount</Label>
-                    <Input type="number" min={0} value={sum} onChange={(e) => setSum(e.target.value)} />
-                  </div>
+            <DialogContent className="w-[425px] max-h-dvh lg:max-w-screen-lg">
+              <DialogHeader>
+                <DialogTitle>Replenishment of the balance</DialogTitle>
+              </DialogHeader>
+              <DialogDescription>
+                <div className='w-full mb-4'>
+                  <Label className="text-xs text-muted-foreground mt-1">Amount</Label>
+                  <Input type="number" min={0} value={sum} onChange={(e) => setSum(e.target.value)} />
+                </div>
 
-                  <Button onClick={() => {
-                    setLoadingPay(true)
-                    payCreate()
-                  }} disabled={loadingPay} className='w-full mt-2' variant='secondary'> {loadingPay? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Pay with cryptocurrency"}</Button>
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
+                <Button onClick={() => {
+                  setLoadingPay(true)
+                  payCreate()
+                }} disabled={loadingPay} className='w-full mt-2' variant='secondary'> {loadingPay? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Pay with cryptocurrency"}</Button>
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
@@ -194,7 +189,7 @@ export default function SSL() {
               
             </div>
           </div>
-        </div>
+        </>
       ) : (
         <AuthPage />
       )}
