@@ -12,10 +12,12 @@ import { Loading } from "@/components/Loading.components";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Loader2, MoveLeft } from "lucide-react";
+import { Eye, EyeOff, Loader2, MoveLeft } from "lucide-react";
 import { getLanguage } from "@/lib/language";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch";
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
 
 import {
   Select,
@@ -39,7 +41,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-import { headers } from "@/lib/utils";
+
+import { config, headers } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
@@ -48,8 +51,19 @@ export default function SSL() {
 
   const {user, setUser} = useUserContext();
   const { language, setLanguage } = useLanguageContext();
-  const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true);
+  const [lang, setLang] = useState("");
+
+  const [emailOpen, setEmailOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [telegramOpen, setTelegramOpen] = useState(false);
+  const [loadingData, setLoadingData] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [inpitPassword, setInpitPassword] = useState(true)
+  const [inpitPassword2, setInpitPassword2] = useState(true)
+  const [telegram, setTelegram] = useState("");
 
   useEffect(() => {
     getUser().then(res => {
@@ -61,6 +75,7 @@ export default function SSL() {
       setUser(res)
     })
   }, [])
+
 
 
   useEffect(() => {
@@ -76,6 +91,108 @@ export default function SSL() {
   }, [language]);
 
 
+  function changeLang(value: any){
+    if(!value){
+      axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/language", {value: 'en'}, config)
+    } else {
+      axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/language", {value: value}, config)
+    }
+    setUser({...user, language: value})
+    setLanguage(value)
+  }
+
+  function changeEmail(){
+    if(/^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(newEmail)){
+      const data = {
+        email: newEmail,
+        password: password
+      }
+      axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/email", data, config).then((res) => {
+        if(res.data.error.length == 0){
+          toast("Успех!", {
+            description: "Email успешно изменён"
+          })
+          setEmailOpen(false)
+          setUser({...user, email: newEmail})
+          setNewEmail("")
+          setPassword("")
+          setLoadingData(false)
+        } else {
+          toast("Произошла ошибка", {
+            description: res.data.error[0].message
+          })
+          setLoadingData(false)
+        }
+      })
+    } else {
+      toast("Произошла ошибка", {
+        description: "Пожалуйста, укажите корректный email"
+      })
+      setLoadingData(false)
+    }
+  }
+
+  function changePassword(){
+    // if(/^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(newEmail)){
+    const data = {
+      old_password: oldPassword,
+      new_password: password
+    }
+    axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/password", data, config).then((res) => {
+      if(res.data.error.length == 0){
+        toast("Успех!", {
+          description: "Пароль успешно изменён"
+        })
+        setPasswordOpen(false)
+        setOldPassword("")
+        setPassword("")
+        setLoadingData(false)
+      } else {
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message
+        })
+        setLoadingData(false)
+      }
+    })
+    // } else {
+    //   toast("Произошла ошибка", {
+    //     description: "Пожалуйста, укажите корректный email"
+    //   })
+    //   setLoadingData(false)
+    // }
+  }
+
+  function changeTelegram(){
+    // if(/^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(newEmail)){
+    const data = {
+      telegram: telegram,
+      password: password
+    }
+    axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/telegram", data, config).then((res) => {
+      if(res.data.error.length == 0){
+        toast("Успех!", {
+          description: "Телеграм успешно изменён"
+        })
+        setTelegramOpen(false)
+        setPassword("")
+        setTelegram("")
+        setUser({...user, telegram: telegram})
+        setLoadingData(false)
+      } else {
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message
+        })
+        setLoadingData(false)
+      }
+    })
+    // } else {
+    //   toast("Произошла ошибка", {
+    //     description: "Пожалуйста, укажите корректный email"
+    //   })
+    //   setLoadingData(false)
+    // }
+  }
+
   if (loading) {
     return <Loading />;
   }
@@ -86,9 +203,94 @@ export default function SSL() {
       {user.length != 0? (
         <div>
           <Nav />
+          <Toaster />
+          <AlertDialog open={emailOpen} onOpenChange={setEmailOpen}>
+            <AlertDialogTrigger>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Change Email Address</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Do you really want to change your email? Current email: <b>{user?.email}</b>
+                </AlertDialogDescription>
+                <div className='max-lg:w-full'>
+                  <Label className="text-xs text-muted-foreground mt-1">New email</Label>
+                  <Input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} type="text"/>
+                </div>
+                <div className='max-lg:w-full mb-1'>
+                  <Label className="text-xs text-muted-foreground mt-1">Password</Label>
+                  <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+                </div> 
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={loadingData}>Cancel</AlertDialogCancel>
+                <Button disabled={loadingData} onClick={() => {
+                  setLoadingData(true)
+                  changeEmail()
+                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : "Continue"}</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <AlertDialog open={passwordOpen} onOpenChange={setPasswordOpen}>
+            <AlertDialogTrigger>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Change Password</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Do you really want to change your password?
+                </AlertDialogDescription>
+                <div className='max-lg:w-full'>
+                  <Label className="text-xs text-muted-foreground mt-1">Old password</Label>
+                  <Input value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} type={inpitPassword2 ? "password" : "text"} icon={inpitPassword2 ? <Eye onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+                </div>
+                <div className='max-lg:w-full mb-1'>
+                  <Label className="text-xs text-muted-foreground mt-1">New password</Label>
+                  <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+                </div> 
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={loadingData}>Cancel</AlertDialogCancel>
+                <Button disabled={loadingData} onClick={() => {
+                  setLoadingData(true)
+                  changePassword()
+                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : "Continue"}</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <AlertDialog open={telegramOpen} onOpenChange={setTelegramOpen}>
+            <AlertDialogTrigger>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Change Telegram</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Do you really want to change your telegram?
+                </AlertDialogDescription>
+                <div className='max-lg:w-full'>
+                  <Label className="text-xs text-muted-foreground mt-1">Telegram</Label>
+                  <Input value={telegram} onChange={(e) => setTelegram(e.target.value)} />
+                </div>
+                <div className='max-lg:w-full mb-1'>
+                  <Label className="text-xs text-muted-foreground mt-1">Password</Label>
+                  <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+                </div> 
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={loadingData}>Cancel</AlertDialogCancel>
+                <Button disabled={loadingData} onClick={() => {
+                  setLoadingData(true)
+                  changeTelegram()
+                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : "Continue"}</Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
-              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Account</h1>
+              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Settings</h1>
               <p className="leading-7 mb-5">
                 Customize your edge certificates, which encrypt traffic.
               </p>
@@ -99,7 +301,7 @@ export default function SSL() {
                   <p className="mt-3 mb-3">My preference for the language shown in the dashboard is:</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Select value={user?.language}>
+                  <Select value={user?.language} onValueChange={(value) => changeLang(value)}>
                     <SelectTrigger className="w-[150px] mt-1" defaultValue="1.0">
                       <SelectValue placeholder="" />
                     </SelectTrigger>
@@ -119,7 +321,7 @@ export default function SSL() {
                   <p className="mt-3 mb-3">{user?.email}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Button>Change Email Address</Button>
+                  <Button onClick={() => setEmailOpen(true)}>Change Email Address</Button>
                 </div>
               </div>
 
@@ -129,7 +331,7 @@ export default function SSL() {
                   <p className="mt-3 mb-3">You can change your password</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Button>Change Password</Button>
+                  <Button onClick={() => setPasswordOpen(true)}>Change Password</Button>
                 </div>
               </div>
 
@@ -139,7 +341,7 @@ export default function SSL() {
                   <p className="mt-3 mb-3">{user?.telegram}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Button>Change Telegram</Button>
+                  <Button onClick={() => setTelegramOpen(true)}>Change Telegram</Button>
                 </div>
               </div>
             </div>

@@ -96,19 +96,30 @@ export default function SSL() {
 
                             <div className="flex flex-col w-full">
                               <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Description</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Type</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date from</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date to</div>
                                 <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Amount</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Status</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Active</div>
                               </div>
-                              {sub?.data?.map((el:any) => 
+                              {sub?.map((el:any) => 
                                 <div key={el.id} className="flex w-full border-b max-lg:hidden">
-                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
-                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
-                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
-                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
-                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{new Date(el.start_date).toLocaleString('ru', {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                  })}</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{new Date(el.end_date).toLocaleString('ru', {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                  })}</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{el.cost}</div>
+                                  <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{el.is_active? "Active" : "No active"}</div>
+                                  {/* <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div> */}
                                 </div>
                               )}
                             </div>

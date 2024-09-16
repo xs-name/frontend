@@ -71,52 +71,48 @@ const AuthPage = () => {
 
     switch(data.type){
       case 'email':
-        {
-          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
-            if(res.data.error.length > 0){
-              toast("Произошла ошибка", {
-                description: res.data.error[0].message,
-              })
-            } else {
-              if(res.data.result[0].step){
-                setTypeData('password')
-                form.setValue("value", "")
-              }
+        axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
+          if(res.data.error.length > 0){
+            toast("Произошла ошибка", {
+              description: res.data.error[0].message,
+            })
+          } else {
+            if(res.data.result[0].step){
+              setTypeData('password')
+              form.setValue("value", "")
             }
-          })
-        }
+          }
+        })
+        break
       case 'password':
-        {
-          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
-            if(res.data.error.length > 0){
-              toast("Произошла ошибка", {
-                description: res.data.error[0].message,
-              })
-            } else {
-              // console.log(res.data)
-              if(res.data.result[0].type == "redirect"){
-                router.push(res.data.result[0].location)
-              }
+        axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
+          if(res.data.error.length > 0){
+            toast("Произошла ошибка", {
+              description: res.data.error[0].message,
+            })
+          } else {
+            // console.log(res.data)
+            if(res.data.result[0].type == "redirect"){
+              router.push(res.data.result[0].location)
             }
-          })
-        }
+          }
+        })
+        break
       case 'telegram':
-        {
-          axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
-            if(res.data.error.length > 0){
-              toast("Произошла ошибка", {
-                description: res.data.error[0].message,
-              })
-            } else {
-              if(res.data.result[0].step){
-                setTypeData('tgpassword')
-                form.setValue("value", "")
-              }
+        axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
+          if(res.data.error.length > 0){
+            toast("Произошла ошибка", {
+              description: res.data.error[0].message,
+            })
+          } else {
+            if(res.data.result[0].step){
+              setTypeData('tgpassword')
+              form.setValue("value", "")
             }
-          })
-        }
+          }
+        })
+        break
       case 'tgpassword':
-        {
           axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
             if(res.data.error.length > 0){
               toast("Произошла ошибка", {
@@ -129,7 +125,7 @@ const AuthPage = () => {
               }
             }
           })
-        }
+        break
     }
   }
 

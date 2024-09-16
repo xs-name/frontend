@@ -1,13 +1,8 @@
 import axios from "axios";
-import { headers } from "./utils";
+import { config } from "./utils";
 
 
 export async function getUser() {
-
-    const config = {
-        headers: headers,
-        withCredentials: true
-    };
 
     const res = await axios.get(process.env.NEXT_PUBLIC_API + '/account', config)
 
