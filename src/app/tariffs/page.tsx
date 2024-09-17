@@ -46,8 +46,9 @@ export default function Tariffs() {
 
   function getTariffs(){
     axios.get(process.env.NEXT_PUBLIC_API + '/account/subscriptions/available').then((res: any) => {
-      console.log(res.data.result)
-      setTariff(res.data.result)
+      let tariffs = res.data.result
+      tariffs = tariffs.sort((a: any, b: any) => Number(a.price) > Number(b.price) ? 1 : -1)
+      setTariff(tariffs)
     })
   }
 

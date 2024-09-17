@@ -148,8 +148,13 @@ export default function Home() {
                             {lang?.active}
                           </div>
                         :
+                        el.status == "pending" ?
                         <div className="flex items-center text-sm font-medium">
                           <Clock className="text-blue-600 h-4"/>
+                          Pending Nameserver Update
+                        </div>
+                        :
+                        <div className="flex items-center text-sm font-medium">
                           {el.status}
                         </div>
                         }

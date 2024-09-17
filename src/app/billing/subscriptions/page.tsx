@@ -81,15 +81,15 @@ export default function SSL() {
                 Customize your edge certificates, which encrypt traffic.
               </p>
 
-                <div className="flex gap-8">
-                    <div className="flex flex-col w-[200px]">
+                <div className="flex gap-8 max-xl:flex-col">
+                    <div className="flex flex-col w-[200px] max-xl:w-full">
                         <Link href="/billing/finances" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer">Finances</Link>
                         <Link href="/billing/subscriptions" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer bg-slate-100 font-medium border-l-2 border-primary">Subscriptions</Link>
                     </div>
-                    <div className="flex flex-col w-[calc(100%_-_232px)]">
+                    <div className="flex flex-col w-[calc(100%_-_232px)] max-xl:w-full">
                       
                         <div className="border rounded-md flex flex-col mt-4">
-                            <div className="p-8 ">
+                            <div className="p-8 max-lg:p-4">
                                 <b>Subscriptions</b>
                                 <p className="mt-2 mb-4">Here are displayed all your top-ups and expenses, except for subscriptions.</p>
                             </div>
@@ -119,7 +119,40 @@ export default function SSL() {
                                   })}</div>
                                   <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{el.cost}</div>
                                   <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">{el.is_active? "Active" : "No active"}</div>
-                                  {/* <div className="w-full pb-2 pt-2 pl-4 pr-4 text-sm">???</div> */}
+                                </div>
+                              )}
+
+                              {sub?.map((el:any) => 
+                                <div key={el.id} className="w-full p-4 hidden max-lg:flex flex-col border-t">
+                                  <div className="flex pb-2 pt-2 items-center w-full">
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Date from</div>
+                                    <div className="max-sm:text-sm">{new Date(el.start_date).toLocaleString('ru', {
+                                      year: 'numeric',
+                                      month: 'numeric',
+                                      day: 'numeric',
+                                      hour: 'numeric',
+                                      minute: 'numeric',
+                                    })}
+                                    </div>
+                                  </div>
+                                  <div className="flex pb-2 pt-2 items-center w-full">
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Date to</div>
+                                    <div className="max-sm:text-sm">{new Date(el.end_date).toLocaleString('ru', {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                  })}</div>
+                                  </div>
+                                  <div className="flex pb-2 pt-2 items-center w-full">
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Amount</div>
+                                    <div className="max-sm:text-sm">{el.cost} $</div>
+                                  </div>
+                                  <div className="flex pb-2 pt-2 items-center w-full">
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Active</div>
+                                    <div className="max-sm:text-sm">{el.is_active? "Active" : "No active"}</div>
+                                  </div>
                                 </div>
                               )}
                             </div>
