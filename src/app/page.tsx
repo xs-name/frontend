@@ -4,7 +4,7 @@
 
 import AuthPage from "@/components/AuthPage.component";
 import { useLanguageContext } from "@/components/LanguageProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from 'axios';
 
 import { Loading } from "@/components/Loading.components";
@@ -14,6 +14,7 @@ import { getUser } from "@/lib/user";
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 import { Loader2 } from "lucide-react";
+import { useTelegram } from "@/components/TelegramProvider";
 
 export default function Home() {
   const {user, setUser} = useUserContext();
@@ -30,6 +31,11 @@ export default function Home() {
   const [maxPage, setMaxPage] = useState(1);
   const router = useRouter()
   const searchParams = useSearchParams()
+
+
+  const { userTelegram, webApp } = useTelegram();
+  console.log(userTelegram);
+  
 
   useEffect(() => {
     if(language){
@@ -73,22 +79,23 @@ export default function Home() {
   return (
     <main>
       {user.length != 0?
+        <></>
+      : 
       searchParams.get('method') == 'webapp'?
-        <div className="flex items-center justify-center h-dvh">
-          <div className="max-w-[400px] mb-[200px] p-8">
-            <img className="w-[120px] mb-4" src="/logo.svg" alt="" />
-            <h1 className="text-3xl font-bold">CloudFlare Helper</h1>
-            <p className="description text-muted-foreground mt-4">This is a web assistant for managing domains from different accounts.</p>
+          <div className="flex items-center justify-center h-dvh">
+            <div className="max-w-[400px] mb-[200px] p-8">
+              <img className="w-[120px] mb-4" src="/logo.svg" alt="" />
+              <h1 className="text-3xl font-bold">CloudFlare Helper</h1>
+              <p className="description text-muted-foreground mt-4">This is a web assistant for managing domains from different accounts.</p>
 
-            <p className="flex gap-2 items-center mt-10">
-              <Loader2 className="animate-spin w-6 h-6 text-muted-foreground"/>
-              <span className="text-muted-foreground text-sm">Logging in to your account</span>
-            </p>
+              <p className="flex gap-2 items-center mt-10">
+                <Loader2 className="animate-spin w-6 h-6 text-muted-foreground"/>
+                <span className="text-muted-foreground text-sm">Logging in to your account</span>
+              </p>
+            </div>
           </div>
-        </div>
       :
-      <></>
-      : <AuthPage />}
+      <AuthPage />}
     </main>
   );
 }
