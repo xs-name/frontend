@@ -16,6 +16,10 @@ import { useSearchParams } from 'next/navigation'
 import { Loader2 } from "lucide-react";
 import { useTelegram } from "@/components/TelegramProvider";
 
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
+import { config } from "@/lib/utils";
+
 export default function Home() {
   const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
@@ -34,13 +38,30 @@ export default function Home() {
 
 
   const { userTelegram, webApp } = useTelegram();
-  console.log(userTelegram);
+
+  useEffect(() => {
+    
+    if(webApp){
+      axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/webapp', webApp?.initDataUnsafe, config).then((res) => {
+        if(res.data.error.length > 0){
+          toast("Произошла ошибка", {
+            description: res.data.error[0].message,
+          })
+        } else {
+          // console.log(res.data)
+          if(res.data.result[0].type == "redirect"){
+            router.push(res.data.result[0].location)
+          }
+        }
+      })
+    }
+  }, [webApp])
   
 
   useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
-        setLang(res.data.home)
+        setLang(res.data.webapp)
         // setLoadingWebsites(false)
       }).finally(() => setLoading(false));
     }
@@ -78,15 +99,17 @@ export default function Home() {
 
   return (
     <main>
+      <Toaster />
+
         <div className="flex items-center justify-center h-dvh">
-            <div className="max-w-[400px] mb-[200px] p-8">
+            <div className="max-w-[400px] mb-[200px] m-8">
             <img className="w-[120px] mb-4" src="/logo.svg" alt="" />
             <h1 className="text-3xl font-bold">CloudFlare Helper</h1>
-            <p className="description text-muted-foreground mt-4">This is a web assistant for managing domains from different accounts.</p>
+            <p className="description text-muted-foreground mt-4">{lang?.webapp_desc}</p>
 
             <p className="flex gap-2 items-center mt-10">
                 <Loader2 className="animate-spin w-6 h-6 text-muted-foreground"/>
-                <span className="text-muted-foreground text-sm">Logging in to your account</span>
+                <span className="text-muted-foreground text-sm">{lang?.logging}</span>
             </p>
             </div>
         </div>

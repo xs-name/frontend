@@ -48,12 +48,14 @@ import { useRouter } from 'next/navigation'
 import { config } from "@/lib/utils";
 import { getUser } from "@/lib/user";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useTelegram } from "./TelegramProvider";
 
 const Nav = () => {
     // const [position, setPosition] = useState("")
     const {language, setLanguage} = useLanguageContext()
     const [lang, setLang] = useState<any>();
     const [loading, setLoading] = useState(true)
+    const { userTelegram, webApp } = useTelegram();
 
     const [sitebar, setSitebar] = useState(false);
 
@@ -115,9 +117,12 @@ const Nav = () => {
                 description: res.data.error[0].message,
               })
             } else {
+                if(webApp?.initDataUnsafe?.user){
+                    webApp.close();
+                }
                 router.push("/")
             }
-          })
+        })
     }
 
     if(loading){

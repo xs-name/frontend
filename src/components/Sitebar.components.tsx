@@ -46,7 +46,7 @@ export const Sitebar = ({active, setActive}: any) => {
                 
                 setSitebarcontact([
                     // {name: res.data.sitebar.settings, link: "/settings", icon: <Settings />},
-                    {name: res.data.sitebar.support, link: "https://t.me/cfhelp_support", icon: <Phone className="h-[18px]"/>}
+                    {name: res.data.sitebar.support, link: "https://t.me/xsname_support", icon: <Phone className="h-[18px]"/>}
                 ])
             }).finally(() => {
                 setLoading(false)

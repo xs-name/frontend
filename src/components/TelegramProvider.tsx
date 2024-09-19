@@ -48,6 +48,7 @@ export interface ITelegramUser {
       isActive: boolean;
     };
     HapticFeedback: any;
+    close: any;
   }
 
 export interface ITelegramContext {

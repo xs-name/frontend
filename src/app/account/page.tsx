@@ -52,7 +52,7 @@ export default function SSL() {
   const {user, setUser} = useUserContext();
   const { language, setLanguage } = useLanguageContext();
   const [loading, setLoading] = useState(true);
-  const [lang, setLang] = useState("");
+  const [lang, setLang] = useState<any>([]);
 
   const [emailOpen, setEmailOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
@@ -83,7 +83,7 @@ export default function SSL() {
       axios
         .get(`/lang/${language}.json`)
         .then((res: any) => {
-          setLang(res.data.ssl);
+          setLang(res.data.settings);
           // setLoadingWebsites(false)
         })
         .finally(() => setLoading(false));
@@ -209,25 +209,25 @@ export default function SSL() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Change Email Address</AlertDialogTitle>
+                <AlertDialogTitle>{lang?.change_email}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Do you really want to change your email? Current email: <b>{user?.email}</b>
+                  {lang?.change_email_desc} <b>{user?.email}</b>
                 </AlertDialogDescription>
                 <div className='max-lg:w-full'>
-                  <Label className="text-xs text-muted-foreground mt-1">New email</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.new_email}</Label>
                   <Input value={newEmail} onChange={(e) => setNewEmail(e.target.value)} type="text"/>
                 </div>
                 <div className='max-lg:w-full mb-1'>
-                  <Label className="text-xs text-muted-foreground mt-1">Password</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.password}</Label>
                   <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingData}>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingData}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingData} onClick={() => {
                   setLoadingData(true)
                   changeEmail()
-                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : "Continue"}</Button>
+                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : lang?.continue}</Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -237,25 +237,25 @@ export default function SSL() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Change Password</AlertDialogTitle>
+                <AlertDialogTitle>{lang?.change_password}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Do you really want to change your password?
+                  {lang?.change_password_desc}
                 </AlertDialogDescription>
                 <div className='max-lg:w-full'>
-                  <Label className="text-xs text-muted-foreground mt-1">Old password</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.old_password}</Label>
                   <Input value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} type={inpitPassword2 ? "password" : "text"} icon={inpitPassword2 ? <Eye onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
                 </div>
                 <div className='max-lg:w-full mb-1'>
-                  <Label className="text-xs text-muted-foreground mt-1">New password</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.new_password}</Label>
                   <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingData}>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingData}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingData} onClick={() => {
                   setLoadingData(true)
                   changePassword()
-                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : "Continue"}</Button>
+                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : lang?.continue}</Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
@@ -265,40 +265,40 @@ export default function SSL() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Change Telegram</AlertDialogTitle>
+                <AlertDialogTitle>{lang?.change_telegram}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Do you really want to change your telegram?
+                  {lang?.change_telegram_desc}
                 </AlertDialogDescription>
                 <div className='max-lg:w-full'>
-                  <Label className="text-xs text-muted-foreground mt-1">Telegram</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.telegram}</Label>
                   <Input value={telegram} onChange={(e) => setTelegram(e.target.value)} />
                 </div>
                 <div className='max-lg:w-full mb-1'>
-                  <Label className="text-xs text-muted-foreground mt-1">Password</Label>
+                  <Label className="text-xs text-muted-foreground mt-1">{lang?.password}</Label>
                   <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingData}>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingData}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingData} onClick={() => {
                   setLoadingData(true)
                   changeTelegram()
-                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : "Continue"}</Button>
+                }} >{loadingData ? <Loader2 className="animate-spin w-5 h-5"/> : lang?.continue}</Button>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
 
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
-              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Settings</h1>
+              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{lang?.settings}</h1>
               <p className="leading-7 mb-5">
-                Customize your edge certificates, which encrypt traffic.
+                {lang?.settings_description}
               </p>
 
               <div className="flex border rounded-md mb-8 max-lg:flex-col">
                 <div className="p-5 w-2/3 max-lg:w-full">
-                  <p className="text-xl font-semibold">Language Preference</p>
-                  <p className="mt-3 mb-3">My preference for the language shown in the dashboard is:</p>
+                  <p className="text-xl font-semibold">{lang?.Language_preference}</p>
+                  <p className="mt-3 mb-3">{lang?.Language_preference_desc}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
                   <Select value={user?.language} onValueChange={(value) => changeLang(value)}>
@@ -317,31 +317,31 @@ export default function SSL() {
 
               <div className="flex border rounded-md mb-8 max-lg:flex-col">
                 <div className="p-5 w-2/3 max-lg:w-full">
-                  <p className="text-xl font-semibold">Email Address</p>
+                  <p className="text-xl font-semibold">{lang?.email_address}</p>
                   <p className="mt-3 mb-3">{user?.email}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Button onClick={() => setEmailOpen(true)}>Change Email Address</Button>
+                  <Button onClick={() => setEmailOpen(true)}>{lang?.change_email}</Button>
                 </div>
               </div>
 
               <div className="flex border rounded-md mb-8 max-lg:flex-col">
                 <div className="p-5 w-2/3 max-lg:w-full">
-                  <p className="text-xl font-semibold">Password</p>
-                  <p className="mt-3 mb-3">You can change your password</p>
+                  <p className="text-xl font-semibold">{lang?.password}</p>
+                  <p className="mt-3 mb-3">{lang?.password_description}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Button onClick={() => setPasswordOpen(true)}>Change Password</Button>
+                  <Button onClick={() => setPasswordOpen(true)}>{lang?.change_password}</Button>
                 </div>
               </div>
 
               <div className="flex border rounded-md mb-8 max-lg:flex-col">
                 <div className="p-5 w-2/3 max-lg:w-full">
-                  <p className="text-xl font-semibold">Telegram</p>
+                  <p className="text-xl font-semibold">{lang?.telegram}</p>
                   <p className="mt-3 mb-3">{user?.telegram}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
-                  <Button onClick={() => setTelegramOpen(true)}>Change Telegram</Button>
+                  <Button onClick={() => setTelegramOpen(true)}>{lang?.change_telegram}</Button>
                 </div>
               </div>
             </div>

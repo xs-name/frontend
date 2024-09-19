@@ -57,7 +57,7 @@ export default function SSL() {
       axios
         .get(`/lang/${language}.json`)
         .then((res: any) => {
-          setLang(res.data.ssl);
+          setLang(res.data.billing);
           // setLoadingWebsites(false)
         })
         .finally(() => setLoading(false));
@@ -76,30 +76,30 @@ export default function SSL() {
           <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
-              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">Billing</h1>
+              <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{lang?.billing}</h1>
               <p className="leading-7 mb-5">
-                Customize your edge certificates, which encrypt traffic.
+                {lang?.billing_desctiption_sub}
               </p>
 
                 <div className="flex gap-8 max-xl:flex-col">
                     <div className="flex flex-col w-[200px] max-xl:w-full">
-                        <Link href="/billing/finances" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer">Finances</Link>
-                        <Link href="/billing/subscriptions" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer bg-slate-100 font-medium border-l-2 border-primary">Subscriptions</Link>
+                        <Link href="/billing/finances" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer">{lang?.finances}</Link>
+                        <Link href="/billing/subscriptions" className="h-10 pl-4 flex items-center hover:text-primary cursor-pointer bg-slate-100 font-medium border-l-2 border-primary">{lang?.subscriptions}</Link>
                     </div>
                     <div className="flex flex-col w-[calc(100%_-_232px)] max-xl:w-full">
                       
                         <div className="border rounded-md flex flex-col mt-4">
                             <div className="p-8 max-lg:p-4">
-                                <b>Subscriptions</b>
-                                <p className="mt-2 mb-4">Here are displayed all your top-ups and expenses, except for subscriptions.</p>
+                                <b>{lang?.subscriptions}</b>
+                                <p className="mt-2 mb-4">{lang?.subscriptions_desc}</p>
                             </div>
 
                             <div className="flex flex-col w-full">
                               <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date from</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Date to</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Amount</div>
-                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Active</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">{lang?.date_from}</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">{lang?.date_to}</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">{lang?.amount}</div>
+                                <div className="w-full pt-2 pb-2 pr-4 font-semibold text-sm pl-4">{lang?.active}</div>
                               </div>
                               {sub?.map((el:any) => 
                                 <div key={el.id} className="flex w-full border-b max-lg:hidden">
@@ -125,7 +125,7 @@ export default function SSL() {
                               {sub?.map((el:any) => 
                                 <div key={el.id} className="w-full p-4 hidden max-lg:flex flex-col border-t">
                                   <div className="flex pb-2 pt-2 items-center w-full">
-                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Date from</div>
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">{lang?.date_from}</div>
                                     <div className="max-sm:text-sm">{new Date(el.start_date).toLocaleString('ru', {
                                       year: 'numeric',
                                       month: 'numeric',
@@ -136,7 +136,7 @@ export default function SSL() {
                                     </div>
                                   </div>
                                   <div className="flex pb-2 pt-2 items-center w-full">
-                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Date to</div>
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">{lang?.date_to}</div>
                                     <div className="max-sm:text-sm">{new Date(el.end_date).toLocaleString('ru', {
                                     year: 'numeric',
                                     month: 'numeric',
@@ -146,12 +146,12 @@ export default function SSL() {
                                   })}</div>
                                   </div>
                                   <div className="flex pb-2 pt-2 items-center w-full">
-                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Amount</div>
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">{lang?.amount}</div>
                                     <div className="max-sm:text-sm">{el.cost} $</div>
                                   </div>
                                   <div className="flex pb-2 pt-2 items-center w-full">
-                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">Active</div>
-                                    <div className="max-sm:text-sm">{el.is_active? "Active" : "No active"}</div>
+                                    <div className="w-[40%] max-sm:w-[50%] max-sm:text-sm font-bold">{lang?.active}</div>
+                                    <div className="max-sm:text-sm">{el.is_active? lang?.active : lang?.no_active}</div>
                                   </div>
                                 </div>
                               )}

@@ -517,7 +517,7 @@ export default function Home({params}:any) {
   useEffect(() => {
     if(language){
       axios.get(`/lang/${language}.json`).then((res:any) => {
-        setLang(res.data.add)
+        setLang(res.data.dns)
         // setLoadingWebsites(false)
       }).finally(() => setLoading(false));
     }
@@ -819,14 +819,14 @@ export default function Home({params}:any) {
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{domain.name}</h1>
-            <p className="leading-7">Управляйте DNS-записями вашего домена.</p>
-            <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/websites"}><MoveLeft className="h-4"/>Назад к веб-сайтам</Link>
+            <p className="leading-7">{lang?.description}</p>
+            <Link className="font-medium text-primary text-sm flex gap-1 items-center mt-2 hover:text-primary/80" href={"/websites"}><MoveLeft className="h-4"/>{lang?.back}</Link>
             
             <div className="flex flex-col border rounded-md w-full mt-8">
               <div className="flex flex-col p-5 max-sm:p-4 w-full items-start mb-6">
-                <b className="text-xl font-semibold">Менеджер DNS</b>
-                <p className="text-sm mt-[5px]">Просмотр, добавление и редактирование записей DNS. Изменения вступят в силу после сохранения.</p>
-                <Button className="mt-5" onClick={() => setIsEditing(!isEditing)}><Plus className="h-4 mr-1"/>Добавить запись</Button>
+                <b className="text-xl font-semibold">{lang?.manager}</b>
+                <p className="text-sm mt-[5px]">{lang?.manager_desc}</p>
+                <Button className="mt-5" onClick={() => setIsEditing(!isEditing)}><Plus className="h-4 mr-1"/>{lang?.add_button}</Button>
               </div>
 
               {isEditing?
@@ -836,11 +836,11 @@ export default function Home({params}:any) {
                   </div>
                   <div className="flex flex-col border-t p-5 max-sm:p-4">
                     <div className="flex gap-2 justify-end">
-                    <Button disabled={loadingAdd} className="" variant="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
+                    <Button disabled={loadingAdd} className="" variant="secondary" onClick={() => setIsEditing(false)}>{lang?.cancel}</Button>
                     <Button disabled={loadingAdd} onClick={() => {
                       addDNS()
                       setLoadingAdd(true)
-                    }}>{loadingAdd? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : "Save"}</Button>
+                    }}>{loadingAdd? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> {lang?.loading}</div> : lang?.save}</Button>
                     </div>
                   </div>
                 </>
@@ -850,12 +850,12 @@ export default function Home({params}:any) {
               <div className="flex flex-col w-full">
                 <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
                   {/* <div className="w-[12px]"></div> */}
-                  <div className="w-[12%] pt-2 pb-2 pr-4 font-semibold text-sm pl-4">Type</div>
-                  <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Name</div>
-                  <div className="w-[25%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm ">Content</div>
-                  <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">Proxy status</div>
-                  <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">TTL</div>
-                  <div className="w-[11%] pl-2 pt-2 pb-2 pr-4 font-semibold flex justify-end text-sm">Actions</div>
+                  <div className="w-[12%] pt-2 pb-2 pr-4 font-semibold text-sm pl-4">{lang?.type}</div>
+                  <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">{lang?.name}</div>
+                  <div className="w-[25%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm ">{lang?.content}</div>
+                  <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">{lang?.proxy_status}</div>
+                  <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm">{lang?.TTL}</div>
+                  <div className="w-[11%] pl-2 pt-2 pb-2 pr-4 font-semibold flex justify-end text-sm">{lang?.actions}</div>
                 </div>
                 <div>
                   {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS} setLoadingUpdate={setLoadingUpdate} loadingUpdate={loadingUpdate} loadingDelete={loadingDelete} setLoadingDelete={setLoadingDelete}/>)}
@@ -875,7 +875,7 @@ export default function Home({params}:any) {
                       <ChevronsRight className="w-[15px] h-[16px]"/>
                     </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">Showing <strong>{DNS?.page?.page}-{DNS?.page?.total_pages}</strong> of <strong>{DNS?.page?.total_count}</strong> dns</div>
+                  <div className="text-xs text-muted-foreground">{lang?.showing_1} <strong>{DNS?.page?.page}-{DNS?.page?.total_pages}</strong> {lang?.showing_2} <strong>{DNS?.page?.total_count}</strong> {lang?.showing_3} </div>
                 </div>
               </div>
               
@@ -883,14 +883,14 @@ export default function Home({params}:any) {
 
             <div className="flex flex-col border rounded-md w-full mt-8">
               <div className="flex flex-col p-5 w-full items-start mb-6">
-                <b className="text-xl font-semibold">Серверы имен</b>
-                <p className="text-sm mt-[5px]">Измените ваши серверы имен или авторитативные DNS-серверы. Это назначенные вам серверы имен.</p>
+                <b className="text-xl font-semibold">{lang?.name_servers}</b>
+                <p className="text-sm mt-[5px]">{lang?.name_servers_desc}</p>
               </div>
 
               <div className="flex flex-col w-full">
                 <div className="flex w-full border-b bg-slate-100 max-lg:hidden">
-                  <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm max-sm:hidden">Тип</div>
-                  <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm max-sm:w-full">Значение</div>
+                  <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm max-sm:hidden">{lang?.type}</div>
+                  <div className="w-[84%] pl-2 pt-2 pb-2 pr-4 font-semibold text-sm max-sm:w-full">{lang?.meaning}</div>
                 </div>
                 <div>
                   {domain?.name_servers?.map((el: any) => 
