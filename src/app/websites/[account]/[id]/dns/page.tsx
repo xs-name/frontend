@@ -18,6 +18,7 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Copy, Loader2, 
 import { Switch } from "@/components/ui/switch"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
+import { useRouter } from 'next/navigation'
 
 import {
   Select,
@@ -50,6 +51,8 @@ export default function Home({params}:any) {
   const [loadingDelete, setLoadingDelete] = useState(false)
 
   const [loadingAdd, setLoadingAdd] = useState(false)
+
+  const router = useRouter()
 
   const [dataTable, setDataTable] = useState({
     type: "A",
@@ -185,7 +188,10 @@ export default function Home({params}:any) {
       if(!res.data.error?.length){
         setDNS(res.data.result[0])
       }else{
-        //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
+        toast("Произошла ошибка", {
+          description: res.data.error[0].message,
+        })
+        router.push("/websites")
       }
     })
   }
@@ -199,13 +205,13 @@ export default function Home({params}:any) {
     newConfig.data = data
 
     axios.delete(process.env.NEXT_PUBLIC_API + `/zones/dns/${params.account}/${params.id}`, newConfig).then((res:any) => {
-      // console.log(res.data)
       if(!res.data.error?.length){
         getDNS()
       }else{
         toast("Произошла ошибка", {
           description: res.data.error[0].message,
         })
+        router.push("/websites")
       }
     }).then(() => setLoadingDelete(false))
   }
@@ -506,6 +512,10 @@ export default function Home({params}:any) {
           setDomain(res.data.result)
           // console.log('domain', res.data.result)
         }else{
+          console.log("ERROR")
+          toast("Произошла ошибка", {
+            description: res.data.error[0].message,
+          })
           //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
         }
       })
@@ -862,16 +872,16 @@ export default function Home({params}:any) {
                 </div>
                 <div className="flex items-center p-4 gap-3 max-sm:flex-col">
                   <div className="flex gap-2">
-                    <div onClick={() => paginate(1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex">
+                    <div onClick={() => paginate(1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
                       <ChevronsLeft className="w-[15px] h-[16px]"/>
                     </div>
-                    <div onClick={() => paginate(page - 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex">
+                    <div onClick={() => paginate(page - 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
                       <ChevronLeft className="w-[15px] h-[16px]"/>
                     </div>
-                    <div onClick={() => paginate(page + 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex">
+                    <div onClick={() => paginate(page + 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
                       <ChevronRight className="w-[15px] h-[16px]"/>
                     </div>
-                    <div onClick={() => paginate(DNS?.page?.total_pages)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex">
+                    <div onClick={() => paginate(DNS?.page?.total_pages)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
                       <ChevronsRight className="w-[15px] h-[16px]"/>
                     </div>
                   </div>
@@ -894,7 +904,7 @@ export default function Home({params}:any) {
                 </div>
                 <div>
                   {domain?.name_servers?.map((el: any) => 
-                    <div className="flex w-full border-t" key={el}>
+                    <div className="flex w-full border-t" key={el.id}>
                       <div className="w-[16%] pl-2 pt-2 pb-2 pr-4 text-sm max-sm:hidden"><p className="text-stroke ">NS</p></div>
                       <div className="w-[84%] flex gap-2 items-center cursor-pointer pl-2 pt-2 pb-2 pr-4 text-sm max-sm:w-full hover:text-primary" onClick={() => navigator.clipboard.writeText(el)}><p className="text-stroke">{el}</p> <Copy className="w-[10px] h-[10px]"/></div>
                     </div>

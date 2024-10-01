@@ -43,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     getUser().then(res => {
       if(res.length != 0){
-        // router.push('/websites') // Временно!
+        router.push('/websites') // Временно!
         setLanguage(res.language)
       } else {
         setLanguage('en')

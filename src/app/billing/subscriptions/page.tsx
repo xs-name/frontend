@@ -45,7 +45,8 @@ export default function SSL() {
   function getSub() {
     axios.get(process.env.NEXT_PUBLIC_API + '/account/subscriptions/purchases', config).then((res: any) => {
       if(res.data.error.length == 0){
-        console.log(res.data.result)
+        let sub = res.data.result
+        sub = sub.sort((a: any, b: any) => new Date(a.start_date) < new Date(b.start_date) ? 1 : -1)
         setSub(res.data.result)
       }
     })

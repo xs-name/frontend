@@ -140,10 +140,6 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
     });
 
     useEffect(() => {
-      // console.log('element', element.type, element)
-
-      
-
       if(element?.name != dataTable.domain){
         element.name = element?.name.replace(`.${dataTable.domain}`, '');
       }
@@ -228,7 +224,10 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
             <div className="flex w-full">
                 {/* <div className="w-[12px]"></div> */}
                 <div className="w-[12%] pl-2 pt-2 pl-4 pr-4 text-sm"><p className="text-stroke">{element?.type}</p></div>
-                <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.name === dataTable.domain ? element?.name : element?.name.replace(`.${dataTable.domain}`, '')}</p></div>
+                <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">
+                  {/* {dataTable.domain} || {element?.name} */}
+                  {element?.name === dataTable.domain ? element?.name : element?.name.replace(`.${dataTable.domain}`, '')}
+                  </p></div>
                 <div className="w-[25%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.content}</p></div>
                 <div className="w-[20%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{element?.proxied === true? "Proxied" : "DNS only"}</p></div>
                 <div className="w-[12%] pl-2 pt-2 pb-2 pr-4 text-sm"><p className="text-stroke">{TTL[element?.ttl]}</p></div>

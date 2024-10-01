@@ -245,30 +245,30 @@ export default function SSL({ params }: any) {
                   <p className="text-xl font-semibold">{lang?.your_ssl}</p>
                   <div className="">
                     <RadioGroup value={SSL} onValueChange={(value) => changeSettings('ssl', value, setSSL)} defaultValue="comfortable" className="grid mt-8 gap-4 grid-cols-2 max-lg:grid-cols-none">
-                      <div className="border p-4 flex items-center gap-1 rounded-sm">
-                        <RadioGroupItem value="off" id="r1" className="min-w-4 mr-2"/>
-                        <Label htmlFor="r1" className="mt-2 mb-2 flex flex-col gap-3">
+                      <div onClick={() => changeSettings('ssl', "off", setSSL)} className="border p-4 flex items-center gap-1 rounded-sm cursor-pointer">
+                        <RadioGroupItem value="off" id="r1" className="min-w-4 mr-2 cursor-pointer"/>
+                        <Label htmlFor="r1" className="mt-2 mb-2 flex flex-col gap-3 cursor-pointer">
                           <p className="text-lg">{lang?.off}</p>
                           <p className="leading-5">{lang?.off_desc}</p>
                         </Label>
                       </div>
-                      <div className="border p-4 flex items-center gap-1 rounded-sm">
-                        <RadioGroupItem value="flexible" id="r2" className="min-w-4 mr-2"/>
-                        <Label htmlFor="r2" className="mt-2 mb-2 flex flex-col gap-3">
+                      <div onClick={() => changeSettings('ssl', "flexible", setSSL)} className="border p-4 flex items-center gap-1 rounded-sm cursor-pointer">
+                        <RadioGroupItem value="flexible" id="r2" className="min-w-4 mr-2 cursor-pointer"/>
+                        <Label htmlFor="r2" className="mt-2 mb-2 flex flex-col gap-3 cursor-pointer">
                           <p className="text-lg">{lang?.flexible}</p>
                           <p className="leading-5">{lang?.flexible_desc}</p>
                         </Label>
                       </div>
-                      <div className="border p-4 flex items-center gap-1 rounded-sm">
-                        <RadioGroupItem value="full" id="r3" className="min-w-4 mr-2"/>
-                        <Label htmlFor="r3" className="mt-2 mb-2 flex flex-col gap-3">
+                      <div onClick={() => changeSettings('ssl', "full", setSSL)} className="border p-4 flex items-center gap-1 rounded-sm cursor-pointer">
+                        <RadioGroupItem value="full" id="r3" className="min-w-4 mr-2 cursor-pointer"/>
+                        <Label htmlFor="r3" className="mt-2 mb-2 flex flex-col gap-3 cursor-pointer">
                           <p className="text-lg">{lang?.full}</p>
                           <p className="leading-5">{lang?.full_desc}</p>
                         </Label>
                       </div>
-                      <div className="border p-4 flex items-center gap-1 rounded-sm">
-                        <RadioGroupItem value="strict" id="r4" className="min-w-4 mr-2"/>
-                        <Label htmlFor="r4" className="mt-2 mb-2 flex flex-col gap-3">
+                      <div onClick={() => changeSettings('ssl', "strict", setSSL)} className="border p-4 flex items-center gap-1 rounded-sm cursor-pointer">
+                        <RadioGroupItem value="strict" id="r4" className="min-w-4 mr-2 cursor-pointer"/>
+                        <Label htmlFor="r4" className="mt-2 mb-2 flex flex-col gap-3 cursor-pointer">
                           <p className="text-lg">{lang?.full_script}</p>
                           <p className="leading-5">{lang?.full_script_desc}</p>
                         </Label>

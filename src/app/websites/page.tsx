@@ -92,17 +92,19 @@ export default function Home() {
   useEffect(() => {
     axios.get(process.env.NEXT_PUBLIC_API + `/zones`, config).then((res:any) => {
       if(!res.data.error?.length){
-        const revers = res?.data?.result?.sort((a:any, b:any) => {
-          let one :any = new Date(b.created_on)
-          let two :any = new Date(a.created_on)
-          return one - two
-        });
-        const domainsTemp:any = Array.from(res.data.result);
-        setDomainsAll(res.data.result)
-        setDomains(res.data.result)
-        setDomainsVisible(domainsTemp.splice(0, 12))
-        setMaxPage(Math.ceil(res.data.result.length / 12))
-        setLoadingWebsites(false)
+        if(res.data.result.length > 0){
+          const revers = res?.data?.result?.sort((a:any, b:any) => {
+            let one :any = new Date(b.created_on)
+            let two :any = new Date(a.created_on)
+            return one - two
+          });
+          const domainsTemp:any = Array.from(res.data.result);
+          setDomainsAll(res.data.result)
+          setDomains(res.data.result)
+          setDomainsVisible(domainsTemp.splice(0, 12))
+          setMaxPage(Math.ceil(res.data.result.length / 12))
+          setLoadingWebsites(false)
+        }
       }else{
         //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
       }
@@ -174,67 +176,67 @@ export default function Home() {
               <Pagination className="mt-6">
                 <PaginationContent>
                   {page != 1 ? 
-                  <PaginationItem>
+                  <PaginationItem className="cursor-pointer">
                     <PaginationPrevious onClick={() => setPage(page == 1? page : page-1)}/>
                   </PaginationItem> : null}
 
                   {page > maxPage - 2 ?
                     <>
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationLink onClick={() => setPage(1)} isActive={page == 1}>
                         1
                       </PaginationLink>
                     </PaginationItem>
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationEllipsis />
                     </PaginationItem></> : null
                   }
                   
-                  <PaginationItem>
+                  <PaginationItem className="cursor-pointer">
                     <PaginationLink onClick={() => setPage(page == maxPage ? page - 2 : page == 1? page : page == maxPage - 2 ? 1 : page - 1)} isActive={page == 1}>
                       {page == maxPage ? page - 2 : page == 1? page : page == maxPage - 2 ? 1 : page - 1}
                     </PaginationLink>
                   </PaginationItem>
 
                   {page == maxPage - 2 ? 
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationEllipsis />
                     </PaginationItem> : null
                   }
 
                   {page == maxPage - 2 ? 
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationLink onClick={() => setPage(maxPage - 3)}>
                         {maxPage - 3}
                       </PaginationLink>
                     </PaginationItem> : null
                   }
 
-                  <PaginationItem>
+                  <PaginationItem className="cursor-pointer">
                     <PaginationLink onClick={() => setPage(page == maxPage ? page - 1 : page == 1? page + 1 : page == maxPage - 2? maxPage - 2 : page)} isActive={page != 1 && page != maxPage}>
                       {page == maxPage ? page - 1 : page == 1? page + 1 : page == maxPage - 2 ? maxPage - 2 : page}
                     </PaginationLink>
                   </PaginationItem>
                   
-                  <PaginationItem>
+                  <PaginationItem className="cursor-pointer">
                     <PaginationLink onClick={() => setPage(page == 1? page + 2 : page == maxPage ? page : page + 1)} isActive={page == maxPage}>
                       {page == 1? page + 2 : page == maxPage ? page : page + 1}
                     </PaginationLink>
                   </PaginationItem>
 
                   {page < maxPage - 2 ? 
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationEllipsis />
                     </PaginationItem> : null
                   }
                   {page < maxPage - 1 ? 
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationLink onClick={() => setPage(maxPage)}>{maxPage}</PaginationLink>
                     </PaginationItem> : null
                   }
                   
                   {page != maxPage? 
-                    <PaginationItem>
+                    <PaginationItem className="cursor-pointer">
                       <PaginationNext onClick={() => setPage(maxPage == page ? page : page + 1)} />
                     </PaginationItem> : null
                   }

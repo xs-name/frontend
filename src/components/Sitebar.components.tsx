@@ -68,10 +68,10 @@ export const Sitebar = ({active, setActive}: any) => {
     return(
         <div className={active? "fixed top-0 left-0 w-full h-full bg-gray-950/20 z-20 pointer-events-auto" : "fixed top-0 left-0 w-full h-full bg-gray-950/0 z-20 pointer-events-none"} onClick={() => setActive(!active)}>
             <div onClick={(e) => e.stopPropagation()} className={active? "fixed top-0 h-dvh bg-background w-[260px] max-md:translate-x-[0] transition-all pt-16 border-r pointer-events-auto" : "fixed top-0 h-dvh bg-background w-[260px] max-md:translate-x-[-100%] transition-all pt-16 border-r pointer-events-auto"}>
-                <div className="border-b flex h-14 items-center pl-4 pr-4 justify-between">
+                <Link href='/tariffs' className="border-b flex h-14 items-center pl-4 pr-4 justify-between">
                     <p className="leading-7 [&:not(:first-child)]:mt-6 font-medium">{lang?.plan}</p>
-                    <Badge>{user?.subscribe == null ? "Free" : user?.subscribe}</Badge>
-                </div>
+                    <Badge className="tariff">{user?.subscribe == null ? "Free" : user?.subscribe?.name}</Badge>
+                </Link>
                 <div className="border-b flex flex-col gap-1 items-center pl-4 justify-between pt-5 pb-5">
                     {sitebar.map((item: any) => 
                         <Link key={item.link} href={item.link} className={pathname == item.link || item.active.indexOf(pathname) != -1 ? `flex gap-4 border-primary/40 rounded-l-full border-l border-t border-b bg-primary/10 items-center w-full pt-2 pb-2 text-primary pl-5` : `flex gap-4 rounded-l-full hover:text-primary items-center w-full pt-2 pb-2 pl-5`} >
