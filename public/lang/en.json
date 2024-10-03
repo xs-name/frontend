@@ -29,7 +29,8 @@
         "dns": "DNS",
         "ssl": "SSL",
         "account": "Account",
-        "billing": "Billing"
+        "billing": "Billing",
+        "tariffs": "Tariffs"
     },
     "home": {
         "title": "Websites",
@@ -100,7 +101,7 @@
         "copy_email": "Copy email",
         "view": "View",
         "of": "of",
-        "rows_selected": "row(s) selected",
+        "rows_selected": "page(s)",
         "add_accounts_description": "On this page, you can import accounts with your own domains for further management.",
         "place_accounts": "Place your accounts",
         "separator_character": "Separator character",

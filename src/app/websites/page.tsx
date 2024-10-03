@@ -77,7 +77,7 @@ export default function Home() {
   function filterByCity(arr: any, name: any) {
     return arr.filter(function(item: any, i: any, arr: any) {
       // console.log(item.name.includes(name))
-      return (item.name.includes(name));
+      return (item.name.includes(name.toLowerCase()));
     });
   };
 
@@ -135,7 +135,7 @@ export default function Home() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <Link href="/add-site"><Button><Plus className="h-4 mr-1"/>{lang?.button_add}</Button></Link>
+              <Link href="/add-site"><Button className="max-sm:w-full"><Plus className="h-4 mr-1"/>{lang?.button_add}</Button></Link>
             </div>
             <div className="grid mt-8 gap-4 grid-cols-[repeat(_auto-fill,_minmax(320px,_1fr))] max-sm:grid-cols-none">
               {domainsVisible.map((el:any) =>
@@ -162,7 +162,10 @@ export default function Home() {
                         }
                         
                         <div className="flex items-center gap-2">
-                          <FolderUp className="text-primary h-5"/>
+                          {el.alerts == "import" ? <FolderUp className="text-primary h-5"/> : null}
+                          {/* {el.alerts.map((item: any) => {
+                            item == "import" ? <FolderUp key={item} className="text-primary h-5"/> : null
+                          })} */}
                         </div>
                       </div>
                     </CardContent>
@@ -172,6 +175,7 @@ export default function Home() {
               {domainsVisible.length == 0 && !loadingWebsites ? <div className="flex gap-2 items-center"><SearchX /> {lang?.not}</div> : null}
               {loadingWebsites ? <div className="flex gap-2 items-center"><Loader2 className="animate-spin w-5 h-5"/> {lang?.loading}</div> : null}
             </div>
+            {/* domainsVisible */}
             {maxPage > 3 ? 
               <Pagination className="mt-6">
                 <PaginationContent>

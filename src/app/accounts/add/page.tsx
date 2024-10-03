@@ -175,7 +175,7 @@ export default function Accounts() {
                         <Label className="text-xs text-muted-foreground">{lang?.separator_character}</Label>
                         <Input maxLength={1} value={symbol} onChange={(e) => setSymbol(e.target.value)} type="text" placeholder={lang?.separator_character} />
                     </div>
-                    <Button type="submit" onClick={() => CheckingData()}>{lang?.continue}</Button>
+                    <Button type="submit" className="max-sm:w-full max-sm:mt-2" onClick={() => CheckingData()}>{lang?.continue}</Button>
                 </div>
             </div>
             :

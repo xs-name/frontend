@@ -340,7 +340,7 @@ export default function Accounts() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <Link href="/accounts/add"><Button><Plus className="h-4 mr-1"/>{lang?.add_accounts}</Button></Link>
+              <Link href="/accounts/add"><Button className="max-sm:w-full"><Plus className="h-4 mr-1"/>{lang?.add_accounts}</Button></Link>
             </div>
             {data?.data?.length == 0 && !loadingAccounts ? <div className="flex gap-2 items-center mt-2"><SearchX /> {lang?.not}</div> : null}
             {loadingAccounts ? <div className="flex gap-2 items-center mt-4"><Loader2 className="animate-spin w-5 h-5"/>{lang?.downloading_accounts}</div> : data?.data?.length == 0 && !loadingAccounts ? null :
@@ -366,7 +366,27 @@ export default function Accounts() {
                             <Checkbox name={item.id} checked={selected.includes(item.id)} onCheckedChange={(value) => handleSelect(value, item.id)}/>
                           </TableCell>
                           <TableCell className="max-lg:hidden max-sm:hidden">{item?.account_id}</TableCell>
-                          <TableCell className="max-sm:text-xs">{item?.email}</TableCell>
+                          <TableCell className="max-sm:text-xs">
+                            {item?.email}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger className="hidden max-sm:flex w-fit" asChild>
+                                <div className="text-primary">{lang?.open_menu}</div>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>{lang?.actions}</DropdownMenuLabel>
+                                <DropdownMenuItem
+                                  onClick={() => navigator.clipboard.writeText(item.email)}
+                                >
+                                  {lang?.copy_email}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => {
+                                  setIdView(item.id)
+                                  setOpenView(true)
+                                }}>{lang?.view}</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
                           <TableCell className="text-right max-sm:hidden">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>

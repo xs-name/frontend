@@ -24,6 +24,7 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
     const [active, setActive] = useState(false);
     const [modal, setModal] = useState(false)
 
+    const [name, setName] = useState("")
 
     // const [loadingUpdate, setLoadingUpdate] = useState(false)
 
@@ -139,11 +140,13 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
         }
     });
 
+    
+
     useEffect(() => {
-      if(element?.name != dataTable.domain){
+      if(element?.name != dataTable.domain && dataTable.domain){
         element.name = element?.name.replace(`.${dataTable.domain}`, '');
       }
-    
+      setName(element.name)
 
       switch(element.type){
         case "A":
@@ -201,6 +204,11 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
       }
 
     }, [element])
+
+    // useEffect(() => {
+    //   console.log(element?.name)
+    // }, [])
+    
 
 
     const [TTL, setTTL] = useState<any>({
@@ -288,7 +296,7 @@ export const DnsTableRow = ({deleteDNS, updateDNS, element, loadingUpdate, setLo
             </Dialog>
           </div>
           <div className="mt-5 font-semibold overflow-hidden">
-            {element?.name}
+            {name?.replace(`.${dataTable.domain}`, '')}
           </div>
           <div className="font-semibold overflow-hidden">
             {element?.content}

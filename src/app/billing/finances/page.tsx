@@ -65,7 +65,6 @@ export default function SSL() {
       if(res.data.error.length == 0){
         let pay = res.data.result[0].data
         pay = pay.sort((a: any, b: any) => new Date(a.updated_at) < new Date(b.updated_at) ? 1 : -1)
-        console.log(pay)
         setPay(pay)
       }
     })

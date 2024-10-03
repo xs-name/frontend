@@ -65,6 +65,15 @@ export default function SSL() {
   const [inpitPassword2, setInpitPassword2] = useState(true)
   const [telegram, setTelegram] = useState("");
 
+  function clearData(){
+    setNewEmail("")
+    setOldPassword("")
+    setPassword("")
+    setInpitPassword(true)
+    setInpitPassword2(true)
+    setTelegram("")
+  }
+
   useEffect(() => {
     getUser().then(res => {
       if(res.length != 0){
@@ -154,12 +163,6 @@ export default function SSL() {
         setLoadingData(false)
       }
     })
-    // } else {
-    //   toast("Произошла ошибка", {
-    //     description: "Пожалуйста, укажите корректный email"
-    //   })
-    //   setLoadingData(false)
-    // }
   }
 
   function changeTelegram(){
@@ -223,7 +226,7 @@ export default function SSL() {
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingData}>{lang?.cancel}</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingData} onClick={() => clearData()}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingData} onClick={() => {
                   setLoadingData(true)
                   changeEmail()
@@ -251,7 +254,7 @@ export default function SSL() {
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingData}>{lang?.cancel}</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingData} onClick={() => clearData()}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingData} onClick={() => {
                   setLoadingData(true)
                   changePassword()
@@ -279,7 +282,7 @@ export default function SSL() {
                 </div> 
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={loadingData}>{lang?.cancel}</AlertDialogCancel>
+                <AlertDialogCancel disabled={loadingData} onClick={() => clearData()}>{lang?.cancel}</AlertDialogCancel>
                 <Button disabled={loadingData} onClick={() => {
                   setLoadingData(true)
                   changeTelegram()

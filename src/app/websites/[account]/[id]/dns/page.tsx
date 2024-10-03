@@ -36,6 +36,7 @@ import { DnsTableRow } from "@/components/dnsTableRow.components";
 import { config, headers } from "@/lib/utils";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
+import { Cancel } from "@radix-ui/react-alert-dialog";
 
 
 export default function Home({params}:any) {
@@ -167,6 +168,114 @@ export default function Home({params}:any) {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+
+  function Cancel(){
+    setIsEditing(false)
+    setDataTable({...dataTable, type: "A", name: "", TTL: "1", domain: "", proxyStatus: true, types: {...dataTable.types,
+      A: {
+        address: ""
+      },
+      CAA: {
+        flags: 0,
+        tag: "1",
+        domain_name: "",
+      },
+      CERT: {
+        cert: "",
+        key_tag: "",
+        algorithm: "",
+        certificate: ""
+      },
+      CNAME: {
+        target: ""
+      },
+      DNSKEY: {
+        flags: "",
+        protocol: 3,
+        algorithm: "",
+        public_key: ""
+      },
+      DS: {
+        key_tag: "",
+        algorithm: "",
+        digest_type: "",
+        digest: ""
+      },
+      HTTPS: {
+        priority: "",
+        target: "", 
+        value: ""
+      },
+      LOC: {
+        latitude_degrees: "",
+        latitude_minutes: "",
+        latitude_seconds: "",
+        latitude_direction: "N",
+        longitude_degrees: "",
+        longitude_minutes: "",
+        longitude_seconds: "",
+        longitude_direction: "E",
+        horizontal: "",
+        vertical: "",
+        altitude: "",
+        size: ""
+      },
+      MX: {
+        mail: "",
+        priority: ""
+      },
+      NAPTR: {
+        order: "",
+        preference: "",
+        flags: "",
+        service: "",
+        regEx: "",
+        replacement: ""
+      },
+      NS: {
+        nameserver: ""
+      },
+      PTR: {
+        domain: ""
+      },
+      SMIMEA: {
+        usage: "",
+        selector: "",
+        matching_type: "",
+        certificate: ""
+      },
+      SRV: {
+        priority: "",
+        weight: "",
+        port: "",
+        target: ""
+      },
+      SSHFP: {
+        algorithm: "",
+        type: "",
+        fingerprint: ""
+      },
+      SVCB: {
+        priority: "",
+        target: "",
+        value: ""
+      },
+      TLSA: {
+        usage: "",
+        selector: "",
+        matching_type: "",
+        certificate: ""
+      },
+      TXT: {
+        сontent: "",
+      },
+      URI: {
+        priority: "",
+        weight: "",
+        target: ""
+      }
+    }})
+  }
 
   useEffect(() => {
     getUser().then(res => {
@@ -846,7 +955,7 @@ export default function Home({params}:any) {
                   </div>
                   <div className="flex flex-col border-t p-5 max-sm:p-4">
                     <div className="flex gap-2 justify-end">
-                    <Button disabled={loadingAdd} className="" variant="secondary" onClick={() => setIsEditing(false)}>{lang?.cancel}</Button>
+                    <Button disabled={loadingAdd} className="" variant="secondary" onClick={() => Cancel()}>{lang?.cancel}</Button>
                     <Button disabled={loadingAdd} onClick={() => {
                       addDNS()
                       setLoadingAdd(true)
@@ -870,23 +979,27 @@ export default function Home({params}:any) {
                 <div>
                   {DNS?.data?.map((el: any) => <DnsTableRow key={el.id} element={el} deleteDNS={deleteDNS} updateDNS={updateDNS} setLoadingUpdate={setLoadingUpdate} loadingUpdate={loadingUpdate} loadingDelete={loadingDelete} setLoadingDelete={setLoadingDelete}/>)}
                 </div>
-                <div className="flex items-center p-4 gap-3 max-sm:flex-col">
-                  <div className="flex gap-2">
-                    <div onClick={() => paginate(1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
-                      <ChevronsLeft className="w-[15px] h-[16px]"/>
+                {DNS?.data?.length != 0 && DNS != undefined?
+                  <div className="flex items-center p-4 gap-3 max-sm:flex-col">
+                    <div className="flex gap-2">
+                      <div onClick={() => paginate(1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
+                        <ChevronsLeft className="w-[15px] h-[16px]"/>
+                      </div>
+                      <div onClick={() => paginate(page - 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
+                        <ChevronLeft className="w-[15px] h-[16px]"/>
+                      </div>
+                      <div onClick={() => paginate(page + 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
+                        <ChevronRight className="w-[15px] h-[16px]"/>
+                      </div>
+                      <div onClick={() => paginate(DNS?.page?.total_pages)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
+                        <ChevronsRight className="w-[15px] h-[16px]"/>
+                      </div>
                     </div>
-                    <div onClick={() => paginate(page - 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
-                      <ChevronLeft className="w-[15px] h-[16px]"/>
-                    </div>
-                    <div onClick={() => paginate(page + 1)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
-                      <ChevronRight className="w-[15px] h-[16px]"/>
-                    </div>
-                    <div onClick={() => paginate(DNS?.page?.total_pages)} className="items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0 flex cursor-pointer">
-                      <ChevronsRight className="w-[15px] h-[16px]"/>
-                    </div>
+                    <div className="text-xs text-muted-foreground">{lang?.showing_1} <strong>{DNS?.page?.page}-{DNS?.page?.total_pages}</strong> {lang?.showing_2} <strong>{DNS?.page?.total_count}</strong> {lang?.showing_3} </div>
                   </div>
-                  <div className="text-xs text-muted-foreground">{lang?.showing_1} <strong>{DNS?.page?.page}-{DNS?.page?.total_pages}</strong> {lang?.showing_2} <strong>{DNS?.page?.total_count}</strong> {lang?.showing_3} </div>
-                </div>
+                :
+                null
+                }
               </div>
               
             </div>

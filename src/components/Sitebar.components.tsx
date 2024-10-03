@@ -1,6 +1,6 @@
 'use client';
 
-import { Proportions, Users, Globe, Settings, Phone, Lock, SquareChartGantt, User, Wallet } from "lucide-react";
+import { Proportions, Users, Globe, Settings, Phone, Lock, SquareChartGantt, User, Wallet, Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge"
 import { useEffect, useState } from "react";
 import { useLanguageContext } from "./LanguageProvider";
@@ -34,12 +34,14 @@ export const Sitebar = ({active, setActive}: any) => {
                 } else if(pathname.slice(0, 10) == "/account" || pathname == "/billing/finances" || pathname == "/billing/subscriptions"){
                     setSitebar([
                         {name: res.data.sitebar.account, link: "/account", active: [], icon: <User />},
-                        {name: res.data.sitebar.billing, link: "/billing/finances", active: ['/billing/finances', '/billing/subscriptions'], icon: <Wallet className="h-[18px]"/>}
+                        {name: res.data.sitebar.billing, link: "/billing/finances", active: ['/billing/finances', '/billing/subscriptions'], icon: <Wallet className="h-[18px]"/>},
+                        {name: res.data.sitebar.tariffs, link: "/tariffs", active: [], icon: <Rocket className="h-[18px]"/>},
                     ])
                 } else {
                     setSitebar([
                         {name: res.data.sitebar.websites, link: "/websites", active: [], icon: <Proportions className="h-[18px]"/>},
                         {name: res.data.sitebar.accounts, link: "/accounts", active: [], icon: <Users className="h-[18px]"/>},
+                        {name: res.data.sitebar.tariffs, link: "/tariffs", active: [], icon: <Rocket className="h-[18px]"/>},
                         // {name: res.data.sitebar.domain, link: "/domain", icon: <Globe />}
                     ])
                 }

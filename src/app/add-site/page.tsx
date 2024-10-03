@@ -100,8 +100,8 @@ export default function Home() {
               <Button disabled={processLoading} onClick={() => {
                 setProcessLoading(true)
                 addDomain()
-              }}>{processLoading? <div className="flex items-center gap-1"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : lang?.button}</Button>
-              <Link className="font-medium text-primary underline" href={""}>{lang?.create_domain}</Link>
+              }}>{processLoading? <div className="flex items-center gap-1 max-sm:w-full"><Loader2 className="animate-spin w-4 h-4"/> Загрузка</div> : lang?.button}</Button>
+              {/* <Link className="font-medium text-primary underline" href={""}>{lang?.create_domain}</Link> */}
             </div>
           </div>
         </div>

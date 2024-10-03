@@ -71,6 +71,7 @@ const AuthPage = () => {
 
     switch(data.type){
       case 'email':
+        data.value = data.value.toLowerCase()
         axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
           if(res.data.error.length > 0){
             toast("Произошла ошибка", {
