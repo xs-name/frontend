@@ -25,11 +25,15 @@ import Link from "next/link"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@radix-ui/react-label"
 
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useUserContext } from "@/components/userProvider"
 import { getUser } from "@/lib/user"
+import { TariffModal } from "@/components/TariffModal.component"
  
 
 
@@ -38,6 +42,7 @@ export default function Accounts() {
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
+  const [tariffModal, setTariffModal] = useState(false);
 
   const [symbol, setSymbol] = useState(';');
   const [accounts, setAccounts] = useState('');
@@ -73,7 +78,15 @@ export default function Accounts() {
 
 
   function CheckingData(){
-    let arr = accounts.split('\n');
+    if(accounts == ""){
+        toast(lang?.error, {
+            description: lang?.err_fill
+        })
+        return null;
+    }
+
+
+    let arr = accounts.trim().split('\n');
     const arrResult: any = []
     let count = 0;
 
@@ -84,26 +97,50 @@ export default function Accounts() {
     for(let i = 0; i < arr.length; i++){
         let elem = arr[i].split(symbol);
 
+        if(elem.length < 2){
+            toast(lang?.error, {
+                description: lang?.err_valid
+            })
+            return null;
+        }
+
         if(indexEmail != -1 && indexPassword != -1){
-            break
+            // toast(lang?.error, {
+            //     description: lang?.err_valid
+            // })
+            // return null;
+            break;
         }
 
         for(let j = 0; j < elem.length; j++){
-            if(/^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(elem[j])){
+            if(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(elem[j])){
                 indexEmail = j
             }
             if(/^[a-f0-9]{37}$/i.test(elem[j])){
                 indexPassword = j
             }
         }
-        
     }
+
+    // for(let i = 0; i < arr.length; i++){
+    //     let elem = arr[i].split(symbol);
+
+    //     const isEmail = /^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(elem[indexEmail]);
+    //     const isToken = /^[a-f0-9]{37}$/i.test(elem[indexPassword]);
+
+    //     if(!isEmail || !isToken){
+    //         toast(lang?.error, {
+    //             description: lang?.err_valid
+    //         })
+    //         return null;
+    //     }
+    // }
     
 
     for(let i = 0; i < arr.length; i++){
         let elem = arr[i].split(symbol);
 
-        const isEmail = /^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(elem[indexEmail]);
+        const isEmail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(elem[indexEmail]);
         const isToken = /^[a-f0-9]{37}$/i.test(elem[indexPassword]);
 
         const el = {
@@ -142,6 +179,12 @@ export default function Accounts() {
             setResultData(res.data.result[0])
             // console.log(res.data.result[0])
         }else{
+            if(res.data.code == 403){
+                setTariffModal(true)
+            }
+            toast(lang?.error, {
+                description: res.data.error[0].message,
+            })
           //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
         }
       }).finally(() => setLoadingAccounts(false))
@@ -159,16 +202,17 @@ export default function Accounts() {
         <div className="h-dvh w-dvw fixed top-0 left-0 flex items-center justify-center bg-black/20 z-50">
             <Loader2 className="animate-spin w-8 h-8"/>
         </div> : null} */}
-        <Nav />
+        <Toaster />
+        <TariffModal active={tariffModal} setActive={setTariffModal}/>
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">{lang?.add_accounts}</h1>
-            <p className="leading-7">{lang?.add_accounts_description}</p>
+            <p className="leading-7 mb-2">{lang?.add_accounts_description}</p>
             {step == 1? 
             <div className="flex flex-col mt-4">
                 <div className='max-lg:w-full'>
                     <Label className="text-xs text-muted-foreground">{lang?.title}</Label>
-                    <Textarea value={accounts} onChange={(e) => setAccounts(e.target.value)} placeholder={lang?.place_accounts} />
+                    <Textarea className="max-sm:h-[350px]" value={accounts} onChange={(e) => setAccounts(e.target.value)} placeholder={lang?.place_accounts} />
                 </div>
                 <div className="flex justify-between mt-3 items-end max-sm:flex-col max-sm:gap-2 max-sm:mt-2 max-sm:items-start">
                     <div className='max-lg:w-full'>

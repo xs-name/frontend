@@ -40,7 +40,7 @@ import {
 import { useState, useEffect } from "react"
 import { useLanguageContext } from "./LanguageProvider";
 import axios from 'axios';
-import { Loading } from "./Loading.components";
+import { LoadingFull } from "./LoadingFull.components";
 import { Sitebar } from "./Sitebar.components";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner"
@@ -49,15 +49,30 @@ import { config } from "@/lib/utils";
 import { getUser } from "@/lib/user";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTelegram } from "./TelegramProvider";
+import { useUserContext } from "./userProvider";
 
 const Nav = () => {
     // const [position, setPosition] = useState("")
     const {language, setLanguage} = useLanguageContext()
     const [lang, setLang] = useState<any>();
+    const {user, setUser} = useUserContext();
     const [loading, setLoading] = useState(true)
     const { userTelegram, webApp } = useTelegram();
 
     const [sitebar, setSitebar] = useState(false);
+
+    useEffect(() => {
+        getUser().then(res => {
+          if(res.length != 0){
+            setLanguage(res.language)
+          } else {
+            setLanguage('en')
+          }
+          
+          setUser(res)
+        })
+    }, [])
+
 
     const router = useRouter()
 
@@ -113,7 +128,7 @@ const Nav = () => {
     function logout(){
         axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/logout', {}, config).then((res) => {
             if(res.data.error.length > 0){
-              toast("Произошла ошибка", {
+              toast(lang?.error, {
                 description: res.data.error[0].message,
               })
             } else {
@@ -126,10 +141,11 @@ const Nav = () => {
     }
 
     if(loading){
-        return <Loading />
+        return <LoadingFull />
     }
 
     return (
+        (Object.keys(user)).length > 0?
         <>
             <Toaster />
             {/* SITEBAR */}
@@ -141,7 +157,7 @@ const Nav = () => {
                         <Menu className={sitebar ? "opacity-0 transition-all absolute" : "opacity-1 transition-all absolute"}/>
                         <X className={sitebar ? "opacity-1 transition-all absolute" : "opacity-0 transition-all absolute"}/>
                     </div>
-                    <Link href="/websites"><img className="w-16" src="/logo.svg" alt="logo" /></Link>
+                    <Link href="/websites" className="flex items-center gap-2 font-bold text-[20px] tracking-wider "><img className="w-12" src="/logo.svg" alt="logo" /><div className="max-lg:hidden">XSNAME</div></Link>
                 </div>
                 <div className="flex h-full items-center space-x-4 text-sm">
                     <Link href="/add-site" className="h-full flex items-center gap-1 cursor-pointer max-md:hidden"> <Plus className="h-4"/>{lang?.connect}</Link>
@@ -167,7 +183,7 @@ const Nav = () => {
                     <div className="h-full flex items-center cursor-pointer max-md:pr-5"><LogOut className="h-[16px] cursor-pointer" onClick={() => logout()}/></div>
                 </div>
             </div>
-        </>
+        </> : null
     );
 }
 

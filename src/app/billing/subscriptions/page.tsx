@@ -74,7 +74,6 @@ export default function SSL() {
     <main>
       {user.length != 0? (
         <div>
-          <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
               <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{lang?.billing}</h1>

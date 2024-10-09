@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { cn, config } from "@/lib/utils";
-import { Check, Clock, FolderUp, Loader2, Plus, Search, SearchX } from "lucide-react";
+import { Check, Clock, FolderUp, Loader2, OctagonAlert, Plus, Search, SearchX } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from 'axios';
@@ -29,12 +29,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getLanguage } from "@/lib/language";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
+import { TariffModal } from "@/components/TariffModal.component";
 
 export default function Home() {
   const {user, setUser} = useUserContext();
   const {language, setLanguage} = useLanguageContext();
   const [lang, setLang] = useState<any>();
   const [loading, setLoading] = useState(true)
+  const [loading1, setLoading1] = useState(true)
   const [loadingWebsites, setLoadingWebsites] = useState(true)
 
   //Храним все домены
@@ -44,6 +46,8 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [search, setSearch] = useState("");
+
+  const [tariffModal, setTariffModal] = useState(false);
 
   useEffect(() => {
     loadingPage()
@@ -103,15 +107,17 @@ export default function Home() {
           setDomains(res.data.result)
           setDomainsVisible(domainsTemp.splice(0, 12))
           setMaxPage(Math.ceil(res.data.result.length / 12))
-          setLoadingWebsites(false)
         }
       }else{
         //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
       }
-    })
+    }).finally(() => {
+      setLoading1(false)
+      setLoadingWebsites(false)
+    });
   }, [])
 
-  if(loading){
+  if(loading || loading1){
     return <Loading />
   }
 
@@ -119,7 +125,7 @@ export default function Home() {
     <main>
       {user.length != 0?
       <div>
-        <Nav />
+        <TariffModal active={tariffModal} setActive={setTariffModal}/>
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 mb-3">{lang?.title}</h1>
@@ -154,6 +160,12 @@ export default function Home() {
                         <div className="flex items-center text-sm font-medium">
                           <Clock className="text-blue-600 h-4"/>
                           Pending Nameserver Update
+                        </div>
+                        :
+                        el.status == "moved" ?
+                        <div className="flex items-center text-sm font-medium">
+                          <OctagonAlert className="text-red-600 h-4"/>
+                          Moved
                         </div>
                         :
                         <div className="flex items-center text-sm font-medium">

@@ -74,7 +74,7 @@ const AuthPage = () => {
         data.value = data.value.toLowerCase()
         axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
           if(res.data.error.length > 0){
-            toast("Произошла ошибка", {
+            toast(lang?.error, {
               description: res.data.error[0].message,
             })
           } else {
@@ -88,7 +88,7 @@ const AuthPage = () => {
       case 'password':
         axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
           if(res.data.error.length > 0){
-            toast("Произошла ошибка", {
+            toast(lang?.error, {
               description: res.data.error[0].message,
             })
           } else {
@@ -102,7 +102,7 @@ const AuthPage = () => {
       case 'telegram':
         axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', JSON.stringify(data), config).then((res) => {
           if(res.data.error.length > 0){
-            toast("Произошла ошибка", {
+            toast(lang?.error, {
               description: res.data.error[0].message,
             })
           } else {
@@ -116,7 +116,7 @@ const AuthPage = () => {
       case 'tgpassword':
           axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/login', data, config).then((res) => {
             if(res.data.error.length > 0){
-              toast("Произошла ошибка", {
+              toast(lang?.error, {
                 description: res.data.error[0].message,
               })
             } else {
@@ -187,7 +187,7 @@ const AuthPage = () => {
         <Toaster />
         <Card className="w-[400px]">
         <CardHeader className="items-start">
-          <img src="/logo.svg" className="w-32 mb-3" alt="logo CloudFlare Helper" />
+          <img src="/logo.svg" className="w-24 mb-3" alt="logo CloudFlare Helper" />
           <CardTitle className="mb-2">{lang?.name}</CardTitle>
           <CardDescription>{lang?.description}</CardDescription>
           <div>

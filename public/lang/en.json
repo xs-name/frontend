@@ -1,11 +1,13 @@
 {
     "nav": {
+        "error": "An error has occurred!",
         "connect": "Connect",
         "import": "Import",
         "language": "Language",
         "account": "Account"
     },
     "auth": {
+        "error": "An error has occurred!",
         "name": "CloudFlare Helper",
         "description": "This is a web assistant for managing domains from different accounts.",
         "bot": "Telegram Bot",
@@ -19,6 +21,7 @@
         "loginLabelTwo": "One-time key"
     },
     "sitebar": {
+        "error": "An error has occurred!",
         "plan": "Current plan",
         "enterprise": "Enterprise",
         "websites": "Websites",
@@ -33,6 +36,7 @@
         "tariffs": "Tariffs"
     },
     "home": {
+        "error": "An error has occurred!",
         "title": "Websites",
         "description": "Select a domain to configure and monitor how Cloudflare processes its web traffic.",
         "button_add": "Add website",
@@ -41,16 +45,21 @@
         "loading": "Downloading a list of websites..."
     },
     "add": {
+        "error": "An error has occurred!",
         "title": "Connect your domains",
         "description": "Optimize the security, performance, and reliability of your web traffic.",
         "label": "Enter an existing domain name (example.com )",
         "button": "Continue",
-        "create_domain": "Register a new domain."
+        "create_domain": "Register a new domain.",
+        "of": "of",
+        "rows_selected": "page(s)"
     },
     "not_found": {
+        "error": "An error has occurred!",
         "title": "The page was not found"
     },
     "ssl": {
+        "error": "An error has occurred!",
         "loading": "Loading, please wait...",
         "ssl_desctiption": "Customize your edge certificates, which encrypt traffic.",
         "back": "Back to the websites",
@@ -78,6 +87,9 @@
         "automatic_HTTPS_desc": "Automatic HTTPS Rewrites helps fix mixed content by changing “http” to “https” for all resources or links on your web site that can be served with HTTPS."
     },
     "accounts": {
+        "error": "An error has occurred!",
+        "err_fill": "Please fill in all fields",
+        "err_valid": "You entered incorrect data",
         "title": "Accounts",
         "description": "On this page, you can view and add Cloudflare accounts.",
         "add_accounts": "Add accounts",
@@ -109,9 +121,11 @@
         "failures": "Failures",
         "message": "Message",
         "processing": "Processing",
-        "back": "Back"
+        "back": "Back",
+        "not": "Nothing was found!"
     },
     "settings": {
+        "error": "An error has occurred!",
         "change_email": "Change Email Address",
         "change_email_desc": "Do you really want to change your email? Current email:",
         "new_email": "New email",
@@ -130,9 +144,11 @@
         "Language_preference": "Language Preference",
         "Language_preference_desc": "My preference for the language shown in the dashboard is:",
         "email_address": "Email address",
-        "password_description": "You can change your password"
+        "password_description": "You can change your password",
+        "password_description_2": "You can set a password"
     },
     "billing": {
+        "error": "An error has occurred!",
         "repl_balance": "Replenishment of the balance",
         "amount": "Amount",
         "loading": "Loading",
@@ -159,10 +175,15 @@
         "no_active": "No acvtive"
     },
     "webapp": {
+        "error": "An error has occurred!",
         "webapp_desc": "This is a web assistant for managing domains from different accounts.",
-        "logging": "Logging in to your account"
+        "logging": "Logging in to your account",
+        "close": "Close",
+        "no_account_1": "You are not registered on our website yet, write a command",
+        "no_account_2": "bot"
     },
     "dns": {
+        "error": "An error has occurred!",
         "description": "Manage your domain's DNS records.",
         "manager": "DNS Manager",
         "manager_desc": "View, add, and edit DNS records. The changes will take effect after saving.",
@@ -185,6 +206,7 @@
         "meaning": "Meaning"
     },
     "tariffs": {
+        "error": "An error has occurred!",
         "prolong": "Prolong",
         "prolong_min": "prolong",
         "select": "Select",
@@ -207,6 +229,9 @@
         "create_1": "Creation",
         "create_2": "zones once every 24 hours",
         "import_1": "Import",
-        "import_2": "accounts every 24 hours"
+        "import_2": "accounts every 24 hours",
+        "enough": "You don't have enough rights!",
+        "enough_desc": "You can purchase a higher tariff rate to be able to perform this action!",
+        "all_tarrifs": "View all tariffs"
     }
 }

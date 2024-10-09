@@ -8,7 +8,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 const GlobalContext = createContext<any>([]);
 
 export const UserProvider = ({children}:any) => {
-    const [user, setUser] = useState<any>("");
+    const [user, setUser] = useState<any>({});
 
     useEffect(() => {
         getUser().then(res => {

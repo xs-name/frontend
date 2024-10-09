@@ -37,6 +37,7 @@ import { config, headers } from "@/lib/utils";
 import { useUserContext } from "@/components/userProvider";
 import { getUser } from "@/lib/user";
 import { Cancel } from "@radix-ui/react-alert-dialog";
+import { TariffModal } from "@/components/TariffModal.component";
 
 
 export default function Home({params}:any) {
@@ -52,6 +53,7 @@ export default function Home({params}:any) {
   const [loadingDelete, setLoadingDelete] = useState(false)
 
   const [loadingAdd, setLoadingAdd] = useState(false)
+  const [tariffModal, setTariffModal] = useState(false);
 
   const router = useRouter()
 
@@ -170,7 +172,7 @@ export default function Home({params}:any) {
   const [isEditing, setIsEditing] = useState(false);
 
   function Cancel(){
-    setIsEditing(false)
+    setIsEditing(!isEditing)
     setDataTable({...dataTable, type: "A", name: "", TTL: "1", domain: "", proxyStatus: true, types: {...dataTable.types,
       A: {
         address: ""
@@ -297,7 +299,7 @@ export default function Home({params}:any) {
       if(!res.data.error?.length){
         setDNS(res.data.result[0])
       }else{
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
         router.push("/websites")
@@ -317,7 +319,10 @@ export default function Home({params}:any) {
       if(!res.data.error?.length){
         getDNS()
       }else{
-        toast("Произошла ошибка", {
+        if(res.data.code == 403){
+          setTariffModal(true)
+        }
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
         router.push("/websites")
@@ -604,7 +609,10 @@ export default function Home({params}:any) {
         getDNS()
         setActive(false)
       }else{
-        toast("Произошла ошибка", {
+        if(res.data.code == 403){
+          setTariffModal(true)
+        }
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
         getDNS()
@@ -622,7 +630,7 @@ export default function Home({params}:any) {
           // console.log('domain', res.data.result)
         }else{
           console.log("ERROR")
-          toast("Произошла ошибка", {
+          toast(lang?.error, {
             description: res.data.error[0].message,
           })
           //* ВЫДАТЬ ОШИБКУ ПОЛЬЗОВАТЕЛЮ!!!
@@ -914,7 +922,10 @@ export default function Home({params}:any) {
         getDNS()
         setIsEditing(false)
       }else{
-        toast("Произошла ошибка", {
+        if(res.data.code == 403){
+          setTariffModal(true)
+        }
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
       }
@@ -934,7 +945,7 @@ export default function Home({params}:any) {
       {user.length != 0?
       <div>
         <Toaster />
-        <Nav />
+        <TariffModal active={tariffModal} setActive={setTariffModal}/>
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{domain.name}</h1>
@@ -945,7 +956,7 @@ export default function Home({params}:any) {
               <div className="flex flex-col p-5 max-sm:p-4 w-full items-start mb-6">
                 <b className="text-xl font-semibold">{lang?.manager}</b>
                 <p className="text-sm mt-[5px]">{lang?.manager_desc}</p>
-                <Button className="mt-5" onClick={() => setIsEditing(!isEditing)}><Plus className="h-4 mr-1"/>{lang?.add_button}</Button>
+                <Button className="mt-5" onClick={() => Cancel()}><Plus className="h-4 mr-1"/>{lang?.add_button}</Button>
               </div>
 
               {isEditing?

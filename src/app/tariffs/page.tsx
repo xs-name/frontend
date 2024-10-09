@@ -85,11 +85,19 @@ export default function Tariffs() {
 
   useEffect(() => {
     tariff.map((el: any) => {
-      if(el.title == user?.subscribe?.name[0].toUpperCase() + user?.subscribe?.name.slice(1)){
+      if((el.title).toLowerCase() == (user?.subscribe?.name)?.toLowerCase()){
         setLvlSub(el.id)
       }
     })
-  }, [user])
+  }, [user, tariff])
+
+  useEffect(() => {
+    tariff.map((el: any) => {
+      if((el.title).toLowerCase() == (user?.subscribe?.name)?.toLowerCase()){
+        setLvlSub(el.id)
+      }
+    })
+  }, [])
 
   useEffect(() => {
     if (language) {
@@ -113,7 +121,7 @@ export default function Tariffs() {
           setLoadingData(false)
           setModal(false)
         } else {
-          toast("Произошла ошибка", {
+          toast(lang?.error, {
             description: res.data.error[0].message
           })
           setLoadingData(false)
@@ -140,7 +148,7 @@ export default function Tariffs() {
           setLoadingData(false)
           setModal(false)
         } else {
-          toast("Произошла ошибка", {
+          toast(lang?.error, {
             description: res.data.error[0].message
           })
           setLoadingData(false)
@@ -170,7 +178,6 @@ export default function Tariffs() {
     <main>
       {user.length != 0 ? (
         <div>
-          <Nav />
           <Toaster />
           <AlertDialog open={modal} onOpenChange={setModal}>
             <AlertDialogTrigger>
@@ -223,7 +230,8 @@ export default function Tariffs() {
                     <div className="text-2xl mt-5 mb-3 text-white">{item.title}</div>
 
                     {item.permissions?.map((plus: any) =>
-                      <div key={plus.permission} className="flex gap-1 mb-3 items-start text-white leading-5"><div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div>
+                      <div key={plus.permission} className="flex gap-1 mb-3 items-start text-white leading-5">
+                        {plus.permission == "zones:create" || plus.permission == "cf-accounts:import" ? <div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div> : null}
                         <span className="w-[calc(100%-24px)]">
                           {plus.permission == "zones:create" ? `${lang?.create_1} ${plus.limit.count} ${lang?.create_2}` : null}
                           {plus.permission == "cf-accounts:import" ? `${lang?.import_1} ${plus.limit.count} ${lang?.import_2}` : null}
@@ -254,7 +262,9 @@ export default function Tariffs() {
                         <div className={item.title == "Business" ? "text-2xl mt-5 mb-3 text-white" : "text-2xl mb-3 mt-5"}>{item.title}</div>
                         <div className="mt-2">
                           {item.permissions?.map((plus: any) =>
-                            <div key={plus.permission} className={item.title == "Business"? "flex gap-1 mb-3 items-start text-white leading-5" : "leading-5 flex gap-1 mb-3 items-start"}><div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div>
+                            <div key={plus.permission} className={item.title == "Business"? "flex gap-1 mb-3 items-start text-white leading-5" : "leading-5 flex gap-1 mb-3 items-start"}>
+                              {/* <div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div> */}
+                              {plus.permission == "zones:create" || plus.permission == "cf-accounts:import" ? <div className="w-5 h-5 flex items-center justify-center bg-blue-500 text-white rounded-full"><Check className="w-3 h-3"/></div> : null}
                               <span className="w-[calc(100%-24px)]">
                                 {plus.permission == "zones:create" ? `${lang?.create_1} ${plus.limit.count} ${lang?.create_2}` : null}
                                 {plus.permission == "cf-accounts:import" ? `${lang?.import_1} ${plus.limit.count} ${lang?.import_2}` : null}

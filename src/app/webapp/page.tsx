@@ -19,6 +19,7 @@ import { useTelegram } from "@/components/TelegramProvider";
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner";
 import { config } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const {user, setUser} = useUserContext();
@@ -36,6 +37,7 @@ export default function Home() {
   const [params, setParams] = useState<any>();
   const router = useRouter()
 
+  const [noAuth, setNoAuth] = useState(false);
 
   const { userTelegram, webApp } = useTelegram();
 
@@ -44,9 +46,10 @@ export default function Home() {
     if(webApp){
       axios.post(process.env.NEXT_PUBLIC_API + '/account/authorization/webapp', webApp?.initDataUnsafe, config).then((res) => {
         if(res.data.error.length > 0){
-          toast("Произошла ошибка", {
-            description: res.data.error[0].message,
-          })
+          // toast(lang?.error, {
+          //   description: res.data.error[0].message,
+          // })
+          setNoAuth(true)
         } else {
           // console.log(res.data)
           if(res.data.result[0].type == "redirect"){
@@ -103,14 +106,22 @@ export default function Home() {
 
         <div className="flex items-center justify-center h-dvh">
             <div className="max-w-[400px] mb-[200px] m-8">
-            <img className="w-[120px] mb-4" src="/logo.svg" alt="" />
-            <h1 className="text-3xl font-bold">CloudFlare Helper</h1>
+            <img className="w-[80px] mb-4" src="/logo.svg" alt="" />
+            <h1 className="text-3xl font-bold">XSNANE Dashboard</h1>
             <p className="description text-muted-foreground mt-4">{lang?.webapp_desc}</p>
 
+            {noAuth ? 
+            <p className="flex gap-2 gap-4 items-start flex-col mt-10">
+              <span className="text-muted-foreground text-sm border-l-4 border-primary pl-3">{lang?.no_account_1} <span className="text-primary font-bold">/start</span> {lang?.no_account_2}</span>
+              <Button className="mt-4" onClick={() => webApp?.close()}>{lang?.close}</Button>
+            </p>
+            :
             <p className="flex gap-2 items-center mt-10">
                 <Loader2 className="animate-spin w-6 h-6 text-muted-foreground"/>
                 <span className="text-muted-foreground text-sm">{lang?.logging}</span>
             </p>
+            }
+            
             </div>
         </div>
     </main>

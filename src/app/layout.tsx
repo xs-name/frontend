@@ -5,6 +5,7 @@ import { LanguageProvider } from "@/components/LanguageProvider";
 import { UserProvider } from "@/components/userProvider";
 import { Toaster } from "@/components/ui/sonner"
 import { TelegramProvider } from "@/components/TelegramProvider";
+import Nav from "@/components/Nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,10 +21,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "xsname",
-  icons: {
-    icon: '/logo.svg'
-  }
+  title: "xsname"
 };
 
 
@@ -39,6 +37,7 @@ export default function RootLayout({
         <UserProvider>
           <TelegramProvider>
             <LanguageProvider>
+              <Nav />
               {children}
             </LanguageProvider>
           </TelegramProvider>

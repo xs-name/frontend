@@ -199,7 +199,7 @@ export default function Home({params}:any) {
       if(!res.data.error?.length){
         getDNS()
       }else{
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
       }
@@ -479,7 +479,7 @@ export default function Home({params}:any) {
         getDNS()
         setActive(false)
       }else{
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
       }
@@ -782,7 +782,7 @@ export default function Home({params}:any) {
         getDNS()
         setIsEditing(false)
       }else{
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message,
         })
       }
@@ -793,7 +793,7 @@ export default function Home({params}:any) {
     if(DNS?.data?.length > 0){
       router.push(`/add-site/${domain.account.id}/${domain.id}/ssl`)
     } else {
-      toast("Произошла ошибка", {
+      toast(lang?.error, {
         description: "Пожалуйста, добавьте хотя бы 1 DNS"
       })
     }
@@ -812,7 +812,6 @@ export default function Home({params}:any) {
       {user.length != 0?
       <div>
         <Toaster />
-        <Nav />
         <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
           <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
             <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{domain.name}</h1>

@@ -74,7 +74,7 @@ export default function SSL() {
     setTelegram("")
   }
 
-  useEffect(() => {
+  function getUserSeeting(){
     getUser().then(res => {
       if(res.length != 0){
         setLanguage(res.language)
@@ -83,6 +83,10 @@ export default function SSL() {
       }
       setUser(res)
     })
+  }
+
+  useEffect(() => {
+    getUserSeeting()
   }, [])
 
 
@@ -126,15 +130,16 @@ export default function SSL() {
           setNewEmail("")
           setPassword("")
           setLoadingData(false)
+          getUserSeeting()
         } else {
-          toast("Произошла ошибка", {
+          toast(lang?.error, {
             description: res.data.error[0].message
           })
           setLoadingData(false)
         }
       })
     } else {
-      toast("Произошла ошибка", {
+      toast(lang?.error, {
         description: "Пожалуйста, укажите корректный email"
       })
       setLoadingData(false)
@@ -143,10 +148,14 @@ export default function SSL() {
 
   function changePassword(){
     // if(/^[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:-[a-z0-9]+)*\.[a-z]+$/.test(newEmail)){
-    const data = {
-      old_password: oldPassword,
+    const data: any= {
       new_password: password
     }
+
+    if(user.password){
+      data.old_password = oldPassword
+    }
+
     axios.patch(process.env.NEXT_PUBLIC_API + "/account/settings/password", data, config).then((res) => {
       if(res.data.error.length == 0){
         toast("Успех!", {
@@ -155,9 +164,10 @@ export default function SSL() {
         setPasswordOpen(false)
         setOldPassword("")
         setPassword("")
+        getUserSeeting()
         setLoadingData(false)
       } else {
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message
         })
         setLoadingData(false)
@@ -179,17 +189,17 @@ export default function SSL() {
         setTelegramOpen(false)
         setPassword("")
         setTelegram("")
-        setUser({...user, telegram: telegram})
+        getUserSeeting()
         setLoadingData(false)
       } else {
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message
         })
         setLoadingData(false)
       }
     })
     // } else {
-    //   toast("Произошла ошибка", {
+    //   toast(lang?.error, {
     //     description: "Пожалуйста, укажите корректный email"
     //   })
     //   setLoadingData(false)
@@ -205,7 +215,6 @@ export default function SSL() {
     <main>
       {user.length != 0? (
         <div>
-          <Nav />
           <Toaster />
           <AlertDialog open={emailOpen} onOpenChange={setEmailOpen}>
             <AlertDialogTrigger>
@@ -244,10 +253,12 @@ export default function SSL() {
                 <AlertDialogDescription>
                   {lang?.change_password_desc}
                 </AlertDialogDescription>
-                <div className='max-lg:w-full'>
-                  <Label className="text-xs text-muted-foreground mt-1">{lang?.old_password}</Label>
-                  <Input value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} type={inpitPassword2 ? "password" : "text"} icon={inpitPassword2 ? <Eye onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
-                </div>
+                {user.password ?
+                  <div className='max-lg:w-full'>
+                    <Label className="text-xs text-muted-foreground mt-1">{lang?.old_password}</Label>
+                    <Input value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} type={inpitPassword2 ? "password" : "text"} icon={inpitPassword2 ? <Eye onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword2(!inpitPassword2)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
+                  </div> : null
+                }
                 <div className='max-lg:w-full mb-1'>
                   <Label className="text-xs text-muted-foreground mt-1">{lang?.new_password}</Label>
                   <Input value={password} onChange={(e) => setPassword(e.target.value)} type={inpitPassword ? "password" : "text"} icon={inpitPassword ? <Eye onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" /> : <EyeOff onClick={() => setInpitPassword(!inpitPassword)} className="absolute right-2 text-muted-foreground cursor-pointer" />}/>
@@ -331,7 +342,7 @@ export default function SSL() {
               <div className="flex border rounded-md mb-8 max-lg:flex-col">
                 <div className="p-5 w-2/3 max-lg:w-full">
                   <p className="text-xl font-semibold">{lang?.password}</p>
-                  <p className="mt-3 mb-3">{lang?.password_description}</p>
+                  <p className="mt-3 mb-3">{user.password ? lang?.password_description : lang?.password_description_2}</p>
                 </div>
                 <div className="border-l bg-slate-100 w-1/3 flex items-center justify-center max-lg:w-full max-lg:h-20 max-lg:border-t max-lg:border-l-0">
                   <Button onClick={() => setPasswordOpen(true)}>{lang?.change_password}</Button>

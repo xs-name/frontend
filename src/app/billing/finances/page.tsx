@@ -90,7 +90,7 @@ export default function SSL() {
           router.push(`https://pay.cryptomus.com/pay/${res.data.result[0].payment_id}`)
           setLoadingPay(false)
         } else {
-          toast("Произошла ошибка", {
+          toast(lang?.error, {
             description: res.data.error[0].message
           })
           setLoadingPay(false)
@@ -100,6 +100,7 @@ export default function SSL() {
       toast("Ошибка!", {
         description: "Amount не может быть меньше 0"
       })
+      setLoadingPay(false)
     }
   }
 
@@ -130,7 +131,6 @@ export default function SSL() {
               </DialogDescription>
             </DialogContent>
           </Dialog>
-          <Nav />
           <div className="pl-[260px] max-md:pl-[0px] transition-all pt-16 flex flex-col items-center">
             <div className="w-[1100px] max-2xl:w-full p-8 max-sm:p-4">
               <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0">{lang?.billing}</h1>
@@ -148,7 +148,10 @@ export default function SSL() {
                             <div className="p-8 max-lg:p-4 w-1/2 max-lg:w-full">
                               <b>{lang?.current_balance}</b>
                               <p className="mt-4 mb-4">{lang?.balance_desc}</p>
-                              <Button onClick={() => setModal(true)}>{lang?.top_up_balance}</Button>
+                              <Button onClick={() => {
+                                setModal(true)
+                                setSum(0)
+                              }}>{lang?.top_up_balance}</Button>
                             </div>
                             <div className="bg-slate-100 w-1/2 max-lg:w-full max-lg:h-[100px] flex items-center justify-center">
                               <div className="text-xl font-bold">$ {user?.balance}</div>

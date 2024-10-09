@@ -202,7 +202,7 @@ export default function Accounts() {
       if(!res.data.error?.length){
         getAccounts()
       }else{
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message
         })
       }
@@ -225,7 +225,7 @@ export default function Accounts() {
         setViweData(res.data.result[0])
         setAccess(true)
       }else{
-        toast("Произошла ошибка", {
+        toast(lang?.error, {
           description: res.data.error[0].message
         })
       }
@@ -248,7 +248,6 @@ export default function Accounts() {
       {user.length != 0?
       <div>
         <Toaster />
-        <Nav />
         <AlertDialog open={openView} onOpenChange={setOpenView}>
           {access ? 
             <AlertDialogContent>
@@ -258,15 +257,39 @@ export default function Accounts() {
                   <div className="flex flex-col gap-2">
                     <div className="flex gap-1 flex-col">
                       <div className="font-semibold text-black">{lang?.email}: </div>
-                      <div onClick={() => navigator.clipboard.writeText(viewData.email)} className="flex items-center gap-2 cursor-pointer">{viewData.email} <Copy className="w-[10px] h-[10px]"/></div>
+                      <Input
+                        type="text"
+                        className="w-full"
+                        readOnly={true}
+                        value={viewData.email}
+                        onClick={() => navigator.clipboard.writeText(viewData.email)}
+                        icon={<Copy className="absolute right-2 text-muted-foreground cursor-pointer w-3" />}
+                      />
+                      {/* <div onClick={() => navigator.clipboard.writeText(viewData.email)} className="flex items-center gap-2 cursor-pointer">{viewData.email} <Copy className="w-[10px] h-[10px]"/></div> */}
                     </div>
                     <div className="flex gap-1 flex-col">
                       <div className="font-semibold text-black">{lang?.token}: </div>
-                      <div onClick={() => navigator.clipboard.writeText(viewData.token)} className="flex items-center gap-2 cursor-pointer">{viewData.token} <Copy className="w-[10px] h-[10px]"/></div>
+                      <Input
+                        type="text"
+                        className="w-full"
+                        readOnly={true}
+                        value={viewData.token}
+                        onClick={() => navigator.clipboard.writeText(viewData.token)}
+                        icon={<Copy className="absolute right-2 text-muted-foreground cursor-pointer w-3" />}
+                      />
+                      {/* <div onClick={() => navigator.clipboard.writeText(viewData.token)} className="flex items-center gap-2 cursor-pointer">{viewData.token} <Copy className="w-[10px] h-[10px]"/></div> */}
                     </div>
                     <div className="flex gap-1 flex-col">
                       <div className="font-semibold text-black">id: </div>
-                      <div onClick={() => navigator.clipboard.writeText(viewData.account_id)} className="flex items-center gap-2 cursor-pointer">{viewData.account_id} <Copy className="w-[10px] h-[10px]"/></div>
+                      <Input
+                        type="text"
+                        className="w-full"
+                        readOnly={true}
+                        value={viewData.account_id}
+                        onClick={() => navigator.clipboard.writeText(viewData.account_id)}
+                        icon={<Copy className="absolute right-2 text-muted-foreground cursor-pointer w-3" />}
+                      />
+                      {/* <div onClick={() => navigator.clipboard.writeText(viewData.account_id)} className="flex items-center gap-2 cursor-pointer">{viewData.account_id} <Copy className="w-[10px] h-[10px]"/></div> */}
                     </div>
                   </div>
                 </AlertDialogDescription>
@@ -368,7 +391,11 @@ export default function Accounts() {
                           <TableCell className="max-lg:hidden max-sm:hidden">{item?.account_id}</TableCell>
                           <TableCell className="max-sm:text-xs">
                             {item?.email}
-                            <DropdownMenu>
+                            <div className="text-primary hidden max-sm:flex w-fit" onClick={() => {
+                                  setIdView(item.id)
+                                  setOpenView(true)
+                                }}>{lang?.view}</div>
+                            {/* <DropdownMenu>
                               <DropdownMenuTrigger className="hidden max-sm:flex w-fit" asChild>
                                 <div className="text-primary">{lang?.open_menu}</div>
                               </DropdownMenuTrigger>
@@ -385,7 +412,7 @@ export default function Accounts() {
                                   setOpenView(true)
                                 }}>{lang?.view}</DropdownMenuItem>
                               </DropdownMenuContent>
-                            </DropdownMenu>
+                            </DropdownMenu> */}
                           </TableCell>
                           <TableCell className="text-right max-sm:hidden">
                             <DropdownMenu>
